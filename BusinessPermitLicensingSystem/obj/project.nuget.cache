@@ -1,8 +1,17 @@
 {
   "version": 2,
-  "dgSpecHash": "GMUcRMkXTII=",
+  "dgSpecHash": "l+zGvRiebTk=",
   "success": true,
   "projectFilePath": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\brian\\.nuget\\packages\\microsoft.data.sqlite\\10.0.3\\microsoft.data.sqlite.10.0.3.nupkg.sha512",
+    "C:\\Users\\brian\\.nuget\\packages\\microsoft.data.sqlite.core\\10.0.3\\microsoft.data.sqlite.core.10.0.3.nupkg.sha512",
+    "C:\\Users\\brian\\.nuget\\packages\\sqlitepclraw.bundle_e_sqlite3\\2.1.11\\sqlitepclraw.bundle_e_sqlite3.2.1.11.nupkg.sha512",
+    "C:\\Users\\brian\\.nuget\\packages\\sqlitepclraw.core\\2.1.11\\sqlitepclraw.core.2.1.11.nupkg.sha512",
+    "C:\\Users\\brian\\.nuget\\packages\\sqlitepclraw.lib.e_sqlite3\\2.1.11\\sqlitepclraw.lib.e_sqlite3.2.1.11.nupkg.sha512",
+    "C:\\Users\\brian\\.nuget\\packages\\sqlitepclraw.provider.e_sqlite3\\2.1.11\\sqlitepclraw.provider.e_sqlite3.2.1.11.nupkg.sha512",
+    "C:\\Users\\brian\\.nuget\\packages\\stub.system.data.sqlite.core.netstandard\\1.0.119\\stub.system.data.sqlite.core.netstandard.1.0.119.nupkg.sha512",
+    "C:\\Users\\brian\\.nuget\\packages\\system.data.sqlite.core\\1.0.119\\system.data.sqlite.core.1.0.119.nupkg.sha512"
+  ],
   "logs": []
 }

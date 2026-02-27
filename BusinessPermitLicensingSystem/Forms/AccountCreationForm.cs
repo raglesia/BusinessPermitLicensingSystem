@@ -14,5 +14,50 @@ namespace BusinessPermitLicensingSystem.Forms
         {
             InitializeComponent();
         }
+
+        private void btnCreate_Click(object sender, EventArgs e)
+        {
+            string fullname = txtFullName.Text.Trim();
+            string username = txtuname.Text.Trim();
+            string password = txtpass.Text;
+            string confirmPassword = txtconpass.Text;
+
+            lblMessage.ForeColor = Color.Red;
+            lblMessage.Text = "";
+
+            // Check confirm password
+            if (password != confirmPassword)
+            {
+                lblMessage.Text = "Passwords do not match.";
+                return;
+            }
+
+            var result = Database.CreateAccount(fullname, username, password);
+
+            if (result.Success)
+            {
+                MessageBox.Show("Account Created Succssfully!,", "Masinloc-BPLS", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                txtFullName.Clear();
+                txtuname.Clear();
+                txtpass.Clear();
+                txtconpass.Clear();
+
+                LogInForm loginForm = new LogInForm();
+                loginForm.Show();
+
+                this.Close();
+            }
+            else
+            {
+                lblMessage.Text = result.ErrorMessage;
+            }
+        }
+
+        private void AccountCreationForm_Load(object sender, EventArgs e)
+        {
+            Database.Initialize();  
+        }
     }
 }
+

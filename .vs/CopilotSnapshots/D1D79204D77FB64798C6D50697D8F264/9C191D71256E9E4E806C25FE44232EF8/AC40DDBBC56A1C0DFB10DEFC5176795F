@@ -1,0 +1,58 @@
+﻿using System;
+using System.Data;
+using System.Data.SQLite;
+
+namespace BusinessPermitLicensingSystem
+{
+    internal class Database
+    {
+        static string connectionString = "Data Source=database.db;Version=3;";
+
+        public static void Initialize()
+        {
+            using var con = new SQLiteConnection(connectionString);
+            con.Open();
+
+            string table = @"CREATE TABLE IF NOT EXISTS Users(
+                            Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            Username TEXT UNIQUE,
+                            Password TEXT)";
+            using var cmd = new SQLiteCommand(table, con);
+            cmd.ExecuteNonQuery();
+        }
+
+        public static bool CreateAccount(string username, string password)
+        {
+            try
+            {
+                using var con = new SQLiteConnection(connectionString);
+                con.Open();
+
+                string query = "INSERT INTO Users (Username,Password) VALUES (@u,@p)";
+                using var cmd = new SQLiteCommand(query, con);
+                cmd.Parameters.AddWithValue("@u", username);
+                cmd.Parameters.AddWithValue("@p", password);
+                cmd.ExecuteNonQuery();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static string GetUserPassword(string username)
+        {
+            using var con = new SQLiteConnection(connectionString);
+            con.Open();
+
+            string query = "SELECT Password FROM Users WHERE Username=@u";
+            using var cmd = new SQLiteCommand(query, con);
+            cmd.Parameters.AddWithValue("@u", username);
+
+            var result = cmd.ExecuteScalar();
+            return null;
+        }
+    }
+}

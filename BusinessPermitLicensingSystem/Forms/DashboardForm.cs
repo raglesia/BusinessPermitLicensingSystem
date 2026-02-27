@@ -14,5 +14,21 @@ namespace BusinessPermitLicensingSystem.Forms
         {
             InitializeComponent();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            ProfilingLists profilingLists = new ProfilingLists();
+
+            profilingLists.Show();
+            this.Hide();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            ProfilingForm profilingForm = new ProfilingForm();
+
+            profilingForm.Show();
+            this.Hide();
+        }
     }
 }

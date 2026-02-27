@@ -28,12 +28,70 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "DashboardForm";
+            button1 = new Button();
+            button2 = new Button();
+            button3 = new Button();
+            button4 = new Button();
+            SuspendLayout();
+            // 
+            // button1
+            // 
+            button1.Location = new Point(89, 192);
+            button1.Name = "button1";
+            button1.Size = new Size(326, 80);
+            button1.TabIndex = 0;
+            button1.Text = "Stall Owners List";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
+            // button2
+            // 
+            button2.Location = new Point(89, 420);
+            button2.Name = "button2";
+            button2.Size = new Size(326, 67);
+            button2.TabIndex = 1;
+            button2.Text = "Reports";
+            button2.UseVisualStyleBackColor = true;
+            // 
+            // button3
+            // 
+            button3.Location = new Point(89, 321);
+            button3.Name = "button3";
+            button3.Size = new Size(326, 80);
+            button3.TabIndex = 2;
+            button3.Text = "Billing";
+            button3.UseVisualStyleBackColor = true;
+            // 
+            // button4
+            // 
+            button4.Location = new Point(97, 80);
+            button4.Name = "button4";
+            button4.Size = new Size(318, 87);
+            button4.TabIndex = 3;
+            button4.Text = "Profiling";
+            button4.UseVisualStyleBackColor = true;
+            button4.Click += button4_Click;
+            // 
+            // DashboardForm
+            // 
+            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(1061, 569);
+            Controls.Add(button4);
+            Controls.Add(button3);
+            Controls.Add(button2);
+            Controls.Add(button1);
+            Name = "DashboardForm";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Masinloc - BPLS";
+            ResumeLayout(false);
         }
 
         #endregion
+
+        private Button button1;
+        private Button button2;
+        private Button button3;
+        private Button button4;
     }
 }
