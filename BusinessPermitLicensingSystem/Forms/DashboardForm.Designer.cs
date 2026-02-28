@@ -32,13 +32,15 @@
             button2 = new Button();
             button3 = new Button();
             button4 = new Button();
+            button5 = new Button();
+            button6 = new Button();
             SuspendLayout();
             // 
             // button1
             // 
-            button1.Location = new Point(89, 192);
+            button1.Location = new Point(12, 15);
             button1.Name = "button1";
-            button1.Size = new Size(326, 80);
+            button1.Size = new Size(318, 80);
             button1.TabIndex = 0;
             button1.Text = "Stall Owners List";
             button1.UseVisualStyleBackColor = true;
@@ -46,37 +48,59 @@
             // 
             // button2
             // 
-            button2.Location = new Point(89, 420);
+            button2.Location = new Point(12, 187);
             button2.Name = "button2";
-            button2.Size = new Size(326, 67);
+            button2.Size = new Size(318, 80);
             button2.TabIndex = 1;
             button2.Text = "Reports";
             button2.UseVisualStyleBackColor = true;
             // 
             // button3
             // 
-            button3.Location = new Point(89, 321);
+            button3.Location = new Point(12, 273);
             button3.Name = "button3";
-            button3.Size = new Size(326, 80);
+            button3.Size = new Size(318, 80);
             button3.TabIndex = 2;
             button3.Text = "Billing";
             button3.UseVisualStyleBackColor = true;
             // 
             // button4
             // 
-            button4.Location = new Point(97, 80);
+            button4.Location = new Point(12, 101);
             button4.Name = "button4";
-            button4.Size = new Size(318, 87);
+            button4.Size = new Size(318, 80);
             button4.TabIndex = 3;
             button4.Text = "Profiling";
             button4.UseVisualStyleBackColor = true;
             button4.Click += button4_Click;
             // 
+            // button5
+            // 
+            button5.Location = new Point(12, 359);
+            button5.Name = "button5";
+            button5.Size = new Size(318, 80);
+            button5.TabIndex = 4;
+            button5.Text = "Audit Logs";
+            button5.UseVisualStyleBackColor = true;
+            button5.Click += button5_Click;
+            // 
+            // button6
+            // 
+            button6.Location = new Point(12, 445);
+            button6.Name = "button6";
+            button6.Size = new Size(318, 80);
+            button6.TabIndex = 5;
+            button6.Text = "Exit Program";
+            button6.UseVisualStyleBackColor = true;
+            button6.Click += button6_Click;
+            // 
             // DashboardForm
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1061, 569);
+            ClientSize = new Size(1272, 630);
+            Controls.Add(button6);
+            Controls.Add(button5);
             Controls.Add(button4);
             Controls.Add(button3);
             Controls.Add(button2);
@@ -93,5 +117,7 @@
         private Button button2;
         private Button button3;
         private Button button4;
+        private Button button5;
+        private Button button6;
     }
 }

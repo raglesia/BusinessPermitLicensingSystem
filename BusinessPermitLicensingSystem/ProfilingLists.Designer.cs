@@ -37,6 +37,7 @@
             txtFilterBIN = new TextBox();
             dataGridView1 = new DataGridView();
             button1 = new Button();
+            btnDelete = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -88,7 +89,6 @@
             txtFilterBIN.Name = "txtFilterBIN";
             txtFilterBIN.Size = new Size(173, 31);
             txtFilterBIN.TabIndex = 24;
-            txtFilterBIN.TextChanged += txtFilterBIN_TextChanged;
             // 
             // dataGridView1
             // 
@@ -99,22 +99,34 @@
             dataGridView1.RowHeadersWidth = 62;
             dataGridView1.Size = new Size(1347, 316);
             dataGridView1.TabIndex = 23;
+            dataGridView1.CellDoubleClick += dataGridView1_CellDoubleClick;
             // 
             // button1
             // 
-            button1.Location = new Point(86, 480);
+            button1.Location = new Point(444, 480);
             button1.Name = "button1";
             button1.Size = new Size(112, 34);
             button1.TabIndex = 31;
-            button1.Text = "CANCEL";
+            button1.Text = "Main Menu";
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
+            // 
+            // btnDelete
+            // 
+            btnDelete.Location = new Point(86, 480);
+            btnDelete.Name = "btnDelete";
+            btnDelete.Size = new Size(145, 34);
+            btnDelete.TabIndex = 32;
+            btnDelete.Text = "Delete Record";
+            btnDelete.UseVisualStyleBackColor = true;
+            btnDelete.Click += btnDelete_Click;
             // 
             // ProfilingLists
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1551, 539);
+            Controls.Add(btnDelete);
             Controls.Add(button1);
             Controls.Add(txtFilterMonthlyRental);
             Controls.Add(txtFilterStallSize);
@@ -142,5 +154,6 @@
         private TextBox txtFilterBIN;
         private DataGridView dataGridView1;
         private Button button1;
+        private Button btnDelete;
     }
 }

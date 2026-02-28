@@ -84,17 +84,87 @@ namespace BusinessPermitLicensingSystem
             }
         }
 
-        private void txtFilterBIN_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void button1_Click(object sender, EventArgs e)
         {
-           DashboardForm dashboardForm = new DashboardForm();
+            DashboardForm dashboardForm = new DashboardForm();
 
             dashboardForm.Show();
             this.Close();
+        }
+
+        private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            {
+                if (e.RowIndex < 0) return;
+
+                DataGridViewRow row = dataGridView1.Rows[e.RowIndex];
+
+                string sin = row.Cells["SIN"].Value?.ToString() ?? "";
+                string fullName = row.Cells["Full Name"].Value?.ToString() ?? "";
+                string businessName = row.Cells["Business Name"].Value?.ToString() ?? "";
+                string businessSection = row.Cells["Business Section"].Value?.ToString() ?? "";
+                string stallNumber = row.Cells["Stall Number"].Value?.ToString() ?? "";
+                string stallSize = row.Cells["Stall Size"].Value?.ToString() ?? "";
+                string monthlyRental = row.Cells["Monthly Rental"].Value?.ToString() ?? "";
+
+                var form = new Forms.ProfilingForm();
+
+                form.LoadForEdit(
+                    sin,
+                    fullName,
+                    businessName,
+                    businessSection,
+                    stallNumber,
+                    stallSize,
+                    monthlyRental
+                );
+
+                form.ShowDialog();
+
+                // refresh list after edit
+                LoadProfiles();
+            }
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            if (dataGridView1.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Please select a record first.", "No Selection", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var row = dataGridView1.SelectedRows[0];
+            string sin = row.Cells["SIN"].Value?.ToString() ?? "";
+
+            if (string.IsNullOrEmpty(sin))
+            {
+                MessageBox.Show("Selected record has no SIN.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            var confirm = MessageBox.Show(
+                "Are you sure you want to delete this record?",
+                "Confirm Delete",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            );
+
+            if (confirm != DialogResult.Yes) return;
+
+            var result = Database.DeleteProfiling(sin);
+            if (result.Success)
+            {
+                long currentUserId = Session.CurrentUserId ?? 0;
+                Database.LogAudit("Delete", sin, currentUserId, $"Deleted Profile {sin}");
+
+                MessageBox.Show("Record deleted successfully.", "Deleted", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LoadProfiles(); // refresh grid
+            }
+            else
+            {
+                MessageBox.Show(result.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

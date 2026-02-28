@@ -5,6 +5,8 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using static BusinessPermitLicensingSystem.Database;
+using static BusinessPermitLicensingSystem.Helpers.InputValidator;
 
 namespace BusinessPermitLicensingSystem.Forms
 {
@@ -20,30 +22,47 @@ namespace BusinessPermitLicensingSystem.Forms
             string username = txtUser.Text.Trim();
             string password = txtPass.Text;
 
-            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+            if (string.IsNullOrWhiteSpace(username) ||
+                string.IsNullOrWhiteSpace(password))
             {
-                MessageBox.Show("Please enter both username and password.", "Masinloc-BPLS", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Please enter both username and password.",
+                    "Masinloc-BPLS",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
-            var (isValid, messageOrUserId) = Database.VerifyLogin(username, password);
+            // ✅ VERIFY LOGIN ONLY ONCE
+            var (isValid, messageOrUserId) =
+                Database.VerifyLogin(username, password);
 
             if (isValid)
             {
-                // Login successful
-                //MessageBox.Show("Login successful!", "Masinloc-BPLS", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // ✅ STORE CURRENT USER SESSION
+                Session.CurrentUserId = long.Parse(messageOrUserId!);
+                Session.CurrentUsername = username;
 
-                // Optional: pass user ID or username to dashboard if needed
-                // string currentUserId = messageOrUserId;
+                Database.LogAudit(
+                    "Login", null, Session.CurrentUserId ?? 0, $"User '{username}' logged in.");
+
+                MessageBox.Show(
+                    "Login successful!",
+                    "Masinloc-BPLS",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
 
                 DashboardForm dash = new DashboardForm();
                 dash.Show();
-                this.Hide();           // or this.Close() if you don't plan to show login again
+                this.Hide();
             }
             else
             {
-                // Login failed – show the reason
-                MessageBox.Show(messageOrUserId ?? "Invalid username or password.", "Masinloc-BPLS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    messageOrUserId ?? "Invalid username or password.",
+                    "Masinloc-BPLS",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
 
                 txtPass.Clear();
                 txtPass.Focus();

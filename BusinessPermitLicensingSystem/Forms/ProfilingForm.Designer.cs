@@ -44,6 +44,8 @@
             txtBIN = new TextBox();
             label7 = new Label();
             btnSave = new Button();
+            button1 = new Button();
+            btnSaveAs = new Button();
             SuspendLayout();
             // 
             // menuStrip1
@@ -96,6 +98,7 @@
             txtMRental.Name = "txtMRental";
             txtMRental.Size = new Size(402, 31);
             txtMRental.TabIndex = 6;
+            txtMRental.Leave += txtMRental_Leave;
             // 
             // label1
             // 
@@ -169,7 +172,7 @@
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(212, 413);
+            btnSave.Location = new Point(128, 403);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(155, 34);
             btnSave.TabIndex = 15;
@@ -177,11 +180,33 @@
             btnSave.UseVisualStyleBackColor = true;
             btnSave.Click += btnSave_Click;
             // 
+            // button1
+            // 
+            button1.Location = new Point(289, 403);
+            button1.Name = "button1";
+            button1.Size = new Size(145, 34);
+            button1.TabIndex = 16;
+            button1.Text = "Cancel";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
+            // btnSaveAs
+            // 
+            btnSaveAs.Location = new Point(128, 443);
+            btnSaveAs.Name = "btnSaveAs";
+            btnSaveAs.Size = new Size(112, 34);
+            btnSaveAs.TabIndex = 17;
+            btnSaveAs.Text = "Save As";
+            btnSaveAs.UseVisualStyleBackColor = true;
+            btnSaveAs.Click += btnSaveAs_Click;
+            // 
             // ProfilingForm
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1341, 706);
+            Controls.Add(btnSaveAs);
+            Controls.Add(button1);
             Controls.Add(btnSave);
             Controls.Add(label7);
             Controls.Add(txtBIN);
@@ -226,5 +251,7 @@
         private TextBox txtBIN;
         private Label label7;
         private Button btnSave;
+        private Button button1;
+        private Button btnSaveAs;
     }
 }

@@ -14,7 +14,6 @@ namespace BusinessPermitLicensingSystem.Forms
         {
             InitializeComponent();
         }
-
         private void button1_Click(object sender, EventArgs e)
         {
             ProfilingLists profilingLists = new ProfilingLists();
@@ -29,6 +28,30 @@ namespace BusinessPermitLicensingSystem.Forms
 
             profilingForm.Show();
             this.Hide();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            AuditTrail auditForm = new AuditTrail();
+
+            auditForm.Show();
+            this.Hide();
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            // ✅ AUDIT: log logout
+            if (Session.CurrentUserId != null)
+            {
+                Database.LogAudit("Logout", null, Session.CurrentUserId ?? 0, $"User '{Session.CurrentUsername}' logged out");
+            }
+
+            Application.Exit(); // exit the program
+        }
+
+        private void chart1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

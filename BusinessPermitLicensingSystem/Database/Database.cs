@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.ApplicationServices;
+using System;
 using System.Data;
 using System.Data.SQLite;
 using System.Runtime.InteropServices.Marshalling;
+using static BusinessPermitLicensingSystem.Helpers.InputValidator;
 
 namespace BusinessPermitLicensingSystem
 {
@@ -13,6 +15,7 @@ namespace BusinessPermitLicensingSystem
             using var con = new SQLiteConnection(ConnectionString);
             con.Open();
 
+            // USERS TABLE //
             const string createUsers = @"
                 CREATE TABLE IF NOT EXISTS Users (
                     Id       INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -24,31 +27,93 @@ namespace BusinessPermitLicensingSystem
 
             using var cmd = new SQLiteCommand(createUsers, con);
             cmd.ExecuteNonQuery();
-
+                
+            // PROFILING TABLE //
             const string createProfiling = @"
-        CREATE TABLE IF NOT EXISTS Profiling (
-            SIN TEXT PRIMARY KEY,
-            FullName TEXT NOT NULL,
-            BusinessName TEXT NOT NULL,
-            BusinessSection TEXT NOT NULL,
-            StallNumber TEXT NOT NULL,
-            StallSize TEXT NOT NULL,
-            MonthlyRental REAL NOT NULL,
-            UNIQUE(FullName, BusinessName, StallNumber)
-        );";
+                CREATE TABLE IF NOT EXISTS Profiling (
+                    SIN TEXT PRIMARY KEY,
+                    FullName TEXT NOT NULL,
+                    BusinessName TEXT NOT NULL,
+                    BusinessSection TEXT NOT NULL,
+                    StallNumber TEXT NOT NULL,
+                    StallSize TEXT NOT NULL,
+                    MonthlyRental REAL NOT NULL,
+                    UNIQUE(FullName, BusinessName, StallNumber)
+                );";
 
-            using (var cmd2 = new SQLiteCommand(createProfiling, con))
-            {
-                cmd2.ExecuteNonQuery();
-            }
+                    using (var cmd2 = new SQLiteCommand(createProfiling, con))
+                    {
+                        cmd2.ExecuteNonQuery();
+                    }
+
+         // AUDIT TRAIL TABLE
+        const string createAuditTrail = @"
+            CREATE TABLE IF NOT EXISTS AuditTrail (
+                Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                Action TEXT NOT NULL,
+                SIN TEXT,
+                UserId INTEGER NOT NULL,
+                Timestamp TEXT NOT NULL DEFAULT (datetime('now')),
+                    Details TEXT
+                );";
+            using var cmdAudit = new SQLiteCommand(createAuditTrail, con);
+            cmdAudit.ExecuteNonQuery();
         }
-       
-        /// <summary>
-        /// Tries to create a new user account.
-        /// </summary>
-        /// <returns>
-        /// (success, errorMessage)
-        /// </returns>
+
+        // PROFILE AUDIT TRAIL ONLY (exclude login/logout)
+        public static DataTable GetAuditTrail()
+        {
+            using var con = new SQLiteConnection(ConnectionString);
+            con.Open();
+
+            const string query = @"
+                 SELECT 
+                    Id,
+                    Action,
+                    SIN,
+                    UserId,
+                    Timestamp,
+                    Details
+                        FROM AuditTrail
+                        WHERE Action NOT IN ('Login', 'Logout')   -- <--- exclude users
+                        ORDER BY Timestamp DESC";
+
+        using var cmd = new SQLiteCommand(query, con);
+        using var adapter = new SQLiteDataAdapter(cmd);
+
+        DataTable dt = new DataTable();
+        adapter.Fill(dt);
+
+        return dt;
+        }
+
+        // USERS AUDIT TRAIL (LOGIN/LOGOUT) //
+        public static DataTable GetUserAuditTrail()
+        {
+            using var con = new SQLiteConnection(ConnectionString);
+            con.Open();
+
+            const string query = @"
+        SELECT 
+            a.Id,
+            a.Action,
+            u.Username AS UserName,
+            a.Timestamp,
+            a.Details
+        FROM AuditTrail a
+        LEFT JOIN Users u ON a.UserId = u.Id
+        WHERE a.Action IN ('Login', 'Logout')
+        ORDER BY a.Timestamp DESC";
+
+            using var cmd = new SQLiteCommand(query, con);
+            using var adapter = new SQLiteDataAdapter(cmd);
+
+            DataTable dt = new DataTable();
+            adapter.Fill(dt);
+
+            return dt;
+        }
+
         public static (bool Success, string? ErrorMessage) CreateAccount(string fullname, string username, string plainPassword)
         {
             if (string.IsNullOrWhiteSpace(fullname))
@@ -138,6 +203,7 @@ namespace BusinessPermitLicensingSystem
 
         // ADD RECORD (SAVE) //
         public static (bool Success, string? ErrorMessage) AddProfiling(
+            string sin,
             string fullName,
             string businessName,
             string businessSection,
@@ -156,8 +222,6 @@ namespace BusinessPermitLicensingSystem
             {
                 using var con = new SQLiteConnection(ConnectionString);
                 con.Open();
-
-                string sin = GenerateUniqueBIN(con);
 
                 const string insert = @"INSERT INTO Profiling (SIN, FullName, BusinessName, BusinessSection, StallNumber, StallSize, MonthlyRental) VALUES (@sin, @f, @b, @s, @n, @sz, @r)";
 
@@ -227,6 +291,30 @@ namespace BusinessPermitLicensingSystem
                         return (false, ex.Message);
                     }
                 }
+        // DELETE RECORD // 
+        public static (bool Success, string? ErrorMessage) DeleteProfiling(string sin)
+        {
+            try
+            {
+                using var con = new SQLiteConnection(ConnectionString);
+                con.Open();
+
+                string query = "DELETE FROM Profiling WHERE SIN = @SIN";
+
+                using var cmd = new SQLiteCommand(query, con);
+                cmd.Parameters.AddWithValue("@SIN", sin);
+
+                int rowsAffected = cmd.ExecuteNonQuery();
+                if (rowsAffected == 0)
+                    return (false, "Record not found.");
+
+                return (true, null);        
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Database error: {ex.Message}");
+            }
+        }
 
         public static DataTable GetAllProfiles()
         {
@@ -264,7 +352,29 @@ namespace BusinessPermitLicensingSystem
             return sin;
         }
 
-    // ============================================= DO NOT TOUCH ================================================================= //
+        // AUDIT LOGGING //
+        public static void LogAudit(string action, string? sin, long userId, string? details = null)
+        {
+            try
+            {
+                using var con = new SQLiteConnection(ConnectionString);
+                con.Open();
+
+                const string insert = @"INSERT INTO AuditTrail (Action, SIN, UserId, Details) VALUES (@action, @sin, @user, @details)";
+                using var cmd = new SQLiteCommand(insert, con);
+                cmd.Parameters.AddWithValue("@action", action);
+                cmd.Parameters.AddWithValue("@sin", sin ?? DBNull.Value.ToString());
+                cmd.Parameters.AddWithValue("@user", userId);
+                cmd.Parameters.AddWithValue("@details", details ?? "");
+                cmd.ExecuteNonQuery();
+            }
+            catch
+            {
+                // Fail silently or handle error in enterprise systems
+            }
+        }
+
+        // ============================================= DO NOT TOUCH ================================================================= //
         // ────────────────────────────────────────────────
         //           Very simple but decent password hashing
         // ────────────────────────────────────────────────
