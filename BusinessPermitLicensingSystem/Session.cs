@@ -8,6 +8,8 @@ namespace BusinessPermitLicensingSystem
     {
         public static long? CurrentUserId { get; set; }
         public static string? CurrentUsername { get; set; }
+
+        public static string? CurrentFullName { get; set; }
     }
 }
 

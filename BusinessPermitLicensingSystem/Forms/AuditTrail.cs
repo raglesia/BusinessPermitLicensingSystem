@@ -63,5 +63,10 @@ namespace BusinessPermitLicensingSystem.Forms
             if (radioProfiling.Checked)
                 LoadAuditRecords();
         }
+
+        private void AuditTrail_Load(object sender, EventArgs e)
+        {
+            lblUsername.Text = $"Admin : {Session.CurrentFullName ?? "Unknown"}";
+        }
     }
 }

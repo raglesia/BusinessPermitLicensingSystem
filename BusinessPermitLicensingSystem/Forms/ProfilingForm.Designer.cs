@@ -46,6 +46,7 @@
             btnSave = new Button();
             button1 = new Button();
             btnSaveAs = new Button();
+            lblUsername = new Label();
             SuspendLayout();
             // 
             // menuStrip1
@@ -200,11 +201,20 @@
             btnSaveAs.UseVisualStyleBackColor = true;
             btnSaveAs.Click += btnSaveAs_Click;
             // 
+            // lblUsername
+            // 
+            lblUsername.AutoSize = true;
+            lblUsername.Location = new Point(14, 672);
+            lblUsername.Name = "lblUsername";
+            lblUsername.Size = new Size(0, 25);
+            lblUsername.TabIndex = 18;
+            // 
             // ProfilingForm
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1341, 706);
+            Controls.Add(lblUsername);
             Controls.Add(btnSaveAs);
             Controls.Add(button1);
             Controls.Add(btnSave);
@@ -253,5 +263,6 @@
         private Button btnSave;
         private Button button1;
         private Button btnSaveAs;
+        private Label lblUsername;
     }
 }

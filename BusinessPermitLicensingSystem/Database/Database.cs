@@ -10,6 +10,7 @@ namespace BusinessPermitLicensingSystem
     internal static class Database
     {
         private const string ConnectionString = "Data Source=database.db;Version=3;";
+
         public static void Initialize()
         {
             using var con = new SQLiteConnection(ConnectionString);
@@ -27,7 +28,8 @@ namespace BusinessPermitLicensingSystem
 
             using var cmd = new SQLiteCommand(createUsers, con);
             cmd.ExecuteNonQuery();
-                
+
+
             // PROFILING TABLE //
             const string createProfiling = @"
                 CREATE TABLE IF NOT EXISTS Profiling (
@@ -41,21 +43,21 @@ namespace BusinessPermitLicensingSystem
                     UNIQUE(FullName, BusinessName, StallNumber)
                 );";
 
-                    using (var cmd2 = new SQLiteCommand(createProfiling, con))
-                    {
-                        cmd2.ExecuteNonQuery();
-                    }
+            using var cmd2 = new SQLiteCommand(createProfiling, con);
+            cmd2.ExecuteNonQuery();
 
-         // AUDIT TRAIL TABLE
-        const string createAuditTrail = @"
-            CREATE TABLE IF NOT EXISTS AuditTrail (
-                Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                Action TEXT NOT NULL,
-                SIN TEXT,
-                UserId INTEGER NOT NULL,
-                Timestamp TEXT NOT NULL DEFAULT (datetime('now')),
+
+            // AUDIT TRAIL TABLE //
+            const string createAuditTrail = @"
+                CREATE TABLE IF NOT EXISTS AuditTrail (
+                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    Action TEXT NOT NULL,
+                    SIN TEXT,
+                    UserId INTEGER NOT NULL,
+                    Timestamp TEXT NOT NULL DEFAULT (datetime('now')),
                     Details TEXT
                 );";
+
             using var cmdAudit = new SQLiteCommand(createAuditTrail, con);
             cmdAudit.ExecuteNonQuery();
         }
@@ -67,43 +69,16 @@ namespace BusinessPermitLicensingSystem
             con.Open();
 
             const string query = @"
-                 SELECT 
+                SELECT 
                     Id,
                     Action,
                     SIN,
                     UserId,
                     Timestamp,
                     Details
-                        FROM AuditTrail
-                        WHERE Action NOT IN ('Login', 'Logout')   -- <--- exclude users
-                        ORDER BY Timestamp DESC";
-
-        using var cmd = new SQLiteCommand(query, con);
-        using var adapter = new SQLiteDataAdapter(cmd);
-
-        DataTable dt = new DataTable();
-        adapter.Fill(dt);
-
-        return dt;
-        }
-
-        // USERS AUDIT TRAIL (LOGIN/LOGOUT) //
-        public static DataTable GetUserAuditTrail()
-        {
-            using var con = new SQLiteConnection(ConnectionString);
-            con.Open();
-
-            const string query = @"
-        SELECT 
-            a.Id,
-            a.Action,
-            u.Username AS UserName,
-            a.Timestamp,
-            a.Details
-        FROM AuditTrail a
-        LEFT JOIN Users u ON a.UserId = u.Id
-        WHERE a.Action IN ('Login', 'Logout')
-        ORDER BY a.Timestamp DESC";
+                FROM AuditTrail
+                WHERE Action NOT IN ('Login', 'Logout')
+                ORDER BY Timestamp DESC";
 
             using var cmd = new SQLiteCommand(query, con);
             using var adapter = new SQLiteDataAdapter(cmd);
@@ -114,7 +89,51 @@ namespace BusinessPermitLicensingSystem
             return dt;
         }
 
-        public static (bool Success, string? ErrorMessage) CreateAccount(string fullname, string username, string plainPassword)
+        // USERS AUDIT TRAIL (LOGIN/LOGOUT) //
+        public static DataTable GetUserAuditTrail()
+        {
+            using var con = new SQLiteConnection(ConnectionString);
+            con.Open();
+
+            const string query = @"
+                SELECT 
+                    a.Id,
+                    a.Action,
+                    u.Username AS UserName,
+                    a.Timestamp,
+                    a.Details
+                FROM AuditTrail a
+                LEFT JOIN Users u ON a.UserId = u.Id
+                WHERE a.Action IN ('Login', 'Logout')
+                ORDER BY a.Timestamp DESC";
+
+            using var cmd = new SQLiteCommand(query, con);
+            using var adapter = new SQLiteDataAdapter(cmd);
+
+            DataTable dt = new DataTable();
+            adapter.Fill(dt);
+
+            return dt;
+        }
+
+        public static string GetFullName(long userId)
+        {
+            using var con = new SQLiteConnection(ConnectionString);
+            con.Open();
+
+            using var cmd = new SQLiteCommand(
+                "SELECT FullName FROM Users WHERE Id=@id", con);
+            cmd.Parameters.AddWithValue("@id", userId);
+
+            var result = cmd.ExecuteScalar();
+            return result?.ToString() ?? "Unknown";
+        }
+
+        // ACCOUNT CREATION //
+        public static (bool Success, string? ErrorMessage) CreateAccount(
+            string fullname,
+            string username,
+            string plainPassword)
         {
             if (string.IsNullOrWhiteSpace(fullname))
                 return (false, "Full Name cannot be empty");
@@ -132,17 +151,19 @@ namespace BusinessPermitLicensingSystem
                 using var con = new SQLiteConnection(ConnectionString);
                 con.Open();
 
-                // Check if username already exists
-                using (var cmdCheck = new SQLiteCommand("SELECT 1 FROM Users WHERE Username = @u", con))
-                {
-                    cmdCheck.Parameters.AddWithValue("@u", username);
-                    if (cmdCheck.ExecuteScalar() != null)
-                        return (false, "Username already exists");
-                }
+                using var cmdCheck = new SQLiteCommand(
+                    "SELECT 1 FROM Users WHERE Username = @u", con);
+                cmdCheck.Parameters.AddWithValue("@u", username);
+
+                if (cmdCheck.ExecuteScalar() != null)
+                    return (false, "Username already exists");
 
                 string hashedPassword = HashPassword(plainPassword);
 
-                const string insert = "INSERT INTO Users (FullName, Username, Password) VALUES (@f, @u, @p)";
+                const string insert = @"
+                    INSERT INTO Users (FullName, Username, Password)
+                    VALUES (@f, @u, @p)";
+
                 using var cmd = new SQLiteCommand(insert, con);
                 cmd.Parameters.AddWithValue("@f", fullname);
                 cmd.Parameters.AddWithValue("@u", username);
@@ -161,15 +182,10 @@ namespace BusinessPermitLicensingSystem
             }
         }
 
-
-
-        /// <summary>
-        /// Verifies login credentials.
-        /// </summary>
-        /// <returns>
-        /// (isValid, errorMessageOrUserId)
-        /// </returns>
-        public static (bool IsValid, string? MessageOrUserId) VerifyLogin(string username, string plainPassword)
+        // VERIFY LOGIN //
+        public static (bool IsValid, string? MessageOrUserId) VerifyLogin(
+            string username,
+            string plainPassword)
         {
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(plainPassword))
                 return (false, "Missing username or password");
@@ -179,7 +195,11 @@ namespace BusinessPermitLicensingSystem
                 using var con = new SQLiteConnection(ConnectionString);
                 con.Open();
 
-                const string query = "SELECT Id, Password FROM Users WHERE Username = @u";
+                const string query = @"
+                    SELECT Id, Password
+                    FROM Users
+                    WHERE Username = @u";
+
                 using var cmd = new SQLiteCommand(query, con);
                 cmd.Parameters.AddWithValue("@u", username.Trim());
 
@@ -223,7 +243,11 @@ namespace BusinessPermitLicensingSystem
                 using var con = new SQLiteConnection(ConnectionString);
                 con.Open();
 
-                const string insert = @"INSERT INTO Profiling (SIN, FullName, BusinessName, BusinessSection, StallNumber, StallSize, MonthlyRental) VALUES (@sin, @f, @b, @s, @n, @sz, @r)";
+                const string insert = @"
+                    INSERT INTO Profiling
+                        (SIN, FullName, BusinessName, BusinessSection, StallNumber, StallSize, MonthlyRental)
+                    VALUES
+                        (@sin, @f, @b, @s, @n, @sz, @r)";
 
                 using var cmd = new SQLiteCommand(insert, con);
                 cmd.Parameters.AddWithValue("@sin", sin);
@@ -248,7 +272,7 @@ namespace BusinessPermitLicensingSystem
         }
 
         // EDIT RECORD //
-        public static (bool Success, string ErrorMessage) UpdateProfiling(
+        public static (bool Success, string? ErrorMessage) UpdateProfiling(
             string sin,
             string fullName,
             string businessName,
@@ -256,15 +280,16 @@ namespace BusinessPermitLicensingSystem
             string stallNumber,
             string stallSize,
             double monthlyRental)
-                {
-                    try
-                    {
-                        using var con = new SQLiteConnection(ConnectionString);
-                        con.Open();
+        {
+            try
+            {
+                using var con = new SQLiteConnection(ConnectionString);
+                con.Open();
 
-                        string query = @"
+                const string query = @"
                     UPDATE Profiling
-                    SET FullName = @FullName,
+                    SET
+                        FullName = @FullName,
                         BusinessName = @BusinessName,
                         BusinessSection = @BusinessSection,
                         StallNumber = @StallNumber,
@@ -272,26 +297,25 @@ namespace BusinessPermitLicensingSystem
                         MonthlyRental = @MonthlyRental
                     WHERE SIN = @SIN";
 
-                        using var cmd = new SQLiteCommand(query, con);
+                using var cmd = new SQLiteCommand(query, con);
+                cmd.Parameters.AddWithValue("@FullName", fullName);
+                cmd.Parameters.AddWithValue("@BusinessName", businessName);
+                cmd.Parameters.AddWithValue("@BusinessSection", businessSection);
+                cmd.Parameters.AddWithValue("@StallNumber", stallNumber);
+                cmd.Parameters.AddWithValue("@StallSize", stallSize);
+                cmd.Parameters.AddWithValue("@MonthlyRental", monthlyRental);
+                cmd.Parameters.AddWithValue("@SIN", sin);
 
-                        cmd.Parameters.AddWithValue("@FullName", fullName);
-                        cmd.Parameters.AddWithValue("@BusinessName", businessName);
-                        cmd.Parameters.AddWithValue("@BusinessSection", businessSection);
-                        cmd.Parameters.AddWithValue("@StallNumber", stallNumber);
-                        cmd.Parameters.AddWithValue("@StallSize", stallSize);
-                        cmd.Parameters.AddWithValue("@MonthlyRental", monthlyRental);
-                        cmd.Parameters.AddWithValue("@SIN", sin);
+                cmd.ExecuteNonQuery();
+                return (true, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
+            }
+        }
 
-                        cmd.ExecuteNonQuery();
-
-                        return (true, null);
-                    }
-                    catch (Exception ex)
-                    {
-                        return (false, ex.Message);
-                    }
-                }
-        // DELETE RECORD // 
+        // DELETE RECORD //
         public static (bool Success, string? ErrorMessage) DeleteProfiling(string sin)
         {
             try
@@ -299,7 +323,7 @@ namespace BusinessPermitLicensingSystem
                 using var con = new SQLiteConnection(ConnectionString);
                 con.Open();
 
-                string query = "DELETE FROM Profiling WHERE SIN = @SIN";
+                const string query = "DELETE FROM Profiling WHERE SIN = @SIN";
 
                 using var cmd = new SQLiteCommand(query, con);
                 cmd.Parameters.AddWithValue("@SIN", sin);
@@ -308,7 +332,7 @@ namespace BusinessPermitLicensingSystem
                 if (rowsAffected == 0)
                     return (false, "Record not found.");
 
-                return (true, null);        
+                return (true, null);
             }
             catch (Exception ex)
             {
@@ -321,7 +345,17 @@ namespace BusinessPermitLicensingSystem
             using var con = new SQLiteConnection(ConnectionString);
             con.Open();
 
-            const string query = "SELECT SIN as 'SIN', FullName as 'Full Name', BusinessName as 'Business Name', BusinessSection as 'Business Section', StallNumber as 'Stall Number', StallSize as 'Stall Size', MonthlyRental as 'Monthly Rental' FROM Profiling ORDER BY ROWID DESC";
+            const string query = @"
+                SELECT
+                    SIN AS 'SIN',
+                    FullName AS 'Full Name',
+                    BusinessName AS 'Business Name',
+                    BusinessSection AS 'Business Section',
+                    StallNumber AS 'Stall Number',
+                    StallSize AS 'Stall Size',
+                    MonthlyRental AS 'Monthly Rental'
+                FROM Profiling
+                ORDER BY ROWID DESC";
 
             using var cmd = new SQLiteCommand(query, con);
             using var adapter = new SQLiteDataAdapter(cmd);
@@ -332,6 +366,7 @@ namespace BusinessPermitLicensingSystem
             return dt;
         }
 
+        // SIN GENERATION (UNIQUE) //
         public static string GenerateUniqueBIN(SQLiteConnection con)
         {
             string sin;
@@ -341,8 +376,9 @@ namespace BusinessPermitLicensingSystem
             {
                 sin = $"SIN-{DateTime.Now:yyyy}-{rnd.Next(1000, 10000)}";
 
-                using var cmdCheck = new SQLiteCommand("SELECT 1 FROM Profiling WHERE SIN = @sin", con);
-                cmdCheck.Parameters.AddWithValue("@sin",sin);
+                using var cmdCheck = new SQLiteCommand(
+                    "SELECT 1 FROM Profiling WHERE SIN = @sin", con);
+                cmdCheck.Parameters.AddWithValue("@sin", sin);
                 var exists = cmdCheck.ExecuteScalar() != null;
 
                 if (!exists) break;
@@ -353,14 +389,21 @@ namespace BusinessPermitLicensingSystem
         }
 
         // AUDIT LOGGING //
-        public static void LogAudit(string action, string? sin, long userId, string? details = null)
+        public static void LogAudit(
+            string action,
+            string? sin,
+            long userId,
+            string? details = null)
         {
             try
             {
                 using var con = new SQLiteConnection(ConnectionString);
                 con.Open();
 
-                const string insert = @"INSERT INTO AuditTrail (Action, SIN, UserId, Details) VALUES (@action, @sin, @user, @details)";
+                const string insert = @"
+                    INSERT INTO AuditTrail (Action, SIN, UserId, Details)
+                    VALUES (@action, @sin, @user, @details)";
+
                 using var cmd = new SQLiteCommand(insert, con);
                 cmd.Parameters.AddWithValue("@action", action);
                 cmd.Parameters.AddWithValue("@sin", sin ?? DBNull.Value.ToString());
@@ -374,14 +417,10 @@ namespace BusinessPermitLicensingSystem
             }
         }
 
-        // ============================================= DO NOT TOUCH ================================================================= //
-        // ────────────────────────────────────────────────
-        //           Very simple but decent password hashing
-        // ────────────────────────────────────────────────
+        // =============================================(PASSWORD HASHING) DO NOT TOUCH ================================================================= //
+
         private static string HashPassword(string password)
         {
-            // In real projects → use BCrypt.Net or Argon2
-            // This is a minimal secure-enough example for learning
             using var sha256 = System.Security.Cryptography.SHA256.Create();
             byte[] bytes = System.Text.Encoding.UTF8.GetBytes(password);
             byte[] hash = sha256.ComputeHash(bytes);
@@ -394,7 +433,6 @@ namespace BusinessPermitLicensingSystem
             return CryptographicEquals(hashOfEntered, storedHash);
         }
 
-        // Constant-time comparison (prevents timing attacks)
         private static bool CryptographicEquals(string a, string b)
         {
             if (a.Length != b.Length) return false;
@@ -404,5 +442,4 @@ namespace BusinessPermitLicensingSystem
             return diff == 0;
         }
     }
-
 }

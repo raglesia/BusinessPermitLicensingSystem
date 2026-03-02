@@ -43,6 +43,8 @@ namespace BusinessPermitLicensingSystem.Forms
                 Session.CurrentUserId = long.Parse(messageOrUserId!);
                 Session.CurrentUsername = username;
 
+                Session.CurrentFullName = Database.GetFullName(Session.CurrentUserId.Value);
+
                 Database.LogAudit(
                     "Login", null, Session.CurrentUserId ?? 0, $"User '{username}' logged in.");
 

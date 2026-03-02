@@ -105,7 +105,7 @@
             AcceptButton = btnLogIn;
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1207, 488);
+            ClientSize = new Size(896, 488);
             Controls.Add(label2);
             Controls.Add(label1);
             Controls.Add(txtUser);

@@ -32,6 +32,7 @@
             button1 = new Button();
             radioUsers = new RadioButton();
             radioProfiling = new RadioButton();
+            lblUsername = new Label();
             ((System.ComponentModel.ISupportInitialize)dtAudit).BeginInit();
             SuspendLayout();
             // 
@@ -78,17 +79,27 @@
             radioProfiling.UseVisualStyleBackColor = true;
             radioProfiling.CheckedChanged += radioProfiling_CheckedChanged;
             // 
+            // lblUsername
+            // 
+            lblUsername.AutoSize = true;
+            lblUsername.Location = new Point(12, 520);
+            lblUsername.Name = "lblUsername";
+            lblUsername.Size = new Size(0, 25);
+            lblUsername.TabIndex = 4;
+            // 
             // AuditTrail
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1597, 541);
+            ClientSize = new Size(1597, 554);
+            Controls.Add(lblUsername);
             Controls.Add(radioProfiling);
             Controls.Add(radioUsers);
             Controls.Add(button1);
             Controls.Add(dtAudit);
             Name = "AuditTrail";
-            Text = "AuditTrail";
+            Text = "Masinloc - BPLS";
+            Load += AuditTrail_Load;
             ((System.ComponentModel.ISupportInitialize)dtAudit).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -100,5 +111,6 @@
         private Button button1;
         private RadioButton radioUsers;
         private RadioButton radioProfiling;
+        private Label lblUsername;
     }
 }

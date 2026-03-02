@@ -151,7 +151,7 @@
             Controls.Add(txtuname);
             Controls.Add(txtFullName);
             Name = "AccountCreationForm";
-            Text = "AccountCreationForm";
+            Text = "Masinloc - BPLS";
             Load += AccountCreationForm_Load;
             ResumeLayout(false);
             PerformLayout();

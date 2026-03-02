@@ -33,6 +33,8 @@ namespace BusinessPermitLicensingSystem.Forms
 
         private void ProfilingForm_Load(object sender, EventArgs e)
         {
+            lblUsername.Text = $"Admin : {Session.CurrentFullName ?? "Unknown"}";
+
             txtFName.KeyPress += (s, e) => InputValidator.AllowOnlyLetters(e, allowDot: true);
             txtBName.KeyPress += (s, e) => InputValidator.AllowLettersDigitsDotCommaSpace(e);
             txtBSection.KeyPress += (s, e) => InputValidator.AllowOnlyLetters(e, allowDot: true);

@@ -34,6 +34,7 @@
             button4 = new Button();
             button5 = new Button();
             button6 = new Button();
+            lblUsername = new Label();
             SuspendLayout();
             // 
             // button1
@@ -94,11 +95,20 @@
             button6.UseVisualStyleBackColor = true;
             button6.Click += button6_Click;
             // 
+            // lblUsername
+            // 
+            lblUsername.AutoSize = true;
+            lblUsername.Location = new Point(12, 596);
+            lblUsername.Name = "lblUsername";
+            lblUsername.Size = new Size(0, 25);
+            lblUsername.TabIndex = 6;
+            // 
             // DashboardForm
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1272, 630);
+            Controls.Add(lblUsername);
             Controls.Add(button6);
             Controls.Add(button5);
             Controls.Add(button4);
@@ -108,7 +118,9 @@
             Name = "DashboardForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Masinloc - BPLS";
+            Load += DashboardForm_Load;
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -119,5 +131,6 @@
         private Button button4;
         private Button button5;
         private Button button6;
+        private Label lblUsername;
     }
 }

@@ -38,6 +38,8 @@
             dataGridView1 = new DataGridView();
             button1 = new Button();
             btnDelete = new Button();
+            btnExport = new Button();
+            lblUsername = new Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -121,11 +123,31 @@
             btnDelete.UseVisualStyleBackColor = true;
             btnDelete.Click += btnDelete_Click;
             // 
+            // btnExport
+            // 
+            btnExport.Location = new Point(252, 480);
+            btnExport.Name = "btnExport";
+            btnExport.Size = new Size(158, 34);
+            btnExport.TabIndex = 33;
+            btnExport.Text = "Export";
+            btnExport.UseVisualStyleBackColor = true;
+            btnExport.Click += btnExport_Click;
+            // 
+            // lblUsername
+            // 
+            lblUsername.AutoSize = true;
+            lblUsername.Location = new Point(12, 536);
+            lblUsername.Name = "lblUsername";
+            lblUsername.Size = new Size(0, 25);
+            lblUsername.TabIndex = 34;
+            // 
             // ProfilingLists
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1551, 539);
+            ClientSize = new Size(1551, 570);
+            Controls.Add(lblUsername);
+            Controls.Add(btnExport);
             Controls.Add(btnDelete);
             Controls.Add(button1);
             Controls.Add(txtFilterMonthlyRental);
@@ -137,7 +159,8 @@
             Controls.Add(txtFilterBIN);
             Controls.Add(dataGridView1);
             Name = "ProfilingLists";
-            Text = "ProfilingLists";
+            Text = "Masinloc - BPLS";
+            Load += ProfilingLists_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -155,5 +178,7 @@
         private DataGridView dataGridView1;
         private Button button1;
         private Button btnDelete;
+        private Button btnExport;
+        private Label lblUsername;
     }
 }

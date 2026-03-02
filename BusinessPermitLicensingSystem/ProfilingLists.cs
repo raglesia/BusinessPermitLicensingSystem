@@ -1,7 +1,10 @@
 ﻿using BusinessPermitLicensingSystem.Forms;
 using System;
 using System.Data;
+using System.Reflection.Metadata;
 using System.Windows.Forms;
+using ClosedXML.Excel;
+
 
 namespace BusinessPermitLicensingSystem
 {
@@ -165,6 +168,98 @@ namespace BusinessPermitLicensingSystem
             {
                 MessageBox.Show(result.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private async void btnExport_Click(object sender, EventArgs e)
+        {
+            if (dataGridView1.Rows.Count == 0)
+            {
+                MessageBox.Show("No data to export.", "Warning",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            using SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "Excel Workbook|*.xlsx";
+            sfd.FileName = "Stall_Owners_Profiling.xlsx";
+
+            if (sfd.ShowDialog() != DialogResult.OK)
+                return;
+
+            try
+            {
+                btnExport.Enabled = false;
+                Cursor = Cursors.WaitCursor;
+
+                var dt = GetDataTableFromDGV(dataGridView1);
+
+                // ✅ RUN HEAVY WORK IN BACKGROUND
+                await Task.Run(() =>
+                {
+                    ExportToExcel(dt, sfd.FileName);
+                });
+
+                MessageBox.Show(
+                    "Export completed successfully!",
+                    "Success",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Error exporting file: {ex.Message}",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+            finally
+            {
+                btnExport.Enabled = true;
+                Cursor = Cursors.Default;
+            }
+        }
+
+
+        // Convert DataGridView to DataTable
+        private DataTable GetDataTableFromDGV(DataGridView dgv)
+        {
+            DataTable dt = new DataTable();
+            foreach (DataGridViewColumn col in dgv.Columns)
+                dt.Columns.Add(col.HeaderText);
+
+            foreach (DataGridViewRow row in dgv.Rows)
+            {
+                if (!row.IsNewRow)
+                    dt.Rows.Add(row.Cells.Cast<DataGridViewCell>().Select(c => c.Value?.ToString() ?? "").ToArray());
+            }
+            return dt;
+        }
+
+        // Export to Excel
+        private void ExportToExcel(DataTable dt, string filePath)
+        {
+            using var workbook = new XLWorkbook();
+            var ws = workbook.Worksheets.Add("Profiles");
+
+            // Add title
+            ws.Cell(1, 1).Value = "Stall Owners Profiling Report";
+            ws.Range(1, 1, 1, dt.Columns.Count).Merge();
+            ws.Cell(1, 1).Style.Font.Bold = true;
+            ws.Cell(1, 1).Style.Font.FontSize = 16;
+
+            // Insert table starting from row 3
+            ws.Cell(3, 1).InsertTable(dt);
+
+            // Auto-fit columns
+            ws.Columns().AdjustToContents();
+
+            workbook.SaveAs(filePath);
+        }
+
+        private void ProfilingLists_Load(object sender, EventArgs e)
+        {
+            lblUsername.Text = $"Admin : {Session.CurrentFullName ?? "Unknown"}";
         }
     }
 }
