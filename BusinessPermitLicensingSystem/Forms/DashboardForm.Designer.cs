@@ -35,6 +35,7 @@
             button5 = new Button();
             button6 = new Button();
             lblUsername = new Label();
+            lblPenaltyNotice = new Label();
             SuspendLayout();
             // 
             // button1
@@ -49,7 +50,7 @@
             // 
             // button2
             // 
-            button2.Location = new Point(12, 187);
+            button2.Location = new Point(336, 101);
             button2.Name = "button2";
             button2.Size = new Size(318, 80);
             button2.TabIndex = 1;
@@ -58,7 +59,7 @@
             // 
             // button3
             // 
-            button3.Location = new Point(12, 273);
+            button3.Location = new Point(12, 101);
             button3.Name = "button3";
             button3.Size = new Size(318, 80);
             button3.TabIndex = 2;
@@ -67,7 +68,7 @@
             // 
             // button4
             // 
-            button4.Location = new Point(12, 101);
+            button4.Location = new Point(336, 15);
             button4.Name = "button4";
             button4.Size = new Size(318, 80);
             button4.TabIndex = 3;
@@ -77,7 +78,7 @@
             // 
             // button5
             // 
-            button5.Location = new Point(12, 359);
+            button5.Location = new Point(336, 187);
             button5.Name = "button5";
             button5.Size = new Size(318, 80);
             button5.TabIndex = 4;
@@ -87,7 +88,7 @@
             // 
             // button6
             // 
-            button6.Location = new Point(12, 445);
+            button6.Location = new Point(12, 187);
             button6.Name = "button6";
             button6.Size = new Size(318, 80);
             button6.TabIndex = 5;
@@ -103,11 +104,23 @@
             lblUsername.Size = new Size(0, 25);
             lblUsername.TabIndex = 6;
             // 
+            // lblPenaltyNotice
+            // 
+            lblPenaltyNotice.AutoSize = true;
+            lblPenaltyNotice.ForeColor = Color.DarkOrange;
+            lblPenaltyNotice.Location = new Point(736, 43);
+            lblPenaltyNotice.Name = "lblPenaltyNotice";
+            lblPenaltyNotice.Size = new Size(59, 25);
+            lblPenaltyNotice.TabIndex = 7;
+            lblPenaltyNotice.Text = "label1";
+            lblPenaltyNotice.Visible = false;
+            // 
             // DashboardForm
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1272, 630);
+            Controls.Add(lblPenaltyNotice);
             Controls.Add(lblUsername);
             Controls.Add(button6);
             Controls.Add(button5);
@@ -132,5 +145,6 @@
         private Button button5;
         private Button button6;
         private Label lblUsername;
+        private Label lblPenaltyNotice;
     }
 }

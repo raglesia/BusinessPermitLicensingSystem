@@ -60,19 +60,17 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== PENALTY CHECKS ===================== //
         private void CheckPenalties()
         {
-            if (DateTime.Today.Day <= 20) return;
-
             var (updated, skipped) = Database.ApplyPenaltiesToAll();
 
             if (updated > 0)
             {
-                MessageBox.Show(
-                    $"Penalty Notice:\n\n" +
-                    $"{updated} unpaid record(s) have been charged a 25% penalty.\n" +
-                    $"Due date was the 20th of this month.",
-                    "Penalty Applied",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
+                lblPenaltyNotice.Text =
+                    $"⚠️ {updated} unpaid record(s) have been charged a 25% penalty.";
+                lblPenaltyNotice.Visible = true;
+            }
+            else
+            {
+                lblPenaltyNotice.Visible = false;
             }
         }
 

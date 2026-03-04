@@ -387,7 +387,7 @@ namespace BusinessPermitLicensingSystem
         {
             DashboardForm dashboardForm = new DashboardForm();
             dashboardForm.Show();
-            this.Close();
+            this.Hide();
         }
 
         // ===================== UNUSED EVENTS ===================== //

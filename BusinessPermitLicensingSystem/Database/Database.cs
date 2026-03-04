@@ -83,7 +83,8 @@ namespace BusinessPermitLicensingSystem
             {
                 "ALTER TABLE Profiling ADD COLUMN StartDate TEXT DEFAULT ''",
                 "ALTER TABLE Profiling ADD COLUMN Penalty REAL DEFAULT 0",
-                "ALTER TABLE Users ADD COLUMN Position TEXT NOT NULL DEFAULT ''"
+                "ALTER TABLE Users ADD COLUMN Position TEXT NOT NULL DEFAULT ''",
+                "CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_ornumber ON PaymentHistory(ORNumber)"
             };
 
             foreach (var sql in alterCommands)
@@ -495,16 +496,37 @@ namespace BusinessPermitLicensingSystem
 
             DateTime today = DateTime.Today;
 
-            // First due date is the 20th of the month AFTER start date
+            // First due date is the 20th of month AFTER start date
             DateTime firstDueDate = new DateTime(
                 start.Month == 12 ? start.Year + 1 : start.Year,
                 start.Month == 12 ? 1 : start.Month + 1,
                 20);
 
-            if (today < firstDueDate) return 0;
-            if (today.Day <= 20) return 0;
+            // No penalty if first due date hasn't passed yet
+            if (today <= firstDueDate) return 0;
 
-            return Math.Round(monthlyRental * 0.25, 2);
+            // ✅ Count how many due dates have passed and are unpaid
+            int missedMonths = 0;
+            DateTime dueDate = firstDueDate;
+
+            while (dueDate < today)
+            {
+                // Only count if the due date has fully passed
+                if (today > dueDate)
+                    missedMonths++;
+
+                // Move to next month's due date
+                dueDate = new DateTime(
+                    dueDate.Month == 12 ? dueDate.Year + 1 : dueDate.Year,
+                    dueDate.Month == 12 ? 1 : dueDate.Month + 1,
+                    20);
+            }
+
+            if (missedMonths <= 0) return 0;
+
+            // ✅ Penalty = 25% × monthly rental × number of missed months
+            double penalty = monthlyRental * 0.25 * missedMonths;
+            return Math.Round(penalty, 2);
         }
 
         public static void UpdatePenalty(string sin, double penalty)
@@ -744,6 +766,23 @@ namespace BusinessPermitLicensingSystem
             }
 
             return list;
+        }
+
+        // CHECK IF OR NUMBER ALREADY EXISTS //
+        public static bool ORNumberExists(string orNumber)
+        {
+            try
+            {
+                using var con = new SQLiteConnection(ConnectionString);
+                con.Open();
+
+                using var cmd = new SQLiteCommand(
+                    "SELECT 1 FROM PaymentHistory WHERE ORNumber = @or", con);
+                cmd.Parameters.AddWithValue("@or", orNumber.Trim());
+
+                return cmd.ExecuteScalar() != null;
+            }
+            catch { return false; }
         }
 
         // ===================== PASSWORD HASHING — DO NOT MODIFY ===================== //

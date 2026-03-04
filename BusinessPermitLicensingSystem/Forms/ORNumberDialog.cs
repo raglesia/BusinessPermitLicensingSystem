@@ -97,6 +97,20 @@ namespace BusinessPermitLicensingSystem.Forms
                 return;
             }
 
+            // ✅ Check for duplicate OR Number
+            if (Database.ORNumberExists(txtORNumber.Text.Trim()))
+            {
+                MessageBox.Show(
+                    $"OR Number '{txtORNumber.Text.Trim()}' already exists.\n\n" +
+                    $"Please check the physical receipt and enter the correct OR Number.",
+                    "Duplicate OR Number",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                txtORNumber.Clear();
+                txtORNumber.Focus();
+                return;
+            }
+
             ORNumber = txtORNumber.Text.Trim();
             this.DialogResult = DialogResult.OK;
             this.Close();
