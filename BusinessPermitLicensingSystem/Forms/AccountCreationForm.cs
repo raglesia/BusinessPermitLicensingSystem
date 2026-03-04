@@ -19,8 +19,10 @@ namespace BusinessPermitLicensingSystem.Forms
         {
             string fullname = txtFullName.Text.Trim();
             string username = txtuname.Text.Trim();
+            string position = txtPosition.Text.Trim();
             string password = txtpass.Text;
             string confirmPassword = txtconpass.Text;
+         
 
             lblMessage.ForeColor = Color.Red;
             lblMessage.Text = "";
@@ -32,16 +34,18 @@ namespace BusinessPermitLicensingSystem.Forms
                 return;
             }
 
-            var result = Database.CreateAccount(fullname, username, password);
+            var result = Database.CreateAccount(fullname, username, position, password);
 
             if (result.Success)
             {
                 MessageBox.Show("Account Created Succssfully!,", "Masinloc-BPLS", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 txtFullName.Clear();
+                txtPosition.Clear();
                 txtuname.Clear();
                 txtpass.Clear();
                 txtconpass.Clear();
+                
 
                 LogInForm loginForm = new LogInForm();
                 loginForm.Show();

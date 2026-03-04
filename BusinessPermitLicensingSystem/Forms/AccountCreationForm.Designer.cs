@@ -39,6 +39,8 @@
             btnCreate = new Button();
             btnCancel = new Button();
             lblMessage = new Label();
+            txtPosition = new TextBox();
+            label5 = new Label();
             SuspendLayout();
             // 
             // txtFullName
@@ -50,14 +52,14 @@
             // 
             // txtuname
             // 
-            txtuname.Location = new Point(405, 178);
+            txtuname.Location = new Point(405, 223);
             txtuname.Name = "txtuname";
             txtuname.Size = new Size(284, 31);
             txtuname.TabIndex = 1;
             // 
             // txtpass
             // 
-            txtpass.Location = new Point(405, 228);
+            txtpass.Location = new Point(405, 274);
             txtpass.Name = "txtpass";
             txtpass.Size = new Size(284, 31);
             txtpass.TabIndex = 2;
@@ -65,7 +67,7 @@
             // 
             // txtconpass
             // 
-            txtconpass.Location = new Point(405, 277);
+            txtconpass.Location = new Point(405, 320);
             txtconpass.Name = "txtconpass";
             txtconpass.Size = new Size(284, 31);
             txtconpass.TabIndex = 3;
@@ -83,7 +85,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(296, 178);
+            label2.Location = new Point(291, 229);
             label2.Name = "label2";
             label2.Size = new Size(100, 25);
             label2.TabIndex = 5;
@@ -92,7 +94,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(296, 228);
+            label3.Location = new Point(295, 280);
             label3.Name = "label3";
             label3.Size = new Size(96, 25);
             label3.TabIndex = 6;
@@ -101,7 +103,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(231, 283);
+            label4.Location = new Point(231, 320);
             label4.Name = "label4";
             label4.Size = new Size(160, 25);
             label4.TabIndex = 7;
@@ -109,7 +111,7 @@
             // 
             // btnCreate
             // 
-            btnCreate.Location = new Point(306, 343);
+            btnCreate.Location = new Point(296, 384);
             btnCreate.Name = "btnCreate";
             btnCreate.Size = new Size(165, 44);
             btnCreate.TabIndex = 8;
@@ -119,7 +121,7 @@
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(503, 343);
+            btnCancel.Location = new Point(510, 375);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(165, 44);
             btnCancel.TabIndex = 9;
@@ -134,11 +136,29 @@
             lblMessage.Size = new Size(0, 25);
             lblMessage.TabIndex = 10;
             // 
+            // txtPosition
+            // 
+            txtPosition.Location = new Point(405, 172);
+            txtPosition.Name = "txtPosition";
+            txtPosition.Size = new Size(284, 31);
+            txtPosition.TabIndex = 11;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(263, 175);
+            label5.Name = "label5";
+            label5.Size = new Size(128, 25);
+            label5.TabIndex = 12;
+            label5.Text = "Position / Title:";
+            // 
             // AccountCreationForm
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1138, 450);
+            Controls.Add(label5);
+            Controls.Add(txtPosition);
             Controls.Add(lblMessage);
             Controls.Add(btnCancel);
             Controls.Add(btnCreate);
@@ -170,5 +190,7 @@
         private Button btnCreate;
         private Button btnCancel;
         private Label lblMessage;
+        private TextBox txtPosition;
+        private Label label5;
     }
 }

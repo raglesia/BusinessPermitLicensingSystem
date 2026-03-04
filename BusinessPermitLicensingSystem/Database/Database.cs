@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualBasic.ApplicationServices;
+﻿using BusinessPermitLicensingSystem.Models;
+using DocumentFormat.OpenXml.Drawing;
+using Microsoft.VisualBasic.ApplicationServices;
 using System;
 using System.Data;
 using System.Data.SQLite;
@@ -22,6 +24,7 @@ namespace BusinessPermitLicensingSystem
                     Id       INTEGER PRIMARY KEY AUTOINCREMENT,
                     FullName TEXT    NOT NULL,
                     Username TEXT    NOT NULL UNIQUE,
+                    Position TEXT    NOT NULL DEFAULT '',
                     Password TEXT    NOT NULL, 
                     Created  TEXT    NOT NULL DEFAULT (datetime('now'))
                 );";
@@ -40,6 +43,7 @@ namespace BusinessPermitLicensingSystem
                     StallNumber TEXT NOT NULL,
                     StallSize TEXT NOT NULL,
                     MonthlyRental REAL NOT NULL,
+                    PaymentStatus TEXT NOT NULL DEFAULT 'Unpaid',
                     UNIQUE(FullName, BusinessName, StallNumber)
                 );";
 
@@ -129,20 +133,34 @@ namespace BusinessPermitLicensingSystem
             return result?.ToString() ?? "Unknown";
         }
 
+        public static string GetPosition(long userId)
+        {
+            using var con = new SQLiteConnection(ConnectionString);
+            con.Open();
+
+            using var cmd = new SQLiteCommand(
+                "SELECT Position FROM Users WHERE Id=@id", con);
+            cmd.Parameters.AddWithValue("@id", userId);
+
+            var result = cmd.ExecuteScalar();
+            return result?.ToString() ?? "";
+        }
+
         // ACCOUNT CREATION //
         public static (bool Success, string? ErrorMessage) CreateAccount(
             string fullname,
             string username,
+            string position,
             string plainPassword)
         {
             if (string.IsNullOrWhiteSpace(fullname))
                 return (false, "Full Name cannot be empty");
             if (string.IsNullOrWhiteSpace(username))
                 return (false, "Username cannot be empty");
+            if (string.IsNullOrWhiteSpace(position))
+                return (false, "Position / Title cannot be empty");
             if (string.IsNullOrWhiteSpace(plainPassword))
                 return (false, "Password cannot be empty");
-            if (plainPassword.Length < 8)
-                return (false, "Password must be at least 8 characters");
 
             username = username.Trim();
 
@@ -161,13 +179,15 @@ namespace BusinessPermitLicensingSystem
                 string hashedPassword = HashPassword(plainPassword);
 
                 const string insert = @"
-                    INSERT INTO Users (FullName, Username, Password)
-                    VALUES (@f, @u, @p)";
+                    INSERT INTO Users (FullName, Username, Position, Password)
+                    VALUES (@f, @u, @pos, @p )";
 
                 using var cmd = new SQLiteCommand(insert, con);
                 cmd.Parameters.AddWithValue("@f", fullname);
                 cmd.Parameters.AddWithValue("@u", username);
+                cmd.Parameters.AddWithValue("@pos", position);
                 cmd.Parameters.AddWithValue("@p", hashedPassword);
+                
 
                 cmd.ExecuteNonQuery();
                 return (true, null);
@@ -315,6 +335,34 @@ namespace BusinessPermitLicensingSystem
             }
         }
 
+        // UPDATE PAYMENT STATUS //
+        public static (bool Success, string? ErrorMessage) UpdatePaymentStatus(
+            string sin,
+            string status)
+        {
+            try
+            {
+                using var con = new SQLiteConnection(ConnectionString);
+                con.Open();
+
+                const string query = @"
+            UPDATE Profiling
+            SET PaymentStatus = @status
+            WHERE SIN = @sin";
+
+                using var cmd = new SQLiteCommand(query, con);
+                cmd.Parameters.AddWithValue("@status", status);
+                cmd.Parameters.AddWithValue("@sin", sin);
+
+                cmd.ExecuteNonQuery();
+                return (true, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Database error: {ex.Message}");
+            }
+        }
+
         // DELETE RECORD //
         public static (bool Success, string? ErrorMessage) DeleteProfiling(string sin)
         {
@@ -347,13 +395,14 @@ namespace BusinessPermitLicensingSystem
 
             const string query = @"
                 SELECT
-                    SIN AS 'SIN',
-                    FullName AS 'Full Name',
-                    BusinessName AS 'Business Name',
-                    BusinessSection AS 'Business Section',
-                    StallNumber AS 'Stall Number',
-                    StallSize AS 'Stall Size',
-                    MonthlyRental AS 'Monthly Rental'
+                    SIN AS [SIN],
+                    FullName AS [Full Name],
+                    BusinessName AS [Business Name],
+                    BusinessSection AS [Business Section],
+                    StallNumber AS [Stall Number],
+                    StallSize AS [Stall Size],
+                    MonthlyRental AS [Monthly Rental],
+                    PaymentStatus AS [Payment Status]
                 FROM Profiling
                 ORDER BY ROWID DESC";
 
@@ -415,6 +464,37 @@ namespace BusinessPermitLicensingSystem
             {
                 // Fail silently or handle error in enterprise systems
             }
+        }
+
+        // BILLING REPORT MODEL //
+        public static List<BillingReportModel> GetProfiles()
+        {
+            var list = new List<BillingReportModel>();
+
+            using var con = new SQLiteConnection(ConnectionString);
+            con.Open();
+
+            string query = "SELECT * FROM Profiling";
+
+            using var cmd = new SQLiteCommand(query, con);
+            using var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                list.Add(new BillingReportModel
+                {
+                    SIN = reader["SIN"].ToString(),
+                    FullName = reader["FullName"].ToString(),
+                    BusinessName = reader["BusinessName"].ToString(),
+                    BusinessSection = reader["BusinessSection"].ToString(),
+                    StallNumber = reader["StallNumber"].ToString(),
+                    StallSize = reader["StallSize"].ToString(),
+                    MonthlyRental =
+                        Convert.ToDouble(reader["MonthlyRental"])
+                });
+            }
+
+            return list;
         }
 
         // =============================================(PASSWORD HASHING) DO NOT TOUCH ================================================================= //

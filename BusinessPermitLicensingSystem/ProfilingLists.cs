@@ -1,9 +1,10 @@
 ﻿using BusinessPermitLicensingSystem.Forms;
+using BusinessPermitLicensingSystem.Models;
+using ClosedXML.Excel;
 using System;
 using System.Data;
 using System.Reflection.Metadata;
 using System.Windows.Forms;
-using ClosedXML.Excel;
 
 
 namespace BusinessPermitLicensingSystem
@@ -24,6 +25,8 @@ namespace BusinessPermitLicensingSystem
             txtFilterStallNumber.TextChanged += (s, e) => ApplyFilter();
             txtFilterStallSize.TextChanged += (s, e) => ApplyFilter();
             txtFilterMonthlyRental.TextChanged += (s, e) => ApplyFilter();
+
+            dataGridView1.DataBindingComplete += (s, e) => ColorPaymentStatusColumn();
 
             // Configure DataGridView
             dataGridView1.ReadOnly = true;
@@ -49,6 +52,8 @@ namespace BusinessPermitLicensingSystem
                 rentalColumn.DefaultCellStyle.FormatProvider =
                     new System.Globalization.CultureInfo("en-PH");
             }
+
+            ColorPaymentStatusColumn();
         }
 
         private void ApplyFilter()
@@ -109,6 +114,7 @@ namespace BusinessPermitLicensingSystem
                 string stallNumber = row.Cells["Stall Number"].Value?.ToString() ?? "";
                 string stallSize = row.Cells["Stall Size"].Value?.ToString() ?? "";
                 string monthlyRental = row.Cells["Monthly Rental"].Value?.ToString() ?? "";
+                string paymentStatus = row.Cells["Payment Status"].Value?.ToString() ?? "Unpaid";
 
                 var form = new Forms.ProfilingForm();
 
@@ -119,7 +125,8 @@ namespace BusinessPermitLicensingSystem
                     businessSection,
                     stallNumber,
                     stallSize,
-                    monthlyRental
+                    monthlyRental,
+                    paymentStatus
                 );
 
                 form.ShowDialog();
@@ -260,6 +267,64 @@ namespace BusinessPermitLicensingSystem
         private void ProfilingLists_Load(object sender, EventArgs e)
         {
             lblUsername.Text = $"Admin : {Session.CurrentFullName ?? "Unknown"}";
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (dataGridView1.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Please select a record first.");
+                return;
+            }
+
+            var row = dataGridView1.SelectedRows[0];
+
+            string paymentStatus = row.Cells["Payment Status"].Value?.ToString() ?? "Unknown";
+
+            BillingReportModel selectedProfile =
+                new BillingReportModel
+                {
+                    SIN = row.Cells["SIN"].Value.ToString(),
+                    FullName = row.Cells["Full Name"].Value.ToString(),
+                    BusinessName = row.Cells["Business Name"].Value.ToString(),
+                    BusinessSection = row.Cells["Business Section"].Value.ToString(),
+                    StallNumber = row.Cells["Stall Number"].Value.ToString(),
+                    StallSize = row.Cells["Stall Size"].Value.ToString(),
+                    MonthlyRental = Convert.ToDouble(row.Cells["Monthly Rental"].Value),
+                    PaymentStatus = paymentStatus
+                };
+
+            ReportViewerForm rpt =
+                new ReportViewerForm(selectedProfile);
+
+            rpt.ShowDialog();
+        }
+
+        private void ColorPaymentStatusColumn()
+        {
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                if (row.IsNewRow) continue;
+
+                var cell = row.Cells["Payment Status"];
+                if (cell?.Value == null) continue;
+
+                switch (cell.Value.ToString())
+                {
+                    case "Paid":
+                        cell.Style.BackColor = Color.LightGreen;
+                        cell.Style.ForeColor = Color.DarkGreen;
+                        break;
+                    case "Partial":
+                        cell.Style.BackColor = Color.LightYellow;
+                        cell.Style.ForeColor = Color.DarkOrange;
+                        break;
+                    case "Unpaid":
+                        cell.Style.BackColor = Color.LightCoral;
+                        cell.Style.ForeColor = Color.DarkRed;
+                        break;
+                }
+            }
         }
     }
 }

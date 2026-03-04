@@ -44,6 +44,7 @@ namespace BusinessPermitLicensingSystem.Forms
                 Session.CurrentUsername = username;
 
                 Session.CurrentFullName = Database.GetFullName(Session.CurrentUserId.Value);
+                Session.CurrentPosition = Database.GetPosition(Session.CurrentUserId.Value);
 
                 Database.LogAudit(
                     "Login", null, Session.CurrentUserId ?? 0, $"User '{username}' logged in.");

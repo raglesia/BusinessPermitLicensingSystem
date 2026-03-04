@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BusinessPermitLicensingSystem")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+864fd47b6577ece1e6bc114e8b9ea1654586dc92")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+386d3a2321f7bed3fe2efacbad1ca0da58fd91ef")]
 [assembly: System.Reflection.AssemblyProductAttribute("BusinessPermitLicensingSystem")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BusinessPermitLicensingSystem")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

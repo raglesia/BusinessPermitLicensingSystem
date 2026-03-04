@@ -10,6 +10,8 @@
         "dependencies": {
           "ClosedXML": "0.105.0",
           "Microsoft.Data.Sqlite": "10.0.3",
+          "ReportViewerCore.NETCore": "15.1.33",
+          "ReportViewerCore.WinForms": "15.1.33",
           "System.Data.SQLite.Core": "1.0.119"
         },
         "runtime": {
@@ -66,6 +68,107 @@
           }
         }
       },
+      "Microsoft.CodeAnalysis.Common/5.0.0": {
+        "runtime": {
+          "lib/net9.0/Microsoft.CodeAnalysis.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.25.56712"
+          }
+        },
+        "resources": {
+          "lib/net9.0/cs/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "cs"
+          },
+          "lib/net9.0/de/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "de"
+          },
+          "lib/net9.0/es/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "es"
+          },
+          "lib/net9.0/fr/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "fr"
+          },
+          "lib/net9.0/it/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "it"
+          },
+          "lib/net9.0/ja/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "ja"
+          },
+          "lib/net9.0/ko/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "ko"
+          },
+          "lib/net9.0/pl/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "pl"
+          },
+          "lib/net9.0/pt-BR/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "pt-BR"
+          },
+          "lib/net9.0/ru/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "ru"
+          },
+          "lib/net9.0/tr/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "tr"
+          },
+          "lib/net9.0/zh-Hans/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "zh-Hans"
+          },
+          "lib/net9.0/zh-Hant/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "zh-Hant"
+          }
+        }
+      },
+      "Microsoft.CodeAnalysis.VisualBasic/5.0.0": {
+        "dependencies": {
+          "Microsoft.CodeAnalysis.Common": "5.0.0"
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.CodeAnalysis.VisualBasic.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.25.56712"
+          }
+        },
+        "resources": {
+          "lib/net9.0/cs/Microsoft.CodeAnalysis.VisualBasic.resources.dll": {
+            "locale": "cs"
+          },
+          "lib/net9.0/de/Microsoft.CodeAnalysis.VisualBasic.resources.dll": {
+            "locale": "de"
+          },
+          "lib/net9.0/es/Microsoft.CodeAnalysis.VisualBasic.resources.dll": {
+            "locale": "es"
+          },
+          "lib/net9.0/fr/Microsoft.CodeAnalysis.VisualBasic.resources.dll": {
+            "locale": "fr"
+          },
+          "lib/net9.0/it/Microsoft.CodeAnalysis.VisualBasic.resources.dll": {
+            "locale": "it"
+          },
+          "lib/net9.0/ja/Microsoft.CodeAnalysis.VisualBasic.resources.dll": {
+            "locale": "ja"
+          },
+          "lib/net9.0/ko/Microsoft.CodeAnalysis.VisualBasic.resources.dll": {
+            "locale": "ko"
+          },
+          "lib/net9.0/pl/Microsoft.CodeAnalysis.VisualBasic.resources.dll": {
+            "locale": "pl"
+          },
+          "lib/net9.0/pt-BR/Microsoft.CodeAnalysis.VisualBasic.resources.dll": {
+            "locale": "pt-BR"
+          },
+          "lib/net9.0/ru/Microsoft.CodeAnalysis.VisualBasic.resources.dll": {
+            "locale": "ru"
+          },
+          "lib/net9.0/tr/Microsoft.CodeAnalysis.VisualBasic.resources.dll": {
+            "locale": "tr"
+          },
+          "lib/net9.0/zh-Hans/Microsoft.CodeAnalysis.VisualBasic.resources.dll": {
+            "locale": "zh-Hans"
+          },
+          "lib/net9.0/zh-Hant/Microsoft.CodeAnalysis.VisualBasic.resources.dll": {
+            "locale": "zh-Hant"
+          }
+        }
+      },
       "Microsoft.Data.Sqlite/10.0.3": {
         "dependencies": {
           "Microsoft.Data.Sqlite.Core": "10.0.3",
@@ -84,11 +187,113 @@
           }
         }
       },
+      "Microsoft.Extensions.ObjectPool/10.0.0": {
+        "runtime": {
+          "lib/net10.0/Microsoft.Extensions.ObjectPool.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.25.52411"
+          }
+        }
+      },
       "RBush.Signed/4.0.0": {
         "runtime": {
           "lib/net8.0/RBush.dll": {
             "assemblyVersion": "4.0.0.0",
             "fileVersion": "4.0.0.0"
+          }
+        }
+      },
+      "ReportViewerCore.NETCore/15.1.33": {
+        "dependencies": {
+          "Microsoft.CodeAnalysis.VisualBasic": "5.0.0",
+          "System.ServiceModel.Http": "10.0.652802"
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.ReportViewer.Common.dll": {
+            "assemblyVersion": "15.0.0.0",
+            "fileVersion": "15.0.1404.0"
+          },
+          "lib/net10.0/Microsoft.ReportViewer.DataVisualization.dll": {
+            "assemblyVersion": "15.0.0.0",
+            "fileVersion": "15.0.1404.0"
+          },
+          "lib/net10.0/Microsoft.ReportViewer.NETCore.dll": {
+            "assemblyVersion": "15.1.33.0",
+            "fileVersion": "15.1.33.0"
+          },
+          "lib/net10.0/Microsoft.ReportViewer.ProcessingObjectModel.dll": {
+            "assemblyVersion": "15.0.0.0",
+            "fileVersion": "15.0.1404.0"
+          }
+        },
+        "resources": {
+          "lib/net10.0/de/Microsoft.ReportViewer.Common.resources.dll": {
+            "locale": "de"
+          },
+          "lib/net10.0/es/Microsoft.ReportViewer.Common.resources.dll": {
+            "locale": "es"
+          },
+          "lib/net10.0/fr/Microsoft.ReportViewer.Common.resources.dll": {
+            "locale": "fr"
+          },
+          "lib/net10.0/it/Microsoft.ReportViewer.Common.resources.dll": {
+            "locale": "it"
+          },
+          "lib/net10.0/ja/Microsoft.ReportViewer.Common.resources.dll": {
+            "locale": "ja"
+          },
+          "lib/net10.0/ko/Microsoft.ReportViewer.Common.resources.dll": {
+            "locale": "ko"
+          },
+          "lib/net10.0/pt/Microsoft.ReportViewer.Common.resources.dll": {
+            "locale": "pt"
+          },
+          "lib/net10.0/zh-Hans/Microsoft.ReportViewer.Common.resources.dll": {
+            "locale": "zh-Hans"
+          },
+          "lib/net10.0/zh-Hant/Microsoft.ReportViewer.Common.resources.dll": {
+            "locale": "zh-Hant"
+          }
+        }
+      },
+      "ReportViewerCore.WinForms/15.1.33": {
+        "dependencies": {
+          "Microsoft.CodeAnalysis.VisualBasic": "5.0.0",
+          "System.ServiceModel.Http": "10.0.652802"
+        },
+        "runtime": {
+          "lib/net10.0-windows7/Microsoft.ReportViewer.WinForms.dll": {
+            "assemblyVersion": "15.1.33.0",
+            "fileVersion": "15.1.33.0"
+          }
+        },
+        "resources": {
+          "lib/net10.0-windows7/de/Microsoft.ReportViewer.WinForms.resources.dll": {
+            "locale": "de"
+          },
+          "lib/net10.0-windows7/es/Microsoft.ReportViewer.WinForms.resources.dll": {
+            "locale": "es"
+          },
+          "lib/net10.0-windows7/fr/Microsoft.ReportViewer.WinForms.resources.dll": {
+            "locale": "fr"
+          },
+          "lib/net10.0-windows7/it/Microsoft.ReportViewer.WinForms.resources.dll": {
+            "locale": "it"
+          },
+          "lib/net10.0-windows7/ja/Microsoft.ReportViewer.WinForms.resources.dll": {
+            "locale": "ja"
+          },
+          "lib/net10.0-windows7/ko/Microsoft.ReportViewer.WinForms.resources.dll": {
+            "locale": "ko"
+          },
+          "lib/net10.0-windows7/pt/Microsoft.ReportViewer.WinForms.resources.dll": {
+            "locale": "pt"
+          },
+          "lib/net10.0-windows7/zh-Hans/Microsoft.ReportViewer.WinForms.resources.dll": {
+            "locale": "zh-Hans"
+          },
+          "lib/net10.0-windows7/zh-Hant/Microsoft.ReportViewer.WinForms.resources.dll": {
+            "locale": "zh-Hant"
           }
         }
       },
@@ -284,6 +489,122 @@
         "dependencies": {
           "Stub.System.Data.SQLite.Core.NetStandard": "1.0.119"
         }
+      },
+      "System.ServiceModel.Http/10.0.652802": {
+        "dependencies": {
+          "System.ServiceModel.Primitives": "10.0.652802"
+        },
+        "runtime": {
+          "lib/net10.0/System.ServiceModel.Http.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.25.52802"
+          }
+        },
+        "resources": {
+          "lib/net10.0/cs/System.ServiceModel.Http.resources.dll": {
+            "locale": "cs"
+          },
+          "lib/net10.0/de/System.ServiceModel.Http.resources.dll": {
+            "locale": "de"
+          },
+          "lib/net10.0/es/System.ServiceModel.Http.resources.dll": {
+            "locale": "es"
+          },
+          "lib/net10.0/fr/System.ServiceModel.Http.resources.dll": {
+            "locale": "fr"
+          },
+          "lib/net10.0/it/System.ServiceModel.Http.resources.dll": {
+            "locale": "it"
+          },
+          "lib/net10.0/ja/System.ServiceModel.Http.resources.dll": {
+            "locale": "ja"
+          },
+          "lib/net10.0/ko/System.ServiceModel.Http.resources.dll": {
+            "locale": "ko"
+          },
+          "lib/net10.0/pl/System.ServiceModel.Http.resources.dll": {
+            "locale": "pl"
+          },
+          "lib/net10.0/pt-BR/System.ServiceModel.Http.resources.dll": {
+            "locale": "pt-BR"
+          },
+          "lib/net10.0/ru/System.ServiceModel.Http.resources.dll": {
+            "locale": "ru"
+          },
+          "lib/net10.0/tr/System.ServiceModel.Http.resources.dll": {
+            "locale": "tr"
+          },
+          "lib/net10.0/zh-Hans/System.ServiceModel.Http.resources.dll": {
+            "locale": "zh-Hans"
+          },
+          "lib/net10.0/zh-Hant/System.ServiceModel.Http.resources.dll": {
+            "locale": "zh-Hant"
+          }
+        }
+      },
+      "System.ServiceModel.Primitives/10.0.652802": {
+        "dependencies": {
+          "Microsoft.Extensions.ObjectPool": "10.0.0"
+        },
+        "runtime": {
+          "lib/net10.0/System.ServiceModel.Duplex.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.25.52802"
+          },
+          "lib/net10.0/System.ServiceModel.Primitives.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.25.52802"
+          },
+          "lib/net10.0/System.ServiceModel.Security.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.25.52802"
+          },
+          "lib/net10.0/System.ServiceModel.dll": {
+            "assemblyVersion": "4.0.0.0",
+            "fileVersion": "10.0.25.52802"
+          }
+        },
+        "resources": {
+          "lib/net10.0/cs/System.ServiceModel.Primitives.resources.dll": {
+            "locale": "cs"
+          },
+          "lib/net10.0/de/System.ServiceModel.Primitives.resources.dll": {
+            "locale": "de"
+          },
+          "lib/net10.0/es/System.ServiceModel.Primitives.resources.dll": {
+            "locale": "es"
+          },
+          "lib/net10.0/fr/System.ServiceModel.Primitives.resources.dll": {
+            "locale": "fr"
+          },
+          "lib/net10.0/it/System.ServiceModel.Primitives.resources.dll": {
+            "locale": "it"
+          },
+          "lib/net10.0/ja/System.ServiceModel.Primitives.resources.dll": {
+            "locale": "ja"
+          },
+          "lib/net10.0/ko/System.ServiceModel.Primitives.resources.dll": {
+            "locale": "ko"
+          },
+          "lib/net10.0/pl/System.ServiceModel.Primitives.resources.dll": {
+            "locale": "pl"
+          },
+          "lib/net10.0/pt-BR/System.ServiceModel.Primitives.resources.dll": {
+            "locale": "pt-BR"
+          },
+          "lib/net10.0/ru/System.ServiceModel.Primitives.resources.dll": {
+            "locale": "ru"
+          },
+          "lib/net10.0/tr/System.ServiceModel.Primitives.resources.dll": {
+            "locale": "tr"
+          },
+          "lib/net10.0/zh-Hans/System.ServiceModel.Primitives.resources.dll": {
+            "locale": "zh-Hans"
+          },
+          "lib/net10.0/zh-Hant/System.ServiceModel.Primitives.resources.dll": {
+            "locale": "zh-Hant"
+          }
+        }
       }
     }
   },
@@ -328,6 +649,20 @@
       "path": "excelnumberformat/1.1.0",
       "hashPath": "excelnumberformat.1.1.0.nupkg.sha512"
     },
+    "Microsoft.CodeAnalysis.Common/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ZXRAdvH6GiDeHRyd3q/km8Z44RoM6FBWHd+gen/la81mVnAdHTEsEkO5J0TCNXBymAcx5UYKt5TvgKBhaLJEow==",
+      "path": "microsoft.codeanalysis.common/5.0.0",
+      "hashPath": "microsoft.codeanalysis.common.5.0.0.nupkg.sha512"
+    },
+    "Microsoft.CodeAnalysis.VisualBasic/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-sUBWvHs2HgHGA+b716dgjS7JiXGen5ntyohAurPLR1ZiZzFp3FlnVA7GrMTqVGdVJTVqiC3c4K8k1bk0gj6IPg==",
+      "path": "microsoft.codeanalysis.visualbasic/5.0.0",
+      "hashPath": "microsoft.codeanalysis.visualbasic.5.0.0.nupkg.sha512"
+    },
     "Microsoft.Data.Sqlite/10.0.3": {
       "type": "package",
       "serviceable": true,
@@ -342,12 +677,33 @@
       "path": "microsoft.data.sqlite.core/10.0.3",
       "hashPath": "microsoft.data.sqlite.core.10.0.3.nupkg.sha512"
     },
+    "Microsoft.Extensions.ObjectPool/10.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-bpeCq0IYmVLACyEUMzFIOQX+zZUElG1t+nu1lSxthe7B+1oNYking7b91305+jNB6iwojp9fqTY9O+Nh7ULQxg==",
+      "path": "microsoft.extensions.objectpool/10.0.0",
+      "hashPath": "microsoft.extensions.objectpool.10.0.0.nupkg.sha512"
+    },
     "RBush.Signed/4.0.0": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-aP5KQxL5RnFNGW1f0euYVBfCatkLw5iEzMRJcXKq8LWWP4Cp3+qoSq1tDDL2vvJ2rM0ychmVMa2VaEKLS6uX4w==",
       "path": "rbush.signed/4.0.0",
       "hashPath": "rbush.signed.4.0.0.nupkg.sha512"
+    },
+    "ReportViewerCore.NETCore/15.1.33": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-r4d0EBSV3A7xDUMMkwT8uBrOkFHV0J92LwOnbh2Rq9TglzWhawig9bgj4/k/vM8ret0cz1pex5nAZNjLzLT9QQ==",
+      "path": "reportviewercore.netcore/15.1.33",
+      "hashPath": "reportviewercore.netcore.15.1.33.nupkg.sha512"
+    },
+    "ReportViewerCore.WinForms/15.1.33": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Hj23aEEjh0RGVUrqqS77ezmf2WU7dXhcOSLeeibm7aDPCOvpKcRjlMd69UNLS+EH7d1QOVcsQlhXizhNc6TbNw==",
+      "path": "reportviewercore.winforms/15.1.33",
+      "hashPath": "reportviewercore.winforms.15.1.33.nupkg.sha512"
     },
     "SixLabors.Fonts/1.0.0": {
       "type": "package",
@@ -397,6 +753,20 @@
       "sha512": "sha512-bhQB8HVtRA+OOYw8UTD1F1kU+nGJ0/OZvH1JmlVUI4bGvgVEWeX1NcHjA765NvUoRVuCPlt8PrEpZ1thSsk1jg==",
       "path": "system.data.sqlite.core/1.0.119",
       "hashPath": "system.data.sqlite.core.1.0.119.nupkg.sha512"
+    },
+    "System.ServiceModel.Http/10.0.652802": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-G02XZvmccf42QCU5MjviBIg69MSMAVHwL1inVPsNSpfp5g+t5BkQM3DyvWRLN4qmeFDWSF/mA1rIYONIDu/6Dg==",
+      "path": "system.servicemodel.http/10.0.652802",
+      "hashPath": "system.servicemodel.http.10.0.652802.nupkg.sha512"
+    },
+    "System.ServiceModel.Primitives/10.0.652802": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ULfGNl75BNXkpF42wNV2CDXJ64dUZZEa8xO2mBsc4tqbW9QjruxjEB6bAr4Z/T1rNU+leOztIjCJQYsBGFWYlw==",
+      "path": "system.servicemodel.primitives/10.0.652802",
+      "hashPath": "system.servicemodel.primitives.10.0.652802.nupkg.sha512"
     }
   }
 }

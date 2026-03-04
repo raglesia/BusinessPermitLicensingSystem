@@ -44,6 +44,10 @@ namespace BusinessPermitLicensingSystem.Forms
 
             txtBIN.Enabled = false;
 
+            cmbPaymentStatus.Items.Clear();
+            cmbPaymentStatus.Items.AddRange(new string[] { "Unpaid", "Partial", "Paid" });
+            cmbPaymentStatus.SelectedIndex = 0; // Default to Unpaid
+
             if (!isEditMode)
             {
                 AssignNewBIN(); // ONLY when adding
@@ -58,7 +62,8 @@ namespace BusinessPermitLicensingSystem.Forms
             string businessSection,
             string stallNumber,
             string stallSize,
-            string monthlyRental)
+            string monthlyRental,
+            string paymentStatus)
         {
             isEditMode = true;
             currentSIN = sin;
@@ -71,6 +76,7 @@ namespace BusinessPermitLicensingSystem.Forms
             txtSNumber.Text = stallNumber;
             txtSSize.Text = stallSize;
             txtMRental.Text = monthlyRental;
+            cmbPaymentStatus.SelectedItem = paymentStatus ?? "Unpaid";
 
             btnSave.Text = "Update Record";
 
@@ -84,6 +90,7 @@ namespace BusinessPermitLicensingSystem.Forms
             string businessSection = txtBSection.Text.Trim();
             string stallNumber = txtSNumber.Text.Trim();
             string stallSize = txtSSize.Text.Trim();
+            string paymentStatus = cmbPaymentStatus.SelectedItem.ToString() ?? "Unpaid";
 
             if (!double.TryParse(txtMRental.Text, out double monthlyRental))
             {
@@ -107,6 +114,8 @@ namespace BusinessPermitLicensingSystem.Forms
                 );
 
                 if (result.Success)
+
+    
                 {
                     // ✅ AUDIT LOG - UPDATE
                     Database.LogAudit(
@@ -138,12 +147,14 @@ namespace BusinessPermitLicensingSystem.Forms
 
                 if (result.Success)
                 {
+                    Database.UpdatePaymentStatus(txtBIN.Text, paymentStatus);
+
                     // ✅ AUDIT LOG - ADD
                     Database.LogAudit(
                         "Add",
                         txtBIN.Text,
                         currentUserId,
-                        $"Added profile for {fullName}"
+                        $"Added profile for {fullName}, Payment Status: {paymentStatus}"
                     );
 
                     MessageBox.Show("Record added successfully!");
@@ -182,6 +193,7 @@ namespace BusinessPermitLicensingSystem.Forms
             txtSNumber.Clear();
             txtSSize.Clear();
             txtMRental.Clear();
+            cmbPaymentStatus.SelectedIndex = 0;
         }
 
         private void btnSaveAs_Click(object sender, EventArgs e)

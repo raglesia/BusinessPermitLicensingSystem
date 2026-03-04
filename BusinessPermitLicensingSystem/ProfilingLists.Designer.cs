@@ -40,6 +40,7 @@
             btnDelete = new Button();
             btnExport = new Button();
             lblUsername = new Label();
+            button2 = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -141,11 +142,22 @@
             lblUsername.Size = new Size(0, 25);
             lblUsername.TabIndex = 34;
             // 
+            // button2
+            // 
+            button2.Location = new Point(582, 480);
+            button2.Name = "button2";
+            button2.Size = new Size(112, 34);
+            button2.TabIndex = 35;
+            button2.Text = "button2";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
+            // 
             // ProfilingLists
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1551, 570);
+            Controls.Add(button2);
             Controls.Add(lblUsername);
             Controls.Add(btnExport);
             Controls.Add(btnDelete);
@@ -180,5 +192,6 @@
         private Button btnDelete;
         private Button btnExport;
         private Label lblUsername;
+        private Button button2;
     }
 }

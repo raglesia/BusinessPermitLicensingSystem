@@ -47,6 +47,8 @@
             button1 = new Button();
             btnSaveAs = new Button();
             lblUsername = new Label();
+            label8 = new Label();
+            cmbPaymentStatus = new ComboBox();
             SuspendLayout();
             // 
             // menuStrip1
@@ -173,7 +175,7 @@
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(128, 403);
+            btnSave.Location = new Point(12, 473);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(155, 34);
             btnSave.TabIndex = 15;
@@ -183,7 +185,7 @@
             // 
             // button1
             // 
-            button1.Location = new Point(289, 403);
+            button1.Location = new Point(338, 473);
             button1.Name = "button1";
             button1.Size = new Size(145, 34);
             button1.TabIndex = 16;
@@ -193,7 +195,7 @@
             // 
             // btnSaveAs
             // 
-            btnSaveAs.Location = new Point(128, 443);
+            btnSaveAs.Location = new Point(191, 473);
             btnSaveAs.Name = "btnSaveAs";
             btnSaveAs.Size = new Size(112, 34);
             btnSaveAs.TabIndex = 17;
@@ -209,11 +211,30 @@
             lblUsername.Size = new Size(0, 25);
             lblUsername.TabIndex = 18;
             // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Location = new Point(16, 391);
+            label8.Name = "label8";
+            label8.Size = new Size(137, 25);
+            label8.TabIndex = 19;
+            label8.Text = "Payment Status:";
+            // 
+            // cmbPaymentStatus
+            // 
+            cmbPaymentStatus.FormattingEnabled = true;
+            cmbPaymentStatus.Location = new Point(212, 391);
+            cmbPaymentStatus.Name = "cmbPaymentStatus";
+            cmbPaymentStatus.Size = new Size(402, 33);
+            cmbPaymentStatus.TabIndex = 20;
+            // 
             // ProfilingForm
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1341, 706);
+            Controls.Add(cmbPaymentStatus);
+            Controls.Add(label8);
             Controls.Add(lblUsername);
             Controls.Add(btnSaveAs);
             Controls.Add(button1);
@@ -264,5 +285,7 @@
         private Button button1;
         private Button btnSaveAs;
         private Label lblUsername;
+        private Label label8;
+        private ComboBox cmbPaymentStatus;
     }
 }
