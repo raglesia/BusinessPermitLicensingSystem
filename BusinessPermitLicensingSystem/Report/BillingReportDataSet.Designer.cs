@@ -295,6 +295,12 @@ namespace BusinessPermitLicensingSystem.Report {
             
             private global::System.Data.DataColumn columnMonthlyRental;
             
+            private global::System.Data.DataColumn columnPaymentStatus;
+            
+            private global::System.Data.DataColumn columnStartDate;
+            
+            private global::System.Data.DataColumn columnPenalty;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
             public BillingTableDataTable() {
@@ -388,6 +394,30 @@ namespace BusinessPermitLicensingSystem.Report {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
+            public global::System.Data.DataColumn PaymentStatusColumn {
+                get {
+                    return this.columnPaymentStatus;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
+            public global::System.Data.DataColumn StartDateColumn {
+                get {
+                    return this.columnStartDate;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
+            public global::System.Data.DataColumn PenaltyColumn {
+                get {
+                    return this.columnPenalty;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -423,7 +453,7 @@ namespace BusinessPermitLicensingSystem.Report {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
-            public BillingTableRow AddBillingTableRow(string SIN, string FullName, string BusinessName, string BusinessSection, string StallNumber, string StallSize, double MonthlyRental) {
+            public BillingTableRow AddBillingTableRow(string SIN, string FullName, string BusinessName, string BusinessSection, string StallNumber, string StallSize, double MonthlyRental, string PaymentStatus, string StartDate, string Penalty) {
                 BillingTableRow rowBillingTableRow = ((BillingTableRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         SIN,
@@ -432,7 +462,10 @@ namespace BusinessPermitLicensingSystem.Report {
                         BusinessSection,
                         StallNumber,
                         StallSize,
-                        MonthlyRental};
+                        MonthlyRental,
+                        PaymentStatus,
+                        StartDate,
+                        Penalty};
                 rowBillingTableRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowBillingTableRow);
                 return rowBillingTableRow;
@@ -462,6 +495,9 @@ namespace BusinessPermitLicensingSystem.Report {
                 this.columnStallNumber = base.Columns["StallNumber"];
                 this.columnStallSize = base.Columns["StallSize"];
                 this.columnMonthlyRental = base.Columns["MonthlyRental"];
+                this.columnPaymentStatus = base.Columns["PaymentStatus"];
+                this.columnStartDate = base.Columns["StartDate"];
+                this.columnPenalty = base.Columns["Penalty"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -481,6 +517,12 @@ namespace BusinessPermitLicensingSystem.Report {
                 base.Columns.Add(this.columnStallSize);
                 this.columnMonthlyRental = new global::System.Data.DataColumn("MonthlyRental", typeof(double), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnMonthlyRental);
+                this.columnPaymentStatus = new global::System.Data.DataColumn("PaymentStatus", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnPaymentStatus);
+                this.columnStartDate = new global::System.Data.DataColumn("StartDate", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnStartDate);
+                this.columnPenalty = new global::System.Data.DataColumn("Penalty", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnPenalty);
                 this.columnSIN.AllowDBNull = false;
             }
             
@@ -731,6 +773,54 @@ namespace BusinessPermitLicensingSystem.Report {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
+            public string PaymentStatus {
+                get {
+                    try {
+                        return ((string)(this[this.tableBillingTable.PaymentStatusColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'PaymentStatus\' in table \'BillingTable\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableBillingTable.PaymentStatusColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
+            public string StartDate {
+                get {
+                    try {
+                        return ((string)(this[this.tableBillingTable.StartDateColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'StartDate\' in table \'BillingTable\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableBillingTable.StartDateColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
+            public string Penalty {
+                get {
+                    try {
+                        return ((string)(this[this.tableBillingTable.PenaltyColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Penalty\' in table \'BillingTable\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableBillingTable.PenaltyColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
             public bool IsFullNameNull() {
                 return this.IsNull(this.tableBillingTable.FullNameColumn);
             }
@@ -799,6 +889,42 @@ namespace BusinessPermitLicensingSystem.Report {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
             public void SetMonthlyRentalNull() {
                 this[this.tableBillingTable.MonthlyRentalColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
+            public bool IsPaymentStatusNull() {
+                return this.IsNull(this.tableBillingTable.PaymentStatusColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
+            public void SetPaymentStatusNull() {
+                this[this.tableBillingTable.PaymentStatusColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
+            public bool IsStartDateNull() {
+                return this.IsNull(this.tableBillingTable.StartDateColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
+            public void SetStartDateNull() {
+                this[this.tableBillingTable.StartDateColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
+            public bool IsPenaltyNull() {
+                return this.IsNull(this.tableBillingTable.PenaltyColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
+            public void SetPenaltyNull() {
+                this[this.tableBillingTable.PenaltyColumn] = global::System.Convert.DBNull;
             }
         }
         

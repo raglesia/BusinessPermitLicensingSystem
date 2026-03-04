@@ -1,37 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 namespace BusinessPermitLicensingSystem.Forms
 {
     public partial class AuditTrail : Form
     {
+        // ===================== CONSTRUCTOR ===================== //
         public AuditTrail()
         {
             InitializeComponent();
-            LoadAuditRecords();
-
             radioUsers.Checked = true;
+            LoadAuditRecords();
         }
 
+        // ===================== FORM LOAD ===================== //
+        private void AuditTrail_Load(object sender, EventArgs e)
+        {
+            lblUsername.Text = $"{Session.CurrentFullName ?? "Unknown"} | {Session.CurrentPosition ?? ""}";
+        }
+
+        // ===================== DATA LOADING ===================== //
         private void LoadAuditRecords()
         {
             try
             {
-                DataTable dt;
-
-                if (radioUsers.Checked)
-                {
-                    dt = Database.GetUserAuditTrail();
-                }
-                else
-                {
-                    dt = Database.GetAuditTrail();
-                }
+                DataTable dt = radioUsers.Checked
+                    ? Database.GetUserAuditTrail()
+                    : Database.GetAuditTrail();
 
                 dtAudit.DataSource = dt;
                 dtAudit.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
@@ -40,18 +36,23 @@ namespace BusinessPermitLicensingSystem.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to load audit records: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    $"Failed to load audit records: {ex.Message}",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 
+        // ===================== NAVIGATION ===================== //
         private void button1_Click(object sender, EventArgs e)
         {
             DashboardForm dashboardForm = new DashboardForm();
-
             dashboardForm.Show();
             this.Hide();
         }
 
+        // ===================== RADIO BUTTONS ===================== //
         private void radioUsers_CheckedChanged(object sender, EventArgs e)
         {
             if (radioUsers.Checked)
@@ -62,11 +63,6 @@ namespace BusinessPermitLicensingSystem.Forms
         {
             if (radioProfiling.Checked)
                 LoadAuditRecords();
-        }
-
-        private void AuditTrail_Load(object sender, EventArgs e)
-        {
-            lblUsername.Text = $"Admin : {Session.CurrentFullName ?? "Unknown"}";
         }
     }
 }

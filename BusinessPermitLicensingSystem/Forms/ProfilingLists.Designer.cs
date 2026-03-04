@@ -41,6 +41,7 @@
             btnExport = new Button();
             lblUsername = new Label();
             button2 = new Button();
+            btnPaymentHistory = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -74,14 +75,14 @@
             // 
             // txtFilterBusinessName
             // 
-            txtFilterBusinessName.Location = new Point(500, 110);
+            txtFilterBusinessName.Location = new Point(474, 121);
             txtFilterBusinessName.Name = "txtFilterBusinessName";
             txtFilterBusinessName.Size = new Size(150, 31);
             txtFilterBusinessName.TabIndex = 26;
             // 
             // txtFilterFullName
             // 
-            txtFilterFullName.Location = new Point(291, 110);
+            txtFilterFullName.Location = new Point(285, 121);
             txtFilterFullName.Name = "txtFilterFullName";
             txtFilterFullName.Size = new Size(150, 31);
             txtFilterFullName.TabIndex = 25;
@@ -102,13 +103,14 @@
             dataGridView1.RowHeadersWidth = 62;
             dataGridView1.Size = new Size(1347, 316);
             dataGridView1.TabIndex = 23;
+            dataGridView1.CellContentClick += dataGridView1_CellContentClick;
             dataGridView1.CellDoubleClick += dataGridView1_CellDoubleClick;
             // 
             // button1
             // 
-            button1.Location = new Point(444, 480);
+            button1.Location = new Point(1427, 12);
             button1.Name = "button1";
-            button1.Size = new Size(112, 34);
+            button1.Size = new Size(112, 49);
             button1.TabIndex = 31;
             button1.Text = "Main Menu";
             button1.UseVisualStyleBackColor = true;
@@ -116,9 +118,9 @@
             // 
             // btnDelete
             // 
-            btnDelete.Location = new Point(86, 480);
+            btnDelete.Location = new Point(1124, 495);
             btnDelete.Name = "btnDelete";
-            btnDelete.Size = new Size(145, 34);
+            btnDelete.Size = new Size(145, 49);
             btnDelete.TabIndex = 32;
             btnDelete.Text = "Delete Record";
             btnDelete.UseVisualStyleBackColor = true;
@@ -126,9 +128,9 @@
             // 
             // btnExport
             // 
-            btnExport.Location = new Point(252, 480);
+            btnExport.Location = new Point(1275, 495);
             btnExport.Name = "btnExport";
-            btnExport.Size = new Size(158, 34);
+            btnExport.Size = new Size(158, 49);
             btnExport.TabIndex = 33;
             btnExport.Text = "Export";
             btnExport.UseVisualStyleBackColor = true;
@@ -144,19 +146,30 @@
             // 
             // button2
             // 
-            button2.Location = new Point(582, 480);
+            button2.Location = new Point(86, 495);
             button2.Name = "button2";
-            button2.Size = new Size(112, 34);
+            button2.Size = new Size(186, 49);
             button2.TabIndex = 35;
-            button2.Text = "button2";
+            button2.Text = "Generate Receipt";
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click;
+            // 
+            // btnPaymentHistory
+            // 
+            btnPaymentHistory.Location = new Point(285, 495);
+            btnPaymentHistory.Name = "btnPaymentHistory";
+            btnPaymentHistory.Size = new Size(208, 49);
+            btnPaymentHistory.TabIndex = 36;
+            btnPaymentHistory.Text = "Payment History";
+            btnPaymentHistory.UseVisualStyleBackColor = true;
+            btnPaymentHistory.Click += btnPaymentHistory_Click;
             // 
             // ProfilingLists
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1551, 570);
+            Controls.Add(btnPaymentHistory);
             Controls.Add(button2);
             Controls.Add(lblUsername);
             Controls.Add(btnExport);
@@ -171,7 +184,9 @@
             Controls.Add(txtFilterBIN);
             Controls.Add(dataGridView1);
             Name = "ProfilingLists";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Masinloc - BPLS";
+            WindowState = FormWindowState.Maximized;
             Load += ProfilingLists_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
@@ -193,5 +208,6 @@
         private Button btnExport;
         private Label lblUsername;
         private Button button2;
+        private Button btnPaymentHistory;
     }
 }

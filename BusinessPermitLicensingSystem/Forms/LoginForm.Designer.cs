@@ -65,7 +65,6 @@
             btnCreate.TabIndex = 5;
             btnCreate.Text = "Create Account";
             btnCreate.UseVisualStyleBackColor = true;
-            btnCreate.Click += btnCreate_Click_1;
             // 
             // txtPass
             // 

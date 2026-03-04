@@ -13,13 +13,19 @@
     <Compile Update="Forms\LogInForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Forms\ORNumberDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\PaymentHistory.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Forms\ProfilingForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="ProfilingLists.cs">
+    <Compile Update="Forms\ProfilingLists.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="ReportViewerForm.cs">
+    <Compile Update="Forms\ReportViewerForm.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>

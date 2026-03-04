@@ -1,136 +1,120 @@
 ﻿using BusinessPermitLicensingSystem.Models;
-using DocumentFormat.OpenXml.Drawing;
-using Microsoft.VisualBasic.ApplicationServices;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
-using System.Runtime.InteropServices.Marshalling;
-using static BusinessPermitLicensingSystem.Helpers.InputValidator;
+using System.Security.Cryptography;
+using System.Text;
+using System.Windows.Forms;
 
 namespace BusinessPermitLicensingSystem
 {
     internal static class Database
     {
+        // ===================== CONNECTION ===================== //
         private const string ConnectionString = "Data Source=database.db;Version=3;";
 
+        // ===================== INITIALIZE ===================== //
         public static void Initialize()
         {
             using var con = new SQLiteConnection(ConnectionString);
             con.Open();
 
-            // USERS TABLE //
-            const string createUsers = @"
+            // Users table
+            ExecuteNonQuery(con, @"
                 CREATE TABLE IF NOT EXISTS Users (
                     Id       INTEGER PRIMARY KEY AUTOINCREMENT,
                     FullName TEXT    NOT NULL,
                     Username TEXT    NOT NULL UNIQUE,
                     Position TEXT    NOT NULL DEFAULT '',
-                    Password TEXT    NOT NULL, 
+                    Password TEXT    NOT NULL,
                     Created  TEXT    NOT NULL DEFAULT (datetime('now'))
-                );";
+                );");
 
-            using var cmd = new SQLiteCommand(createUsers, con);
-            cmd.ExecuteNonQuery();
-
-
-            // PROFILING TABLE //
-            const string createProfiling = @"
+            // Profiling table
+            ExecuteNonQuery(con, @"
                 CREATE TABLE IF NOT EXISTS Profiling (
-                    SIN TEXT PRIMARY KEY,
-                    FullName TEXT NOT NULL,
-                    BusinessName TEXT NOT NULL,
+                    SIN             TEXT PRIMARY KEY,
+                    FullName        TEXT NOT NULL,
+                    BusinessName    TEXT NOT NULL,
                     BusinessSection TEXT NOT NULL,
-                    StallNumber TEXT NOT NULL,
-                    StallSize TEXT NOT NULL,
-                    MonthlyRental REAL NOT NULL,
-                    PaymentStatus TEXT NOT NULL DEFAULT 'Unpaid',
+                    StallNumber     TEXT NOT NULL,
+                    StallSize       TEXT NOT NULL,
+                    MonthlyRental   REAL NOT NULL,
+                    PaymentStatus   TEXT NOT NULL DEFAULT 'Unpaid',
+                    StartDate       TEXT          DEFAULT '',
+                    Penalty         REAL          DEFAULT 0,
                     UNIQUE(FullName, BusinessName, StallNumber)
-                );";
+                );");
 
-            using var cmd2 = new SQLiteCommand(createProfiling, con);
-            cmd2.ExecuteNonQuery();
-
-
-            // AUDIT TRAIL TABLE //
-            const string createAuditTrail = @"
+            // Audit trail table
+            ExecuteNonQuery(con, @"
                 CREATE TABLE IF NOT EXISTS AuditTrail (
-                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    Action TEXT NOT NULL,
-                    SIN TEXT,
-                    UserId INTEGER NOT NULL,
-                    Timestamp TEXT NOT NULL DEFAULT (datetime('now')),
-                    Details TEXT
-                );";
+                    Id        INTEGER PRIMARY KEY AUTOINCREMENT,
+                    Action    TEXT    NOT NULL,
+                    SIN       TEXT,
+                    UserId    INTEGER NOT NULL,
+                    Timestamp TEXT    NOT NULL DEFAULT (datetime('now')),
+                    Details   TEXT
+                );");
 
-            using var cmdAudit = new SQLiteCommand(createAuditTrail, con);
-            cmdAudit.ExecuteNonQuery();
+            // Payment history table
+            ExecuteNonQuery(con, @"
+                CREATE TABLE IF NOT EXISTS PaymentHistory (
+                    Id         INTEGER PRIMARY KEY AUTOINCREMENT,
+                    SIN        TEXT    NOT NULL,
+                    ORNumber   TEXT    NOT NULL,
+                    AmountPaid REAL    NOT NULL,
+                    Penalty    REAL    NOT NULL DEFAULT 0,
+                    DatePaid   TEXT    NOT NULL DEFAULT (datetime('now')),
+                    RecordedBy INTEGER NOT NULL,
+                    FOREIGN KEY (SIN) REFERENCES Profiling(SIN)
+                );");
+
+            // Settings table
+            ExecuteNonQuery(con, @"
+                CREATE TABLE IF NOT EXISTS Settings (
+                    Key   TEXT PRIMARY KEY,
+                    Value TEXT NOT NULL
+                );");
+
+            // Migrate existing databases — add columns if missing
+            var alterCommands = new[]
+            {
+                "ALTER TABLE Profiling ADD COLUMN StartDate TEXT DEFAULT ''",
+                "ALTER TABLE Profiling ADD COLUMN Penalty REAL DEFAULT 0",
+                "ALTER TABLE Users ADD COLUMN Position TEXT NOT NULL DEFAULT ''"
+            };
+
+            foreach (var sql in alterCommands)
+            {
+                try
+                {
+                    using var alterCmd = new SQLiteCommand(sql, con);
+                    alterCmd.ExecuteNonQuery();
+                }
+                catch { } // Column already exists — ignore
+            }
         }
 
-        // PROFILE AUDIT TRAIL ONLY (exclude login/logout)
-        public static DataTable GetAuditTrail()
+        // Helper to reduce repetition in Initialize()
+        private static void ExecuteNonQuery(SQLiteConnection con, string sql)
         {
-            using var con = new SQLiteConnection(ConnectionString);
-            con.Open();
-
-            const string query = @"
-                SELECT 
-                    Id,
-                    Action,
-                    SIN,
-                    UserId,
-                    Timestamp,
-                    Details
-                FROM AuditTrail
-                WHERE Action NOT IN ('Login', 'Logout')
-                ORDER BY Timestamp DESC";
-
-            using var cmd = new SQLiteCommand(query, con);
-            using var adapter = new SQLiteDataAdapter(cmd);
-
-            DataTable dt = new DataTable();
-            adapter.Fill(dt);
-
-            return dt;
+            using var cmd = new SQLiteCommand(sql, con);
+            cmd.ExecuteNonQuery();
         }
 
-        // USERS AUDIT TRAIL (LOGIN/LOGOUT) //
-        public static DataTable GetUserAuditTrail()
-        {
-            using var con = new SQLiteConnection(ConnectionString);
-            con.Open();
-
-            const string query = @"
-                SELECT 
-                    a.Id,
-                    a.Action,
-                    u.Username AS UserName,
-                    a.Timestamp,
-                    a.Details
-                FROM AuditTrail a
-                LEFT JOIN Users u ON a.UserId = u.Id
-                WHERE a.Action IN ('Login', 'Logout')
-                ORDER BY a.Timestamp DESC";
-
-            using var cmd = new SQLiteCommand(query, con);
-            using var adapter = new SQLiteDataAdapter(cmd);
-
-            DataTable dt = new DataTable();
-            adapter.Fill(dt);
-
-            return dt;
-        }
-
+        // ===================== USERS ===================== //
         public static string GetFullName(long userId)
         {
             using var con = new SQLiteConnection(ConnectionString);
             con.Open();
 
             using var cmd = new SQLiteCommand(
-                "SELECT FullName FROM Users WHERE Id=@id", con);
+                "SELECT FullName FROM Users WHERE Id = @id", con);
             cmd.Parameters.AddWithValue("@id", userId);
 
-            var result = cmd.ExecuteScalar();
-            return result?.ToString() ?? "Unknown";
+            return cmd.ExecuteScalar()?.ToString() ?? "Unknown";
         }
 
         public static string GetPosition(long userId)
@@ -139,14 +123,12 @@ namespace BusinessPermitLicensingSystem
             con.Open();
 
             using var cmd = new SQLiteCommand(
-                "SELECT Position FROM Users WHERE Id=@id", con);
+                "SELECT Position FROM Users WHERE Id = @id", con);
             cmd.Parameters.AddWithValue("@id", userId);
 
-            var result = cmd.ExecuteScalar();
-            return result?.ToString() ?? "";
+            return cmd.ExecuteScalar()?.ToString() ?? "";
         }
 
-        // ACCOUNT CREATION //
         public static (bool Success, string? ErrorMessage) CreateAccount(
             string fullname,
             string username,
@@ -154,13 +136,13 @@ namespace BusinessPermitLicensingSystem
             string plainPassword)
         {
             if (string.IsNullOrWhiteSpace(fullname))
-                return (false, "Full Name cannot be empty");
+                return (false, "Full Name cannot be empty.");
             if (string.IsNullOrWhiteSpace(username))
-                return (false, "Username cannot be empty");
+                return (false, "Username cannot be empty.");
             if (string.IsNullOrWhiteSpace(position))
-                return (false, "Position / Title cannot be empty");
+                return (false, "Position / Title cannot be empty.");
             if (string.IsNullOrWhiteSpace(plainPassword))
-                return (false, "Password cannot be empty");
+                return (false, "Password cannot be empty.");
 
             username = username.Trim();
 
@@ -174,27 +156,24 @@ namespace BusinessPermitLicensingSystem
                 cmdCheck.Parameters.AddWithValue("@u", username);
 
                 if (cmdCheck.ExecuteScalar() != null)
-                    return (false, "Username already exists");
-
-                string hashedPassword = HashPassword(plainPassword);
+                    return (false, "Username already exists.");
 
                 const string insert = @"
                     INSERT INTO Users (FullName, Username, Position, Password)
-                    VALUES (@f, @u, @pos, @p )";
+                    VALUES (@f, @u, @pos, @p)";
 
                 using var cmd = new SQLiteCommand(insert, con);
                 cmd.Parameters.AddWithValue("@f", fullname);
                 cmd.Parameters.AddWithValue("@u", username);
                 cmd.Parameters.AddWithValue("@pos", position);
-                cmd.Parameters.AddWithValue("@p", hashedPassword);
-                
+                cmd.Parameters.AddWithValue("@p", HashPassword(plainPassword));
 
                 cmd.ExecuteNonQuery();
                 return (true, null);
             }
             catch (SQLiteException ex) when (ex.ResultCode == SQLiteErrorCode.Constraint)
             {
-                return (false, "Username already exists");
+                return (false, "Username already exists.");
             }
             catch (Exception ex)
             {
@@ -202,38 +181,33 @@ namespace BusinessPermitLicensingSystem
             }
         }
 
-        // VERIFY LOGIN //
         public static (bool IsValid, string? MessageOrUserId) VerifyLogin(
             string username,
             string plainPassword)
         {
-            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(plainPassword))
-                return (false, "Missing username or password");
+            if (string.IsNullOrWhiteSpace(username) ||
+                string.IsNullOrWhiteSpace(plainPassword))
+                return (false, "Missing username or password.");
 
             try
             {
                 using var con = new SQLiteConnection(ConnectionString);
                 con.Open();
 
-                const string query = @"
-                    SELECT Id, Password
-                    FROM Users
-                    WHERE Username = @u";
-
-                using var cmd = new SQLiteCommand(query, con);
+                using var cmd = new SQLiteCommand(
+                    "SELECT Id, Password FROM Users WHERE Username = @u", con);
                 cmd.Parameters.AddWithValue("@u", username.Trim());
 
                 using var reader = cmd.ExecuteReader();
                 if (!reader.Read())
-                    return (false, "Invalid username or password");
+                    return (false, "Invalid username or password.");
 
-                string storedHash = reader.GetString(1);
                 long userId = reader.GetInt64(0);
+                string storedHash = reader.GetString(1);
 
-                if (VerifyPassword(plainPassword, storedHash))
-                    return (true, userId.ToString());
-
-                return (false, "Invalid username or password");
+                return VerifyPassword(plainPassword, storedHash)
+                    ? (true, userId.ToString())
+                    : (false, "Invalid username or password.");
             }
             catch (Exception ex)
             {
@@ -241,7 +215,35 @@ namespace BusinessPermitLicensingSystem
             }
         }
 
-        // ADD RECORD (SAVE) //
+        // ===================== PROFILING ===================== //
+        public static DataTable GetAllProfiles()
+        {
+            using var con = new SQLiteConnection(ConnectionString);
+            con.Open();
+
+            const string query = @"
+                SELECT
+                    SIN                                AS [SIN],
+                    FullName                           AS [Full Name],
+                    BusinessName                       AS [Business Name],
+                    BusinessSection                    AS [Business Section],
+                    StallNumber                        AS [Stall Number],
+                    StallSize                          AS [Stall Size],
+                    MonthlyRental                      AS [Monthly Rental],
+                    PaymentStatus                      AS [Payment Status],
+                    Penalty                            AS [Penalty],
+                    strftime('%m/%d/%Y', StartDate)    AS [Date of Occupancy]
+                FROM Profiling
+                ORDER BY ROWID DESC";
+
+            using var cmd = new SQLiteCommand(query, con);
+            using var adapter = new SQLiteDataAdapter(cmd);
+
+            var dt = new DataTable();
+            adapter.Fill(dt);
+            return dt;
+        }
+
         public static (bool Success, string? ErrorMessage) AddProfiling(
             string sin,
             string fullName,
@@ -249,7 +251,8 @@ namespace BusinessPermitLicensingSystem
             string businessSection,
             string stallNumber,
             string stallSize,
-            double monthlyRental)
+            double monthlyRental,
+            string startDate)
         {
             if (string.IsNullOrWhiteSpace(fullName) ||
                 string.IsNullOrWhiteSpace(businessName) ||
@@ -265,9 +268,10 @@ namespace BusinessPermitLicensingSystem
 
                 const string insert = @"
                     INSERT INTO Profiling
-                        (SIN, FullName, BusinessName, BusinessSection, StallNumber, StallSize, MonthlyRental)
+                        (SIN, FullName, BusinessName, BusinessSection,
+                         StallNumber, StallSize, MonthlyRental, StartDate)
                     VALUES
-                        (@sin, @f, @b, @s, @n, @sz, @r)";
+                        (@sin, @f, @b, @s, @n, @sz, @r, @startDate)";
 
                 using var cmd = new SQLiteCommand(insert, con);
                 cmd.Parameters.AddWithValue("@sin", sin);
@@ -277,6 +281,7 @@ namespace BusinessPermitLicensingSystem
                 cmd.Parameters.AddWithValue("@n", stallNumber.Trim());
                 cmd.Parameters.AddWithValue("@sz", stallSize.Trim());
                 cmd.Parameters.AddWithValue("@r", monthlyRental);
+                cmd.Parameters.AddWithValue("@startDate", startDate);
 
                 cmd.ExecuteNonQuery();
                 return (true, null);
@@ -291,7 +296,6 @@ namespace BusinessPermitLicensingSystem
             }
         }
 
-        // EDIT RECORD //
         public static (bool Success, string? ErrorMessage) UpdateProfiling(
             string sin,
             string fullName,
@@ -299,7 +303,8 @@ namespace BusinessPermitLicensingSystem
             string businessSection,
             string stallNumber,
             string stallSize,
-            double monthlyRental)
+            double monthlyRental,
+            string startDate)
         {
             try
             {
@@ -309,12 +314,13 @@ namespace BusinessPermitLicensingSystem
                 const string query = @"
                     UPDATE Profiling
                     SET
-                        FullName = @FullName,
-                        BusinessName = @BusinessName,
+                        FullName        = @FullName,
+                        BusinessName    = @BusinessName,
                         BusinessSection = @BusinessSection,
-                        StallNumber = @StallNumber,
-                        StallSize = @StallSize,
-                        MonthlyRental = @MonthlyRental
+                        StallNumber     = @StallNumber,
+                        StallSize       = @StallSize,
+                        MonthlyRental   = @MonthlyRental,
+                        StartDate       = @StartDate
                     WHERE SIN = @SIN";
 
                 using var cmd = new SQLiteCommand(query, con);
@@ -324,6 +330,7 @@ namespace BusinessPermitLicensingSystem
                 cmd.Parameters.AddWithValue("@StallNumber", stallNumber);
                 cmd.Parameters.AddWithValue("@StallSize", stallSize);
                 cmd.Parameters.AddWithValue("@MonthlyRental", monthlyRental);
+                cmd.Parameters.AddWithValue("@StartDate", startDate);
                 cmd.Parameters.AddWithValue("@SIN", sin);
 
                 cmd.ExecuteNonQuery();
@@ -335,24 +342,109 @@ namespace BusinessPermitLicensingSystem
             }
         }
 
-        // UPDATE PAYMENT STATUS //
-        public static (bool Success, string? ErrorMessage) UpdatePaymentStatus(
-            string sin,
-            string status)
+        public static (bool Success, string? ErrorMessage) DeleteProfiling(string sin)
         {
             try
             {
                 using var con = new SQLiteConnection(ConnectionString);
                 con.Open();
 
-                const string query = @"
-            UPDATE Profiling
-            SET PaymentStatus = @status
-            WHERE SIN = @sin";
+                using var cmd = new SQLiteCommand(
+                    "DELETE FROM Profiling WHERE SIN = @SIN", con);
+                cmd.Parameters.AddWithValue("@SIN", sin);
 
-                using var cmd = new SQLiteCommand(query, con);
+                int rowsAffected = cmd.ExecuteNonQuery();
+
+                return rowsAffected == 0
+                    ? (false, "Record not found.")
+                    : (true, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Database error: {ex.Message}");
+            }
+        }
+
+        public static string GenerateUniqueBIN(SQLiteConnection con)
+        {
+            var rnd = new Random();
+            string sin;
+
+            do
+            {
+                sin = $"SIN-{DateTime.Now:yyyy}-{rnd.Next(1000, 10000)}";
+
+                using var cmdCheck = new SQLiteCommand(
+                    "SELECT 1 FROM Profiling WHERE SIN = @sin", con);
+                cmdCheck.Parameters.AddWithValue("@sin", sin);
+
+                if (cmdCheck.ExecuteScalar() == null) break;
+
+            } while (true);
+
+            return sin;
+        }
+
+        // ===================== PAYMENT STATUS ===================== //
+        public static (bool Success, string? ErrorMessage) UpdatePaymentStatus(
+            string sin,
+            string status,
+            string orNumber = "",
+            double amountPaid = 0,
+            double penalty = 0,
+            long recordedBy = 0)
+        {
+            try
+            {
+                using var con = new SQLiteConnection(ConnectionString);
+                con.Open();
+
+                using var cmd = new SQLiteCommand(@"
+                    UPDATE Profiling
+                    SET PaymentStatus = @status
+                    WHERE SIN = @sin", con);
                 cmd.Parameters.AddWithValue("@status", status);
                 cmd.Parameters.AddWithValue("@sin", sin);
+                cmd.ExecuteNonQuery();
+
+                // Auto-record payment when marked as Paid
+                if (status == "Paid" && !string.IsNullOrWhiteSpace(orNumber))
+                    RecordPayment(sin, orNumber, amountPaid, penalty, recordedBy);
+
+                return (true, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Database error: {ex.Message}");
+            }
+        }
+
+        // ===================== PAYMENT HISTORY ===================== //
+        public static (bool Success, string? ErrorMessage) RecordPayment(
+            string sin,
+            string orNumber,
+            double amountPaid,
+            double penalty,
+            long recordedBy)
+        {
+            try
+            {
+                using var con = new SQLiteConnection(ConnectionString);
+                con.Open();
+
+                const string insert = @"
+                    INSERT INTO PaymentHistory
+                        (SIN, ORNumber, AmountPaid, Penalty, DatePaid, RecordedBy)
+                    VALUES
+                        (@sin, @or, @amount, @penalty, @date, @recordedBy)";
+
+                using var cmd = new SQLiteCommand(insert, con);
+                cmd.Parameters.AddWithValue("@sin", sin);
+                cmd.Parameters.AddWithValue("@or", orNumber);
+                cmd.Parameters.AddWithValue("@amount", amountPaid);
+                cmd.Parameters.AddWithValue("@penalty", penalty);
+                cmd.Parameters.AddWithValue("@date", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                cmd.Parameters.AddWithValue("@recordedBy", recordedBy);
 
                 cmd.ExecuteNonQuery();
                 return (true, null);
@@ -363,81 +455,184 @@ namespace BusinessPermitLicensingSystem
             }
         }
 
-        // DELETE RECORD //
-        public static (bool Success, string? ErrorMessage) DeleteProfiling(string sin)
-        {
-            try
-            {
-                using var con = new SQLiteConnection(ConnectionString);
-                con.Open();
-
-                const string query = "DELETE FROM Profiling WHERE SIN = @SIN";
-
-                using var cmd = new SQLiteCommand(query, con);
-                cmd.Parameters.AddWithValue("@SIN", sin);
-
-                int rowsAffected = cmd.ExecuteNonQuery();
-                if (rowsAffected == 0)
-                    return (false, "Record not found.");
-
-                return (true, null);
-            }
-            catch (Exception ex)
-            {
-                return (false, $"Database error: {ex.Message}");
-            }
-        }
-
-        public static DataTable GetAllProfiles()
+        public static DataTable GetPaymentHistory(string sin)
         {
             using var con = new SQLiteConnection(ConnectionString);
             con.Open();
 
             const string query = @"
                 SELECT
-                    SIN AS [SIN],
-                    FullName AS [Full Name],
-                    BusinessName AS [Business Name],
-                    BusinessSection AS [Business Section],
-                    StallNumber AS [Stall Number],
-                    StallSize AS [Stall Size],
-                    MonthlyRental AS [Monthly Rental],
-                    PaymentStatus AS [Payment Status]
-                FROM Profiling
-                ORDER BY ROWID DESC";
+                    ph.Id                                       AS [#],
+                    ph.ORNumber                                 AS [OR Number],
+                    ph.AmountPaid                               AS [Amount Paid],
+                    ph.Penalty                                  AS [Penalty],
+                    (ph.AmountPaid + ph.Penalty)                AS [Total Paid],
+                    strftime('%m/%d/%Y %H:%M', ph.DatePaid)     AS [Date Paid],
+                    u.FullName                                  AS [Recorded By]
+                FROM PaymentHistory ph
+                LEFT JOIN Users u ON ph.RecordedBy = u.Id
+                WHERE ph.SIN = @sin
+                ORDER BY ph.DatePaid DESC";
+
+            using var cmd = new SQLiteCommand(query, con);
+            cmd.Parameters.AddWithValue("@sin", sin);
+            using var adapter = new SQLiteDataAdapter(cmd);
+
+            var dt = new DataTable();
+            adapter.Fill(dt);
+            return dt;
+        }
+
+        // ===================== PENALTY ===================== //
+        public static double CalculatePenalty(
+            double monthlyRental,
+            string paymentStatus,
+            string startDate)
+        {
+            if (paymentStatus == "Paid") return 0;
+            if (string.IsNullOrWhiteSpace(startDate)) return 0;
+            if (!DateTime.TryParse(startDate, out DateTime start)) return 0;
+
+            DateTime today = DateTime.Today;
+
+            // First due date is the 20th of the month AFTER start date
+            DateTime firstDueDate = new DateTime(
+                start.Month == 12 ? start.Year + 1 : start.Year,
+                start.Month == 12 ? 1 : start.Month + 1,
+                20);
+
+            if (today < firstDueDate) return 0;
+            if (today.Day <= 20) return 0;
+
+            return Math.Round(monthlyRental * 0.25, 2);
+        }
+
+        public static void UpdatePenalty(string sin, double penalty)
+        {
+            try
+            {
+                using var con = new SQLiteConnection(ConnectionString);
+                con.Open();
+
+                using var cmd = new SQLiteCommand(@"
+                    UPDATE Profiling
+                    SET Penalty = @penalty
+                    WHERE SIN = @sin", con);
+                cmd.Parameters.AddWithValue("@penalty", penalty);
+                cmd.Parameters.AddWithValue("@sin", sin);
+
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Penalty update error: {ex.Message}");
+            }
+        }
+
+        public static (int Updated, int Skipped) ApplyPenaltiesToAll()
+        {
+            int updated = 0;
+            int skipped = 0;
+
+            try
+            {
+                using var con = new SQLiteConnection(ConnectionString);
+                con.Open();
+
+                using var cmd = new SQLiteCommand(@"
+                    SELECT SIN, MonthlyRental, PaymentStatus, StartDate
+                    FROM Profiling
+                    WHERE PaymentStatus != 'Paid'", con);
+
+                using var reader = cmd.ExecuteReader();
+
+                var records = new List<(string sin, double rental, string status, string startDate)>();
+
+                while (reader.Read())
+                {
+                    records.Add((
+                        reader["SIN"].ToString()!,
+                        Convert.ToDouble(reader["MonthlyRental"]),
+                        reader["PaymentStatus"].ToString()!,
+                        reader["StartDate"].ToString()!
+                    ));
+                }
+
+                reader.Close();
+
+                foreach (var record in records)
+                {
+                    double penalty = CalculatePenalty(
+                        record.rental, record.status, record.startDate);
+
+                    if (penalty > 0)
+                    {
+                        UpdatePenalty(record.sin, penalty);
+                        updated++;
+                    }
+                    else
+                        skipped++;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error applying penalties: {ex.Message}");
+            }
+
+            return (updated, skipped);
+        }
+
+        // ===================== AUDIT TRAIL ===================== //
+        public static DataTable GetAuditTrail()
+        {
+            using var con = new SQLiteConnection(ConnectionString);
+            con.Open();
+
+            const string query = @"
+                SELECT
+                    Id,
+                    Action,
+                    SIN,
+                    UserId,
+                    Timestamp,
+                    Details
+                FROM AuditTrail
+                WHERE Action NOT IN ('Login', 'Logout')
+                ORDER BY Timestamp DESC";
 
             using var cmd = new SQLiteCommand(query, con);
             using var adapter = new SQLiteDataAdapter(cmd);
 
-            DataTable dt = new DataTable();
+            var dt = new DataTable();
             adapter.Fill(dt);
-
             return dt;
         }
 
-        // SIN GENERATION (UNIQUE) //
-        public static string GenerateUniqueBIN(SQLiteConnection con)
+        public static DataTable GetUserAuditTrail()
         {
-            string sin;
-            var rnd = new Random();
+            using var con = new SQLiteConnection(ConnectionString);
+            con.Open();
 
-            do
-            {
-                sin = $"SIN-{DateTime.Now:yyyy}-{rnd.Next(1000, 10000)}";
+            const string query = @"
+                SELECT
+                    a.Id,
+                    a.Action,
+                    u.Username  AS [Username],
+                    a.Timestamp,
+                    a.Details
+                FROM AuditTrail a
+                LEFT JOIN Users u ON a.UserId = u.Id
+                WHERE a.Action IN ('Login', 'Logout')
+                ORDER BY a.Timestamp DESC";
 
-                using var cmdCheck = new SQLiteCommand(
-                    "SELECT 1 FROM Profiling WHERE SIN = @sin", con);
-                cmdCheck.Parameters.AddWithValue("@sin", sin);
-                var exists = cmdCheck.ExecuteScalar() != null;
+            using var cmd = new SQLiteCommand(query, con);
+            using var adapter = new SQLiteDataAdapter(cmd);
 
-                if (!exists) break;
-
-            } while (true);
-
-            return sin;
+            var dt = new DataTable();
+            adapter.Fill(dt);
+            return dt;
         }
 
-        // AUDIT LOGGING //
         public static void LogAudit(
             string action,
             string? sin,
@@ -449,24 +644,81 @@ namespace BusinessPermitLicensingSystem
                 using var con = new SQLiteConnection(ConnectionString);
                 con.Open();
 
-                const string insert = @"
+                using var cmd = new SQLiteCommand(@"
                     INSERT INTO AuditTrail (Action, SIN, UserId, Details)
-                    VALUES (@action, @sin, @user, @details)";
+                    VALUES (@action, @sin, @user, @details)", con);
 
-                using var cmd = new SQLiteCommand(insert, con);
                 cmd.Parameters.AddWithValue("@action", action);
-                cmd.Parameters.AddWithValue("@sin", sin ?? DBNull.Value.ToString());
+                cmd.Parameters.AddWithValue("@sin", sin ?? "");
                 cmd.Parameters.AddWithValue("@user", userId);
                 cmd.Parameters.AddWithValue("@details", details ?? "");
+
                 cmd.ExecuteNonQuery();
             }
-            catch
+            catch { } // Fail silently
+        }
+
+        // ===================== SETTINGS ===================== //
+        public static string GetSetting(string key)
+        {
+            try
             {
-                // Fail silently or handle error in enterprise systems
+                using var con = new SQLiteConnection(ConnectionString);
+                con.Open();
+
+                using var cmd = new SQLiteCommand(
+                    "SELECT Value FROM Settings WHERE Key = @key", con);
+                cmd.Parameters.AddWithValue("@key", key);
+
+                return cmd.ExecuteScalar()?.ToString() ?? "";
+            }
+            catch { return ""; }
+        }
+
+        public static void SaveSetting(string key, string value)
+        {
+            try
+            {
+                using var con = new SQLiteConnection(ConnectionString);
+                con.Open();
+
+                using var cmd = new SQLiteCommand(@"
+                    INSERT INTO Settings (Key, Value)
+                    VALUES (@key, @value)
+                    ON CONFLICT(Key) DO UPDATE SET Value = @value", con);
+
+                cmd.Parameters.AddWithValue("@key", key);
+                cmd.Parameters.AddWithValue("@value", value);
+
+                cmd.ExecuteNonQuery();
+            }
+            catch { }
+        }
+
+        public static (int Reset, string? ErrorMessage) ResetMonthlyPaymentStatus()
+        {
+            try
+            {
+                using var con = new SQLiteConnection(ConnectionString);
+                con.Open();
+
+                using var cmd = new SQLiteCommand(@"
+                    UPDATE Profiling
+                    SET
+                        PaymentStatus = 'Unpaid',
+                        Penalty       = 0
+                    WHERE PaymentStatus = 'Paid'", con);
+
+                int rowsAffected = cmd.ExecuteNonQuery();
+                return (rowsAffected, null);
+            }
+            catch (Exception ex)
+            {
+                return (0, $"Database error: {ex.Message}");
             }
         }
 
-        // BILLING REPORT MODEL //
+        // ===================== BILLING REPORT ===================== //
         public static List<BillingReportModel> GetProfiles()
         {
             var list = new List<BillingReportModel>();
@@ -474,43 +726,38 @@ namespace BusinessPermitLicensingSystem
             using var con = new SQLiteConnection(ConnectionString);
             con.Open();
 
-            string query = "SELECT * FROM Profiling";
-
-            using var cmd = new SQLiteCommand(query, con);
+            using var cmd = new SQLiteCommand("SELECT * FROM Profiling", con);
             using var reader = cmd.ExecuteReader();
 
             while (reader.Read())
             {
                 list.Add(new BillingReportModel
                 {
-                    SIN = reader["SIN"].ToString(),
-                    FullName = reader["FullName"].ToString(),
-                    BusinessName = reader["BusinessName"].ToString(),
-                    BusinessSection = reader["BusinessSection"].ToString(),
-                    StallNumber = reader["StallNumber"].ToString(),
-                    StallSize = reader["StallSize"].ToString(),
-                    MonthlyRental =
-                        Convert.ToDouble(reader["MonthlyRental"])
+                    SIN = reader["SIN"].ToString()!,
+                    FullName = reader["FullName"].ToString()!,
+                    BusinessName = reader["BusinessName"].ToString()!,
+                    BusinessSection = reader["BusinessSection"].ToString()!,
+                    StallNumber = reader["StallNumber"].ToString()!,
+                    StallSize = reader["StallSize"].ToString()!,
+                    MonthlyRental = Convert.ToDouble(reader["MonthlyRental"])
                 });
             }
 
             return list;
         }
 
-        // =============================================(PASSWORD HASHING) DO NOT TOUCH ================================================================= //
-
+        // ===================== PASSWORD HASHING — DO NOT MODIFY ===================== //
         private static string HashPassword(string password)
         {
-            using var sha256 = System.Security.Cryptography.SHA256.Create();
-            byte[] bytes = System.Text.Encoding.UTF8.GetBytes(password);
+            using var sha256 = SHA256.Create();
+            byte[] bytes = Encoding.UTF8.GetBytes(password);
             byte[] hash = sha256.ComputeHash(bytes);
             return Convert.ToBase64String(hash);
         }
 
         private static bool VerifyPassword(string enteredPassword, string storedHash)
         {
-            string hashOfEntered = HashPassword(enteredPassword);
-            return CryptographicEquals(hashOfEntered, storedHash);
+            return CryptographicEquals(HashPassword(enteredPassword), storedHash);
         }
 
         private static bool CryptographicEquals(string a, string b)

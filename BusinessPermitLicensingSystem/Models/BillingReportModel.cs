@@ -6,14 +6,18 @@ namespace BusinessPermitLicensingSystem.Models
 {
     public class BillingReportModel
     {
-        public string SIN { get; set; }
-        public string FullName { get; set; }
-        public string BusinessName { get; set; }
-        public string BusinessSection { get; set; }
-        public string StallNumber { get; set; }
-        public string StallSize { get; set; }
-        public double MonthlyRental { get; set; }
+        public string SIN { get; set; } =  string.Empty;
+        public string FullName { get; set; } = string.Empty;
+        public string BusinessName { get; set; } = string.Empty;
+        public string BusinessSection { get; set; } = string.Empty;
+        public string StallNumber { get; set; } = string.Empty;
+        public string StallSize { get; set; } = string.Empty;
+        public double MonthlyRental { get; set; } = 0;
+        public string PaymentStatus { get; set; } = "Unpaid";
+        public double Penalty { get; set; } = 0;          // ✅ Add
+        public string StartDate { get; set; } = "";        // ✅ Add
+        public double TotalDue => MonthlyRental + Penalty; // ✅ Auto calculates
 
-        public string PaymentStatus { get; set; }
+
     }
 }

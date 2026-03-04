@@ -45,10 +45,11 @@
             label7 = new Label();
             btnSave = new Button();
             button1 = new Button();
-            btnSaveAs = new Button();
             lblUsername = new Label();
             label8 = new Label();
             cmbPaymentStatus = new ComboBox();
+            dtpStartDate = new DateTimePicker();
+            label9 = new Label();
             SuspendLayout();
             // 
             // menuStrip1
@@ -97,7 +98,7 @@
             // 
             // txtMRental
             // 
-            txtMRental.Location = new Point(212, 342);
+            txtMRental.Location = new Point(212, 400);
             txtMRental.Name = "txtMRental";
             txtMRental.Size = new Size(402, 31);
             txtMRental.TabIndex = 6;
@@ -151,7 +152,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(14, 348);
+            label6.Location = new Point(12, 400);
             label6.Name = "label6";
             label6.Size = new Size(140, 25);
             label6.TabIndex = 12;
@@ -175,7 +176,7 @@
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(12, 473);
+            btnSave.Location = new Point(106, 530);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(155, 34);
             btnSave.TabIndex = 15;
@@ -185,23 +186,13 @@
             // 
             // button1
             // 
-            button1.Location = new Point(338, 473);
+            button1.Location = new Point(297, 530);
             button1.Name = "button1";
             button1.Size = new Size(145, 34);
             button1.TabIndex = 16;
             button1.Text = "Cancel";
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
-            // 
-            // btnSaveAs
-            // 
-            btnSaveAs.Location = new Point(191, 473);
-            btnSaveAs.Name = "btnSaveAs";
-            btnSaveAs.Size = new Size(112, 34);
-            btnSaveAs.TabIndex = 17;
-            btnSaveAs.Text = "Save As";
-            btnSaveAs.UseVisualStyleBackColor = true;
-            btnSaveAs.Click += btnSaveAs_Click;
             // 
             // lblUsername
             // 
@@ -214,7 +205,7 @@
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new Point(16, 391);
+            label8.Location = new Point(14, 460);
             label8.Name = "label8";
             label8.Size = new Size(137, 25);
             label8.TabIndex = 19;
@@ -223,20 +214,37 @@
             // cmbPaymentStatus
             // 
             cmbPaymentStatus.FormattingEnabled = true;
-            cmbPaymentStatus.Location = new Point(212, 391);
+            cmbPaymentStatus.Location = new Point(212, 452);
             cmbPaymentStatus.Name = "cmbPaymentStatus";
             cmbPaymentStatus.Size = new Size(402, 33);
             cmbPaymentStatus.TabIndex = 20;
+            // 
+            // dtpStartDate
+            // 
+            dtpStartDate.Location = new Point(212, 348);
+            dtpStartDate.Name = "dtpStartDate";
+            dtpStartDate.Size = new Size(402, 31);
+            dtpStartDate.TabIndex = 21;
+            // 
+            // label9
+            // 
+            label9.AutoSize = true;
+            label9.Location = new Point(16, 353);
+            label9.Name = "label9";
+            label9.Size = new Size(172, 25);
+            label9.TabIndex = 22;
+            label9.Text = "Date of Occupancy: ";
             // 
             // ProfilingForm
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1341, 706);
+            Controls.Add(label9);
+            Controls.Add(dtpStartDate);
             Controls.Add(cmbPaymentStatus);
             Controls.Add(label8);
             Controls.Add(lblUsername);
-            Controls.Add(btnSaveAs);
             Controls.Add(button1);
             Controls.Add(btnSave);
             Controls.Add(label7);
@@ -283,9 +291,10 @@
         private Label label7;
         private Button btnSave;
         private Button button1;
-        private Button btnSaveAs;
         private Label lblUsername;
         private Label label8;
         private ComboBox cmbPaymentStatus;
+        private DateTimePicker dtpStartDate;
+        private Label label9;
     }
 }
