@@ -41,6 +41,14 @@ namespace BusinessPermitLicensingSystem
             dataGridView1.MultiSelect = false;
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridView1.DataBindingComplete += (s, e) => ColorPaymentStatusColumn();
+            dataGridView1.RowHeadersVisible = false;
+
+            {
+                ColorPaymentStatusColumn();
+                AlignFiltersToColumns();
+
+            };
+            dataGridView1.ColumnWidthChanged += (s, e) => AlignFiltersToColumns(); // ✅
         }
 
         private void SetupFilters()
@@ -52,6 +60,9 @@ namespace BusinessPermitLicensingSystem
             txtFilterStallNumber.TextChanged += (s, e) => ApplyFilter();
             txtFilterStallSize.TextChanged += (s, e) => ApplyFilter();
             txtFilterMonthlyRental.TextChanged += (s, e) => ApplyFilter();
+            txtFilterPayment.TextChanged += (s, e) => ApplyFilter(); 
+            txtFilterPenalty.TextChanged += (s, e) => ApplyFilter(); 
+            txtFilterDOC.TextChanged += (s, e) => ApplyFilter(); 
         }
 
         // ===================== DATA LOADING ===================== //
@@ -62,8 +73,9 @@ namespace BusinessPermitLicensingSystem
 
             FormatCurrencyColumn("Monthly Rental");
             FormatCurrencyColumn("Penalty");
-
             ColorPaymentStatusColumn();
+
+            AlignFiltersToColumns(); // ✅
         }
 
         private void FormatCurrencyColumn(string columnName)
@@ -89,6 +101,10 @@ namespace BusinessPermitLicensingSystem
                 AddFilter(filters, "Convert([Stall Number], 'System.String')", txtFilterStallNumber.Text);
                 AddFilter(filters, "Convert([Stall Size], 'System.String')", txtFilterStallSize.Text);
                 AddFilter(filters, "Convert([Monthly Rental], 'System.String')", txtFilterMonthlyRental.Text);
+                AddFilter(filters, "[Payment Status]", txtFilterPayment.Text);  
+                AddFilter(filters, "Convert([Penalty], 'System.String')", txtFilterPenalty.Text);  
+                AddFilter(filters, "[Date of Occupancy]", txtFilterDOC.Text);     
+
 
                 dtProfiles.DefaultView.RowFilter = string.Join(" AND ", filters);
             }
@@ -230,7 +246,6 @@ namespace BusinessPermitLicensingSystem
             var row = dataGridView1.SelectedRows[0];
             string paymentStatus = row.Cells["Payment Status"].Value?.ToString() ?? "Unknown";
 
-            // Block receipt if already Paid
             if (paymentStatus == "Paid")
             {
                 MessageBox.Show(
@@ -321,7 +336,6 @@ namespace BusinessPermitLicensingSystem
                 Cursor = Cursors.WaitCursor;
 
                 var dt = GetDataTableFromDGV(dataGridView1);
-
                 await Task.Run(() => ExportToExcel(dt, sfd.FileName));
 
                 MessageBox.Show(
@@ -369,13 +383,11 @@ namespace BusinessPermitLicensingSystem
             using var workbook = new XLWorkbook();
             var ws = workbook.Worksheets.Add("Profiles");
 
-            // Title
             ws.Cell(1, 1).Value = "Stall Owners Profiling Report";
             ws.Range(1, 1, 1, dt.Columns.Count).Merge();
             ws.Cell(1, 1).Style.Font.Bold = true;
             ws.Cell(1, 1).Style.Font.FontSize = 16;
 
-            // Data table
             ws.Cell(3, 1).InsertTable(dt);
             ws.Columns().AdjustToContents();
 
@@ -388,6 +400,61 @@ namespace BusinessPermitLicensingSystem
             DashboardForm dashboardForm = new DashboardForm();
             dashboardForm.Show();
             this.Hide();
+        }
+
+        // ===================== RESIZE ===================== //
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            AlignFiltersToColumns(); // ✅
+        }
+
+        // ===================== HELPERS ===================== //
+        private void AlignFiltersToColumns()
+        {
+            if (dataGridView1.Columns.Count == 0) return;
+
+            int xOffset = dataGridView1.Left + dataGridView1.RowHeadersWidth;
+
+            foreach (DataGridViewColumn col in dataGridView1.Columns)
+            {
+                TextBox filter = col.HeaderText switch
+                {
+                    "SIN" => txtFilterBIN,
+                    "Full Name" => txtFilterFullName,
+                    "Business Name" => txtFilterBusinessName,
+                    "Business Section" => txtFilterBusinessSection,
+                    "Stall Number" => txtFilterStallNumber,
+                    "Stall Size" => txtFilterStallSize,
+                    "Monthly Rental" => txtFilterMonthlyRental,
+                    "Payment Status" => txtFilterPayment,
+                    "Penalty" => txtFilterPenalty,
+                    "Date of Occupancy" => txtFilterDOC,
+
+                    _ => null
+                };
+
+                if (filter == null) continue;
+
+                // ✅ Use GetColumnDisplayRectangle instead of ContentBounds
+                Rectangle rect = dataGridView1.GetColumnDisplayRectangle(col.Index, true);
+
+                if (rect.Width == 0) continue; // Column not visible yet
+
+                filter.Left = dataGridView1.Left + rect.Left;
+                filter.Width = rect.Width;
+                filter.Visible = true;
+            }
+        }
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                const int CS_NOCLOSE = 0x200;
+                CreateParams cp = base.CreateParams;
+                cp.ClassStyle |= CS_NOCLOSE; // ✅ Disables X button
+                return cp;
+            }
         }
 
         // ===================== UNUSED EVENTS ===================== //

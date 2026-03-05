@@ -53,7 +53,7 @@ namespace BusinessPermitLicensingSystem.Forms
             // SIN
             var lblSIN = new Label
             {
-                Text = $"SIN: {sin}",
+                Text = $"{sin}",
                 Font = new Font("Segoe UI", 9),
                 ForeColor = Color.Gray,
                 Location = new Point(15, 45),

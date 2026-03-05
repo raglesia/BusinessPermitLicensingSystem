@@ -71,5 +71,35 @@ namespace BusinessPermitLicensingSystem.Forms
             txtpass.Clear();
             txtconpass.Clear();
         }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            LogInForm loginForm = new LogInForm();
+
+            loginForm.Show();
+            this.Hide();
+        }
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                const int CS_NOCLOSE = 0x200;
+                CreateParams cp = base.CreateParams;
+                cp.ClassStyle |= CS_NOCLOSE; // ✅ Disables X button
+                return cp;
+            }
+        }
+
+        // ===================== PREVENT MOVING ===================== //
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == 0x0112)
+            {
+                if (m.WParam == new IntPtr(0xF010))
+                    return;
+            }
+            base.WndProc(ref m);
+        }
     }
 }

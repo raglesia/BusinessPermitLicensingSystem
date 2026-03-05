@@ -28,105 +28,151 @@
         /// </summary>
         private void InitializeComponent()
         {
-            btnLogIn = new Button();
-            btnExit = new Button();
-            btnCreate = new Button();
+            components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LogInForm));
             txtPass = new TextBox();
+            btnCreate = new Button();
             txtUser = new TextBox();
-            label1 = new Label();
+            btnExit = new Button();
+            btnLogIn = new Button();
             label2 = new Label();
+            label1 = new Label();
+            panel1 = new Panel();
+            toolTip1 = new ToolTip(components);
+            panel1.SuspendLayout();
             SuspendLayout();
-            // 
-            // btnLogIn
-            // 
-            btnLogIn.Location = new Point(258, 237);
-            btnLogIn.Name = "btnLogIn";
-            btnLogIn.Size = new Size(192, 53);
-            btnLogIn.TabIndex = 3;
-            btnLogIn.Text = "Log In";
-            btnLogIn.UseVisualStyleBackColor = true;
-            btnLogIn.Click += btnLogIn_Click;
-            // 
-            // btnExit
-            // 
-            btnExit.Location = new Point(465, 237);
-            btnExit.Name = "btnExit";
-            btnExit.Size = new Size(192, 53);
-            btnExit.TabIndex = 4;
-            btnExit.Text = "Exit";
-            btnExit.UseVisualStyleBackColor = true;
-            btnExit.Click += btnExit_Click;
-            // 
-            // btnCreate
-            // 
-            btnCreate.Location = new Point(369, 296);
-            btnCreate.Name = "btnCreate";
-            btnCreate.Size = new Size(192, 53);
-            btnCreate.TabIndex = 5;
-            btnCreate.Text = "Create Account";
-            btnCreate.UseVisualStyleBackColor = true;
             // 
             // txtPass
             // 
-            txtPass.Location = new Point(369, 186);
+            txtPass.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtPass.Location = new Point(152, 77);
             txtPass.Name = "txtPass";
-            txtPass.Size = new Size(288, 31);
+            txtPass.Size = new Size(288, 39);
             txtPass.TabIndex = 2;
             txtPass.UseSystemPasswordChar = true;
             // 
+            // btnCreate
+            // 
+            btnCreate.BackColor = SystemColors.GradientActiveCaption;
+            btnCreate.BackgroundImage = Properties.Resources.icons8_create_64;
+            btnCreate.BackgroundImageLayout = ImageLayout.Center;
+            btnCreate.ImageAlign = ContentAlignment.MiddleLeft;
+            btnCreate.Location = new Point(128, 211);
+            btnCreate.Name = "btnCreate";
+            btnCreate.Size = new Size(201, 73);
+            btnCreate.TabIndex = 5;
+            toolTip1.SetToolTip(btnCreate, "Create Account");
+            btnCreate.UseVisualStyleBackColor = false;
+            btnCreate.Click += btnCreate_Click_1;
+            // 
             // txtUser
             // 
-            txtUser.Location = new Point(369, 129);
+            txtUser.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtUser.Location = new Point(152, 24);
             txtUser.Name = "txtUser";
-            txtUser.Size = new Size(288, 31);
+            txtUser.Size = new Size(288, 39);
             txtUser.TabIndex = 1;
             // 
-            // label1
+            // btnExit
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(258, 129);
-            label1.Name = "label1";
-            label1.Size = new Size(100, 25);
-            label1.TabIndex = 5;
-            label1.Text = "Username: ";
+            btnExit.BackColor = SystemColors.GradientActiveCaption;
+            btnExit.BackgroundImage = Properties.Resources.icons8_exit_64__1_;
+            btnExit.BackgroundImageLayout = ImageLayout.Center;
+            btnExit.ImageAlign = ContentAlignment.MiddleLeft;
+            btnExit.Location = new Point(239, 132);
+            btnExit.Name = "btnExit";
+            btnExit.Size = new Size(201, 73);
+            btnExit.TabIndex = 4;
+            toolTip1.SetToolTip(btnExit, "Exit");
+            btnExit.UseVisualStyleBackColor = false;
+            btnExit.Click += btnExit_Click;
+            // 
+            // btnLogIn
+            // 
+            btnLogIn.BackColor = SystemColors.GradientInactiveCaption;
+            btnLogIn.BackgroundImage = Properties.Resources.icons8_log_in_64;
+            btnLogIn.BackgroundImageLayout = ImageLayout.Center;
+            btnLogIn.ImageAlign = ContentAlignment.MiddleLeft;
+            btnLogIn.Location = new Point(13, 132);
+            btnLogIn.Name = "btnLogIn";
+            btnLogIn.Size = new Size(201, 73);
+            btnLogIn.TabIndex = 3;
+            toolTip1.SetToolTip(btnLogIn, "Log In");
+            btnLogIn.UseVisualStyleBackColor = false;
+            btnLogIn.Click += btnLogIn_Click;
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(258, 189);
+            label2.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label2.Location = new Point(13, 84);
             label2.Name = "label2";
-            label2.Size = new Size(96, 25);
+            label2.Size = new Size(123, 32);
             label2.TabIndex = 6;
             label2.Text = "Password: ";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label1.Location = new Point(13, 31);
+            label1.Name = "label1";
+            label1.Size = new Size(133, 32);
+            label1.TabIndex = 5;
+            label1.Text = "Username: ";
+            // 
+            // panel1
+            // 
+            panel1.Controls.Add(txtUser);
+            panel1.Controls.Add(label1);
+            panel1.Controls.Add(btnCreate);
+            panel1.Controls.Add(label2);
+            panel1.Controls.Add(btnExit);
+            panel1.Controls.Add(txtPass);
+            panel1.Controls.Add(btnLogIn);
+            panel1.Location = new Point(12, 12);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(484, 301);
+            panel1.TabIndex = 7;
+            panel1.Paint += panel1_Paint;
+            // 
+            // toolTip1
+            // 
+            toolTip1.AutoPopDelay = 3000;
+            toolTip1.InitialDelay = 500;
+            toolTip1.IsBalloon = true;
+            toolTip1.ReshowDelay = 200;
             // 
             // LogInForm
             // 
             AcceptButton = btnLogIn;
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(896, 488);
-            Controls.Add(label2);
-            Controls.Add(label1);
-            Controls.Add(txtUser);
-            Controls.Add(txtPass);
-            Controls.Add(btnCreate);
-            Controls.Add(btnExit);
-            Controls.Add(btnLogIn);
+            BackColor = SystemColors.GradientActiveCaption;
+            ClientSize = new Size(508, 319);
+            Controls.Add(panel1);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            MaximizeBox = false;
             Name = "LogInForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Masinloc - BPLS";
+            Load += LogInForm_Load;
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
 
-        private Button btnLogIn;
-        private Button btnExit;
-        private Button btnCreate;
         private TextBox txtPass;
+        private Button btnCreate;
         private TextBox txtUser;
-        private Label label1;
+        private Button btnExit;
+        private Button btnLogIn;
         private Label label2;
+        private Label label1;
+        private Panel panel1;
+        private ToolTip toolTip1;
     }
 }

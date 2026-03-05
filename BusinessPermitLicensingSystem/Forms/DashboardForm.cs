@@ -14,7 +14,14 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== FORM LOAD ===================== //
         private void DashboardForm_Load(object sender, EventArgs e)
         {
+            button1.Focus();
+
             lblUsername.Text = $"{Session.CurrentPosition} | {Session.CurrentFullName}";
+
+            UpdateDateTime();
+
+            timer1.Start();
+
 
             CheckMonthlyReset();
             CheckPenalties();
@@ -31,6 +38,7 @@ namespace BusinessPermitLicensingSystem.Forms
         private void button4_Click(object sender, EventArgs e)
         {
             ProfilingForm profilingForm = new ProfilingForm();
+
             profilingForm.Show();
             this.Hide();
         }
@@ -64,14 +72,17 @@ namespace BusinessPermitLicensingSystem.Forms
 
             if (updated > 0)
             {
+                lblPenaltyNotice.ForeColor = Color.DarkOrange;
                 lblPenaltyNotice.Text =
                     $"⚠️ {updated} unpaid record(s) have been charged a 25% penalty.";
-                lblPenaltyNotice.Visible = true;
             }
             else
             {
-                lblPenaltyNotice.Visible = false;
+                lblPenaltyNotice.ForeColor = Color.SeaGreen;
+                lblPenaltyNotice.Text = "✅ No penalty charges at this time.";
             }
+
+            lblPenaltyNotice.Visible = true;
         }
 
         // ===================== MONTHLY RESET ===================== //
@@ -101,6 +112,46 @@ namespace BusinessPermitLicensingSystem.Forms
                     "Monthly Reset",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblPenaltyNotice_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void UpdateDateTime()
+        {
+            string date = DateTime.Now.ToString("dddd, MMMM dd, yyyy");
+            string time = DateTime.Now.ToString("hh:mm:ss");
+            string ampm = DateTime.Now.ToString("tt").ToUpper();
+
+            lblDateTime.Text = $"{date}  {time} {ampm}";
+        }
+
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            UpdateDateTime();
+        }
+
+        private void lblDateTime_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                const int CS_NOCLOSE = 0x200;
+                CreateParams cp = base.CreateParams;
+                cp.ClassStyle |= CS_NOCLOSE; // ✅ Disables X button
+                return cp;
             }
         }
     }

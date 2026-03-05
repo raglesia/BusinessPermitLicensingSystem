@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AccountCreationForm));
             txtFullName = new TextBox();
             txtuname = new TextBox();
             txtpass = new TextBox();
@@ -41,140 +43,183 @@
             lblMessage = new Label();
             txtPosition = new TextBox();
             label5 = new Label();
+            toolTip1 = new ToolTip(components);
+            panel1 = new Panel();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // txtFullName
             // 
-            txtFullName.Location = new Point(405, 125);
+            txtFullName.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtFullName.Location = new Point(249, 10);
             txtFullName.Name = "txtFullName";
-            txtFullName.Size = new Size(284, 31);
+            txtFullName.Size = new Size(418, 39);
             txtFullName.TabIndex = 0;
             // 
             // txtuname
             // 
-            txtuname.Location = new Point(405, 223);
+            txtuname.Font = new Font("Segoe UI", 12F);
+            txtuname.Location = new Point(249, 108);
             txtuname.Name = "txtuname";
-            txtuname.Size = new Size(284, 31);
-            txtuname.TabIndex = 1;
+            txtuname.Size = new Size(418, 39);
+            txtuname.TabIndex = 2;
             // 
             // txtpass
             // 
-            txtpass.Location = new Point(405, 274);
+            txtpass.Font = new Font("Segoe UI", 12F);
+            txtpass.Location = new Point(249, 157);
             txtpass.Name = "txtpass";
-            txtpass.Size = new Size(284, 31);
-            txtpass.TabIndex = 2;
+            txtpass.Size = new Size(418, 39);
+            txtpass.TabIndex = 3;
             txtpass.UseSystemPasswordChar = true;
             // 
             // txtconpass
             // 
-            txtconpass.Location = new Point(405, 320);
+            txtconpass.Font = new Font("Segoe UI", 12F);
+            txtconpass.Location = new Point(249, 202);
             txtconpass.Name = "txtconpass";
-            txtconpass.Size = new Size(284, 31);
-            txtconpass.TabIndex = 3;
+            txtconpass.Size = new Size(418, 39);
+            txtconpass.TabIndex = 4;
             txtconpass.UseSystemPasswordChar = true;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(296, 125);
+            label1.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label1.Location = new Point(16, 13);
             label1.Name = "label1";
-            label1.Size = new Size(95, 25);
+            label1.Size = new Size(136, 32);
             label1.TabIndex = 4;
             label1.Text = "Full Name:";
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(291, 229);
+            label2.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label2.Location = new Point(16, 115);
             label2.Name = "label2";
-            label2.Size = new Size(100, 25);
+            label2.Size = new Size(142, 32);
             label2.TabIndex = 5;
             label2.Text = "Username: ";
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(295, 280);
+            label3.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label3.Location = new Point(16, 164);
             label3.Name = "label3";
-            label3.Size = new Size(96, 25);
+            label3.Size = new Size(136, 32);
             label3.TabIndex = 6;
             label3.Text = "Password: ";
             // 
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(231, 320);
+            label4.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label4.Location = new Point(16, 209);
             label4.Name = "label4";
-            label4.Size = new Size(160, 25);
+            label4.Size = new Size(229, 32);
             label4.TabIndex = 7;
             label4.Text = "Confirm Password:";
             // 
             // btnCreate
             // 
-            btnCreate.Location = new Point(296, 384);
+            btnCreate.BackColor = SystemColors.GradientActiveCaption;
+            btnCreate.BackgroundImage = Properties.Resources.icons8_create_64;
+            btnCreate.BackgroundImageLayout = ImageLayout.Center;
+            btnCreate.Location = new Point(142, 255);
             btnCreate.Name = "btnCreate";
-            btnCreate.Size = new Size(165, 44);
-            btnCreate.TabIndex = 8;
-            btnCreate.Text = "Create Account";
-            btnCreate.UseVisualStyleBackColor = true;
+            btnCreate.Size = new Size(201, 73);
+            btnCreate.TabIndex = 5;
+            toolTip1.SetToolTip(btnCreate, "Create Account");
+            btnCreate.UseVisualStyleBackColor = false;
             btnCreate.Click += btnCreate_Click;
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(510, 375);
+            btnCancel.BackColor = SystemColors.GradientActiveCaption;
+            btnCancel.BackgroundImage = Properties.Resources.icons8_cancel_64;
+            btnCancel.BackgroundImageLayout = ImageLayout.Center;
+            btnCancel.Location = new Point(364, 255);
             btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(165, 44);
-            btnCancel.TabIndex = 9;
-            btnCancel.Text = "Cancel";
-            btnCancel.UseVisualStyleBackColor = true;
+            btnCancel.Size = new Size(201, 73);
+            btnCancel.TabIndex = 6;
+            toolTip1.SetToolTip(btnCancel, "Cancel");
+            btnCancel.UseVisualStyleBackColor = false;
+            btnCancel.Click += btnCancel_Click;
             // 
             // lblMessage
             // 
             lblMessage.AutoSize = true;
-            lblMessage.Location = new Point(458, 403);
+            lblMessage.Location = new Point(249, 303);
             lblMessage.Name = "lblMessage";
             lblMessage.Size = new Size(0, 25);
             lblMessage.TabIndex = 10;
             // 
             // txtPosition
             // 
-            txtPosition.Location = new Point(405, 172);
+            txtPosition.Font = new Font("Segoe UI", 12F);
+            txtPosition.Location = new Point(249, 60);
             txtPosition.Name = "txtPosition";
-            txtPosition.Size = new Size(284, 31);
-            txtPosition.TabIndex = 11;
+            txtPosition.Size = new Size(418, 39);
+            txtPosition.TabIndex = 1;
             // 
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(263, 175);
+            label5.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label5.Location = new Point(16, 67);
             label5.Name = "label5";
-            label5.Size = new Size(128, 25);
+            label5.Size = new Size(189, 32);
             label5.TabIndex = 12;
             label5.Text = "Position / Title:";
+            // 
+            // toolTip1
+            // 
+            toolTip1.AutoPopDelay = 3000;
+            toolTip1.InitialDelay = 500;
+            toolTip1.IsBalloon = true;
+            toolTip1.ReshowDelay = 200;
+            // 
+            // panel1
+            // 
+            panel1.Controls.Add(btnCancel);
+            panel1.Controls.Add(txtFullName);
+            panel1.Controls.Add(txtuname);
+            panel1.Controls.Add(label5);
+            panel1.Controls.Add(txtpass);
+            panel1.Controls.Add(txtPosition);
+            panel1.Controls.Add(txtconpass);
+            panel1.Controls.Add(lblMessage);
+            panel1.Controls.Add(label1);
+            panel1.Controls.Add(label2);
+            panel1.Controls.Add(btnCreate);
+            panel1.Controls.Add(label3);
+            panel1.Controls.Add(label4);
+            panel1.Location = new Point(12, 12);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(686, 348);
+            panel1.TabIndex = 13;
             // 
             // AccountCreationForm
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1138, 450);
-            Controls.Add(label5);
-            Controls.Add(txtPosition);
-            Controls.Add(lblMessage);
-            Controls.Add(btnCancel);
-            Controls.Add(btnCreate);
-            Controls.Add(label4);
-            Controls.Add(label3);
-            Controls.Add(label2);
-            Controls.Add(label1);
-            Controls.Add(txtconpass);
-            Controls.Add(txtpass);
-            Controls.Add(txtuname);
-            Controls.Add(txtFullName);
+            BackColor = SystemColors.GradientActiveCaption;
+            BackgroundImageLayout = ImageLayout.None;
+            ClientSize = new Size(713, 372);
+            Controls.Add(panel1);
+            DoubleBuffered = true;
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            MaximizeBox = false;
             Name = "AccountCreationForm";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Masinloc - BPLS";
             Load += AccountCreationForm_Load;
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -192,5 +237,7 @@
         private Label lblMessage;
         private TextBox txtPosition;
         private Label label5;
+        private ToolTip toolTip1;
+        private Panel panel1;
     }
 }

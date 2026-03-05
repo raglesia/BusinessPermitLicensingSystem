@@ -57,7 +57,7 @@
             menuStrip1.ImageScalingSize = new Size(24, 24);
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(1341, 24);
+            menuStrip1.Size = new Size(1765, 24);
             menuStrip1.TabIndex = 0;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -239,7 +239,7 @@
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1341, 706);
+            ClientSize = new Size(1765, 598);
             Controls.Add(label9);
             Controls.Add(dtpStartDate);
             Controls.Add(cmbPaymentStatus);

@@ -13,7 +13,7 @@ namespace BusinessPermitLicensingSystem.Forms
         private string currentSIN = "";
 
         // ===================== CONSTRUCTOR ===================== //
-        public ProfilingForm()
+        public ProfilingForm(ProfilingLists caller = null)
         {
             InitializeComponent();
         }
@@ -91,7 +91,6 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== SAVE ===================== //
         private void btnSave_Click(object sender, EventArgs e)
         {
-            // Get field values
             string fullName = txtFName.Text.Trim();
             string businessName = txtBName.Text.Trim();
             string businessSection = txtBSection.Text.Trim();
@@ -110,8 +109,8 @@ namespace BusinessPermitLicensingSystem.Forms
             string orNumber = "";
             double penalty = 0;
 
-            // Ask for OR Number if marking as Paid
-            if (paymentStatus == "Paid")
+            // ✅ Only ask for OR Number in EDIT mode when marking as Paid
+            if (isEditMode && paymentStatus == "Paid")
             {
                 penalty = Database.CalculatePenalty(monthlyRental, paymentStatus, startDate);
 
@@ -235,9 +234,7 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== NAVIGATION ===================== //
         private void button1_Click(object sender, EventArgs e)
         {
-            DashboardForm dashboardForm = new DashboardForm();
-            dashboardForm.Show();
-            this.Hide();
+            this.Close();
         }
 
         // ===================== EVENTS ===================== //

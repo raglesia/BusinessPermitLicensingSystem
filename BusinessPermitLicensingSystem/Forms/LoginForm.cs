@@ -82,5 +82,35 @@ namespace BusinessPermitLicensingSystem.Forms
         {
             Application.Exit();
         }
+
+        private void btnCreate_Click_1(object sender, EventArgs e)
+        {
+            AccountCreationForm form = new AccountCreationForm();
+            form.ShowDialog();
+        }
+
+        private void LogInForm_Load(object sender, EventArgs e)
+        {
+            {
+                this.MaximizeBox = false;  // Hide maximize
+            }
+        }
+
+        // ===================== HIDE CLOSE BUTTON ===================== //
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                const int CS_NOCLOSE = 0x200;
+                CreateParams cp = base.CreateParams;
+                cp.ClassStyle |= CS_NOCLOSE; // ✅ Disables X button
+                return cp;
+            }
+        }
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
+
 }
