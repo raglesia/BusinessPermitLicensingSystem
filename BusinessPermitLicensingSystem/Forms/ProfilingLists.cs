@@ -29,6 +29,7 @@ namespace BusinessPermitLicensingSystem
         private void ProfilingLists_Load(object sender, EventArgs e)
         {
             lblUsername.Text = $"{Session.CurrentPosition} | {Session.CurrentFullName}";
+            btnPaymentHistory.Focus();
         }
 
         // ===================== SETUP ===================== //
@@ -40,29 +41,31 @@ namespace BusinessPermitLicensingSystem
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView1.MultiSelect = false;
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dataGridView1.DataBindingComplete += (s, e) => ColorPaymentStatusColumn();
             dataGridView1.RowHeadersVisible = false;
+            dataGridView1.DataBindingComplete += (s, e) =>
 
             {
+                dataGridView1.Columns["SIN"].DisplayIndex = 0;
+                dataGridView1.Columns["Full Name"].DisplayIndex = 1;
+                dataGridView1.Columns["Business Name"].DisplayIndex = 2;
+                dataGridView1.Columns["Business Section"].DisplayIndex = 3;
+                dataGridView1.Columns["Stall Number"].DisplayIndex = 4;
+                dataGridView1.Columns["Stall Size"].DisplayIndex = 5;
+                dataGridView1.Columns["Date of Occupancy"].DisplayIndex = 6;
+                dataGridView1.Columns["Monthly Rental"].DisplayIndex = 7;
+                dataGridView1.Columns["Penalty"].DisplayIndex = 8;
+                dataGridView1.Columns["Additional Charge"].DisplayIndex = 9;
+                dataGridView1.Columns["Payment Status"].DisplayIndex = 10;
+
                 ColorPaymentStatusColumn();
-                AlignFiltersToColumns();
 
             };
-            dataGridView1.ColumnWidthChanged += (s, e) => AlignFiltersToColumns(); // ✅
         }
 
         private void SetupFilters()
         {
-            txtFilterBIN.TextChanged += (s, e) => ApplyFilter();
-            txtFilterFullName.TextChanged += (s, e) => ApplyFilter();
-            txtFilterBusinessName.TextChanged += (s, e) => ApplyFilter();
-            txtFilterBusinessSection.TextChanged += (s, e) => ApplyFilter();
-            txtFilterStallNumber.TextChanged += (s, e) => ApplyFilter();
-            txtFilterStallSize.TextChanged += (s, e) => ApplyFilter();
-            txtFilterMonthlyRental.TextChanged += (s, e) => ApplyFilter();
-            txtFilterPayment.TextChanged += (s, e) => ApplyFilter(); 
-            txtFilterPenalty.TextChanged += (s, e) => ApplyFilter(); 
-            txtFilterDOC.TextChanged += (s, e) => ApplyFilter(); 
+            txtSearch.PlaceholderText = "🔍 Search Records: ";
+            txtSearch.TextChanged += (s, e) => ApplyFilter();
         }
 
         // ===================== DATA LOADING ===================== //
@@ -73,9 +76,9 @@ namespace BusinessPermitLicensingSystem
 
             FormatCurrencyColumn("Monthly Rental");
             FormatCurrencyColumn("Penalty");
+            FormatCurrencyColumn("Additional Charge");
             ColorPaymentStatusColumn();
 
-            AlignFiltersToColumns(); // ✅
         }
 
         private void FormatCurrencyColumn(string columnName)
@@ -92,21 +95,26 @@ namespace BusinessPermitLicensingSystem
         {
             try
             {
-                var filters = new List<string>();
+                string search = txtSearch.Text.Trim().Replace("'", "''");
 
-                AddFilter(filters, "Convert([SIN], 'System.String')", txtFilterBIN.Text);
-                AddFilter(filters, "[Full Name]", txtFilterFullName.Text);
-                AddFilter(filters, "[Business Name]", txtFilterBusinessName.Text);
-                AddFilter(filters, "[Business Section]", txtFilterBusinessSection.Text);
-                AddFilter(filters, "Convert([Stall Number], 'System.String')", txtFilterStallNumber.Text);
-                AddFilter(filters, "Convert([Stall Size], 'System.String')", txtFilterStallSize.Text);
-                AddFilter(filters, "Convert([Monthly Rental], 'System.String')", txtFilterMonthlyRental.Text);
-                AddFilter(filters, "[Payment Status]", txtFilterPayment.Text);  
-                AddFilter(filters, "Convert([Penalty], 'System.String')", txtFilterPenalty.Text);  
-                AddFilter(filters, "[Date of Occupancy]", txtFilterDOC.Text);     
+                if (string.IsNullOrWhiteSpace(search))
+                {
+                    dtProfiles.DefaultView.RowFilter = string.Empty;
+                    return;
+                }
 
-
-                dtProfiles.DefaultView.RowFilter = string.Join(" AND ", filters);
+                // ✅ Payment Status uses exact match to differentiate Paid vs Unpaid
+                dtProfiles.DefaultView.RowFilter = $@"
+            Convert([SIN], 'System.String')            LIKE '%{search}%' OR
+            [Full Name]                                LIKE '%{search}%' OR
+            [Business Name]                            LIKE '%{search}%' OR
+            [Business Section]                         LIKE '%{search}%' OR
+            Convert([Stall Number], 'System.String')   LIKE '%{search}%' OR
+            Convert([Stall Size], 'System.String')     LIKE '%{search}%' OR
+            Convert([Monthly Rental], 'System.String') LIKE '%{search}%' OR
+            [Payment Status]                           = '{search}'       OR
+            Convert([Penalty], 'System.String')        LIKE '%{search}%' OR
+            [Date of Occupancy]                        LIKE '%{search}%'";
             }
             catch (Exception ex)
             {
@@ -127,6 +135,11 @@ namespace BusinessPermitLicensingSystem
             {
                 if (row.IsNewRow) continue;
 
+                // ✅ Apply alternating row color to entire row first
+                Color rowColor = row.Index % 2 == 0 ? Color.White : Color.AliceBlue;
+                row.DefaultCellStyle.BackColor = rowColor;
+
+                // ✅ Then override only the Payment Status cell
                 var cell = row.Cells["Payment Status"];
                 if (cell?.Value == null) continue;
 
@@ -164,10 +177,12 @@ namespace BusinessPermitLicensingSystem
             string monthlyRental = row.Cells["Monthly Rental"].Value?.ToString() ?? "";
             string paymentStatus = row.Cells["Payment Status"].Value?.ToString() ?? "Unpaid";
             string startDate = row.Cells["Date of Occupancy"].Value?.ToString() ?? "";
+            double additionalCharge = Convert.ToDouble(row.Cells["Additional Charge"].Value ?? 0); // ✅
 
             var form = new ProfilingForm();
             form.LoadForEdit(sin, fullName, businessName, businessSection,
-                stallNumber, stallSize, monthlyRental, paymentStatus, startDate);
+                stallNumber, stallSize, monthlyRental, paymentStatus,
+                startDate, additionalCharge); // ✅
             form.ShowDialog();
 
             LoadProfiles();
@@ -262,15 +277,16 @@ namespace BusinessPermitLicensingSystem
 
             var selectedProfile = new BillingReportModel
             {
-                SIN = row.Cells["SIN"].Value.ToString(),
-                FullName = row.Cells["Full Name"].Value.ToString(),
-                BusinessName = row.Cells["Business Name"].Value.ToString(),
-                BusinessSection = row.Cells["Business Section"].Value.ToString(),
-                StallNumber = row.Cells["Stall Number"].Value.ToString(),
-                StallSize = row.Cells["Stall Size"].Value.ToString(),
+                SIN = row.Cells["SIN"].Value.ToString()!,
+                FullName = row.Cells["Full Name"].Value.ToString()!,
+                BusinessName = row.Cells["Business Name"].Value.ToString()!,
+                BusinessSection = row.Cells["Business Section"].Value.ToString()!,
+                StallNumber = row.Cells["Stall Number"].Value.ToString()!,
+                StallSize = row.Cells["Stall Size"].Value.ToString()!,
                 MonthlyRental = monthlyRental,
                 PaymentStatus = paymentStatus,
                 Penalty = penalty,
+                AdditionalCharge = Convert.ToDouble(row.Cells["Additional Charge"].Value ?? 0), // ✅
                 StartDate = startDate
             };
 
@@ -402,62 +418,87 @@ namespace BusinessPermitLicensingSystem
             this.Hide();
         }
 
-        // ===================== RESIZE ===================== //
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            AlignFiltersToColumns(); // ✅
-        }
 
-        // ===================== HELPERS ===================== //
-        private void AlignFiltersToColumns()
-        {
-            if (dataGridView1.Columns.Count == 0) return;
 
-            int xOffset = dataGridView1.Left + dataGridView1.RowHeadersWidth;
-
-            foreach (DataGridViewColumn col in dataGridView1.Columns)
-            {
-                TextBox filter = col.HeaderText switch
-                {
-                    "SIN" => txtFilterBIN,
-                    "Full Name" => txtFilterFullName,
-                    "Business Name" => txtFilterBusinessName,
-                    "Business Section" => txtFilterBusinessSection,
-                    "Stall Number" => txtFilterStallNumber,
-                    "Stall Size" => txtFilterStallSize,
-                    "Monthly Rental" => txtFilterMonthlyRental,
-                    "Payment Status" => txtFilterPayment,
-                    "Penalty" => txtFilterPenalty,
-                    "Date of Occupancy" => txtFilterDOC,
-
-                    _ => null
-                };
-
-                if (filter == null) continue;
-
-                // ✅ Use GetColumnDisplayRectangle instead of ContentBounds
-                Rectangle rect = dataGridView1.GetColumnDisplayRectangle(col.Index, true);
-
-                if (rect.Width == 0) continue; // Column not visible yet
-
-                filter.Left = dataGridView1.Left + rect.Left;
-                filter.Width = rect.Width;
-                filter.Visible = true;
-            }
-        }
+        // ===================== WINDOW SETTINGS ===================== //
         protected override CreateParams CreateParams
         {
             get
             {
                 const int CS_NOCLOSE = 0x200;
                 CreateParams cp = base.CreateParams;
-                cp.ClassStyle |= CS_NOCLOSE; // ✅ Disables X button
+                cp.ClassStyle |= CS_NOCLOSE;
                 return cp;
             }
         }
 
         // ===================== UNUSED EVENTS ===================== //
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
+
+        private void btnArchive_Click(object sender, EventArgs e)
+        {
+            {
+                if (dataGridView1.SelectedRows.Count == 0)
+                {
+                    MessageBox.Show(
+                        "Please select a record first.",
+                        "No Selection",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return;
+                }
+
+                var row = dataGridView1.SelectedRows[0];
+                string sin = row.Cells["SIN"].Value?.ToString() ?? "";
+                string name = row.Cells["Full Name"].Value?.ToString() ?? "";
+
+                var confirm = MessageBox.Show(
+                    $"Archive record for {name}?\n\nArchived records are hidden from the list but kept in the database.",
+                    "Confirm Archive",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (confirm != DialogResult.Yes) return;
+
+                var result = Database.ArchiveProfiling(sin);
+
+                if (result.Success)
+                {
+                    Database.LogAudit(
+                        "Archive", sin,
+                        Session.CurrentUserId ?? 0,
+                        $"Archived profile for {name}.");
+
+                    MessageBox.Show(
+                        "Record archived successfully.",
+                        "Archived",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+
+                    LoadProfiles();
+                }
+                else
+                {
+                    MessageBox.Show(
+                        result.ErrorMessage,
+                        "Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void btnViewArcRec_Click(object sender, EventArgs e)
+        {
+            ArchivedForm archivedForm = new ArchivedForm();
+
+            archivedForm.Show();
+            this.Hide();
+        }
+
+        private void panelButtons_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

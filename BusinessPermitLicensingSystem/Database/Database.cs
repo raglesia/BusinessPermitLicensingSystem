@@ -44,6 +44,7 @@ namespace BusinessPermitLicensingSystem
                     PaymentStatus   TEXT NOT NULL DEFAULT 'Unpaid',
                     StartDate       TEXT          DEFAULT '',
                     Penalty         REAL          DEFAULT 0,
+                    AdditionalCharge REAL         DEFAULT 0,
                     UNIQUE(FullName, BusinessName, StallNumber)
                 );");
 
@@ -78,12 +79,42 @@ namespace BusinessPermitLicensingSystem
                     Value TEXT NOT NULL
                 );");
 
+            // Rental rates table
+            ExecuteNonQuery(con, @"
+                CREATE TABLE IF NOT EXISTS RentalRates (
+                    Section    TEXT PRIMARY KEY,
+                    RatePerSqm REAL NOT NULL DEFAULT 0,
+                    FlatRate   REAL NOT NULL DEFAULT 0,
+                    RateType   TEXT NOT NULL DEFAULT 'PerSqm'
+                );");
+
+            // Seed default rates if empty
+            ExecuteNonQuery(con, @"
+                INSERT OR IGNORE INTO RentalRates (Section, RatePerSqm, FlatRate, RateType) VALUES
+                ('Pharmacy (Below 100k)',   150,  0,    'PerSqm'),
+                ('Pharmacy (100k-250k)',    250,  0,    'PerSqm'),
+                ('Pharmacy (Above 250k)',   350,  0,    'PerSqm'),
+                ('Stalls in Mall',          150,  0,    'PerSqm'),
+                ('Food Court',              0,    1200, 'Flat'),
+                ('Corridor',               0,    1200, 'Flat'),
+                ('Stalls',                 210,  0,    'PerSqm'),
+                ('Carinderia',             210,  0,    'PerSqm'),
+                ('Fruits and Vegetable',   600,  0,    'PerSqm'),
+                ('Fish',                   600,  0,    'PerSqm'),
+                ('Meat',                   600,  0,    'PerSqm'),
+                ('Burger Area',            0,    1000, 'Flat'),
+                ('Kakanin Area',           0,    300,  'Flat'),
+                ('Pasalubong Center',       0,    5500, 'Flat');");
+
             // Migrate existing databases — add columns if missing
             var alterCommands = new[]
             {
                 "ALTER TABLE Profiling ADD COLUMN StartDate TEXT DEFAULT ''",
                 "ALTER TABLE Profiling ADD COLUMN Penalty REAL DEFAULT 0",
+                "ALTER TABLE Profiling ADD COLUMN AdditionalCharge REAL DEFAULT 0",
                 "ALTER TABLE Users ADD COLUMN Position TEXT NOT NULL DEFAULT ''",
+                "CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_stallnumber ON Profiling(StallNumber) WHERE IsArchived = 0",
+                "ALTER TABLE Profiling ADD COLUMN IsArchived INTEGER DEFAULT 0", // ✅ Add this
                 "CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_ornumber ON PaymentHistory(ORNumber)"
             };
 
@@ -233,8 +264,10 @@ namespace BusinessPermitLicensingSystem
                     MonthlyRental                      AS [Monthly Rental],
                     PaymentStatus                      AS [Payment Status],
                     Penalty                            AS [Penalty],
+                    AdditionalCharge                   AS [Additional Charge],
                     strftime('%m/%d/%Y', StartDate)    AS [Date of Occupancy]
                 FROM Profiling
+                WHERE IsArchived = 0
                 ORDER BY ROWID DESC";
 
             using var cmd = new SQLiteCommand(query, con);
@@ -245,6 +278,27 @@ namespace BusinessPermitLicensingSystem
             return dt;
         }
 
+        // STAL NUMBER CHECKING //
+        public static bool StallNumberExists(string stallNumber, string excludeSIN = "")
+        {
+            try
+            {
+                using var con = new SQLiteConnection(ConnectionString);
+                con.Open();
+
+                using var cmd = new SQLiteCommand(@"
+            SELECT 1 FROM Profiling
+            WHERE StallNumber = @stall
+            AND   IsArchived  = 0
+            AND   SIN        != @excludeSIN", con);
+                cmd.Parameters.AddWithValue("@stall", stallNumber.Trim());
+                cmd.Parameters.AddWithValue("@excludeSIN", excludeSIN);
+
+                return cmd.ExecuteScalar() != null;
+            }
+            catch { return false; }
+        }
+
         public static (bool Success, string? ErrorMessage) AddProfiling(
             string sin,
             string fullName,
@@ -253,7 +307,8 @@ namespace BusinessPermitLicensingSystem
             string stallNumber,
             string stallSize,
             double monthlyRental,
-            string startDate)
+            string startDate,
+            double additionalCharge = 0) // ✅
         {
             if (string.IsNullOrWhiteSpace(fullName) ||
                 string.IsNullOrWhiteSpace(businessName) ||
@@ -270,9 +325,9 @@ namespace BusinessPermitLicensingSystem
                 const string insert = @"
                     INSERT INTO Profiling
                         (SIN, FullName, BusinessName, BusinessSection,
-                         StallNumber, StallSize, MonthlyRental, StartDate)
+                         StallNumber, StallSize, MonthlyRental, StartDate, AdditionalCharge)
                     VALUES
-                        (@sin, @f, @b, @s, @n, @sz, @r, @startDate)";
+                        (@sin, @f, @b, @s, @n, @sz, @r, @startDate, @additional)";
 
                 using var cmd = new SQLiteCommand(insert, con);
                 cmd.Parameters.AddWithValue("@sin", sin);
@@ -283,6 +338,7 @@ namespace BusinessPermitLicensingSystem
                 cmd.Parameters.AddWithValue("@sz", stallSize.Trim());
                 cmd.Parameters.AddWithValue("@r", monthlyRental);
                 cmd.Parameters.AddWithValue("@startDate", startDate);
+                cmd.Parameters.AddWithValue("@additional", additionalCharge); // ✅
 
                 cmd.ExecuteNonQuery();
                 return (true, null);
@@ -305,7 +361,8 @@ namespace BusinessPermitLicensingSystem
             string stallNumber,
             string stallSize,
             double monthlyRental,
-            string startDate)
+            string startDate,
+            double additionalCharge = 0) // ✅
         {
             try
             {
@@ -315,13 +372,14 @@ namespace BusinessPermitLicensingSystem
                 const string query = @"
                     UPDATE Profiling
                     SET
-                        FullName        = @FullName,
-                        BusinessName    = @BusinessName,
-                        BusinessSection = @BusinessSection,
-                        StallNumber     = @StallNumber,
-                        StallSize       = @StallSize,
-                        MonthlyRental   = @MonthlyRental,
-                        StartDate       = @StartDate
+                        FullName         = @FullName,
+                        BusinessName     = @BusinessName,
+                        BusinessSection  = @BusinessSection,
+                        StallNumber      = @StallNumber,
+                        StallSize        = @StallSize,
+                        MonthlyRental    = @MonthlyRental,
+                        StartDate        = @StartDate,
+                        AdditionalCharge = @AdditionalCharge
                     WHERE SIN = @SIN";
 
                 using var cmd = new SQLiteCommand(query, con);
@@ -332,6 +390,7 @@ namespace BusinessPermitLicensingSystem
                 cmd.Parameters.AddWithValue("@StallSize", stallSize);
                 cmd.Parameters.AddWithValue("@MonthlyRental", monthlyRental);
                 cmd.Parameters.AddWithValue("@StartDate", startDate);
+                cmd.Parameters.AddWithValue("@AdditionalCharge", additionalCharge); // ✅
                 cmd.Parameters.AddWithValue("@SIN", sin);
 
                 cmd.ExecuteNonQuery();
@@ -384,6 +443,51 @@ namespace BusinessPermitLicensingSystem
             } while (true);
 
             return sin;
+        }
+
+        // ===================== RENTAL RATES ===================== //
+        public static DataTable GetRentalRates()
+        {
+            using var con = new SQLiteConnection(ConnectionString);
+            con.Open();
+
+            using var cmd = new SQLiteCommand(
+                "SELECT * FROM RentalRates ORDER BY Section", con);
+            using var adapter = new SQLiteDataAdapter(cmd);
+
+            var dt = new DataTable();
+            adapter.Fill(dt);
+            return dt;
+        }
+
+        public static (double RatePerSqm, double FlatRate, string RateType) GetRateBySection(
+            string section)
+        {
+            try
+            {
+                using var con = new SQLiteConnection(ConnectionString);
+                con.Open();
+
+                using var cmd = new SQLiteCommand(@"
+                    SELECT RatePerSqm, FlatRate, RateType
+                    FROM RentalRates
+                    WHERE Section = @section", con);
+                cmd.Parameters.AddWithValue("@section", section);
+
+                using var reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    return (
+                        Convert.ToDouble(reader["RatePerSqm"]),
+                        Convert.ToDouble(reader["FlatRate"]),
+                        reader["RateType"].ToString()!
+                    );
+                }
+
+                return (0, 0, "PerSqm");
+            }
+            catch { return (0, 0, "PerSqm"); }
         }
 
         // ===================== PAYMENT STATUS ===================== //
@@ -463,13 +567,13 @@ namespace BusinessPermitLicensingSystem
 
             const string query = @"
                 SELECT
-                    ph.Id                                       AS [#],
-                    ph.ORNumber                                 AS [OR Number],
-                    ph.AmountPaid                               AS [Amount Paid],
-                    ph.Penalty                                  AS [Penalty],
-                    (ph.AmountPaid + ph.Penalty)                AS [Total Paid],
-                    strftime('%m/%d/%Y %H:%M', ph.DatePaid)     AS [Date Paid],
-                    u.FullName                                  AS [Recorded By]
+                    ph.Id                                   AS [#],
+                    ph.ORNumber                             AS [OR Number],
+                    ph.AmountPaid                           AS [Amount Paid],
+                    ph.Penalty                              AS [Penalty],
+                    (ph.AmountPaid + ph.Penalty)            AS [Total Paid],
+                    strftime('%m/%d/%Y %H:%M', ph.DatePaid) AS [Date Paid],
+                    u.FullName                              AS [Recorded By]
                 FROM PaymentHistory ph
                 LEFT JOIN Users u ON ph.RecordedBy = u.Id
                 WHERE ph.SIN = @sin
@@ -477,6 +581,79 @@ namespace BusinessPermitLicensingSystem
 
             using var cmd = new SQLiteCommand(query, con);
             cmd.Parameters.AddWithValue("@sin", sin);
+            using var adapter = new SQLiteDataAdapter(cmd);
+
+            var dt = new DataTable();
+            adapter.Fill(dt);
+            return dt;
+        }
+
+        // ===================== ARCHIVE ===================== //
+        public static (bool Success, string? ErrorMessage) ArchiveProfiling(string sin)
+        {
+            try
+            {
+                using var con = new SQLiteConnection(ConnectionString);
+                con.Open();
+
+                using var cmd = new SQLiteCommand(@"
+            UPDATE Profiling
+            SET IsArchived = 1
+            WHERE SIN = @sin", con);
+                cmd.Parameters.AddWithValue("@sin", sin);
+                cmd.ExecuteNonQuery();
+                return (true, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
+            }
+        }
+
+        public static (bool Success, string? ErrorMessage) RestoreProfiling(string sin)
+        {
+            try
+            {
+                using var con = new SQLiteConnection(ConnectionString);
+                con.Open();
+
+                using var cmd = new SQLiteCommand(@"
+            UPDATE Profiling
+            SET IsArchived = 0
+            WHERE SIN = @sin", con);
+                cmd.Parameters.AddWithValue("@sin", sin);
+                cmd.ExecuteNonQuery();
+                return (true, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
+            }
+        }
+
+        public static DataTable GetArchivedProfiles()
+        {
+            using var con = new SQLiteConnection(ConnectionString);
+            con.Open();
+
+            const string query = @"
+        SELECT
+            SIN                                AS [SIN],
+            FullName                           AS [Full Name],
+            BusinessName                       AS [Business Name],
+            BusinessSection                    AS [Business Section],
+            StallNumber                        AS [Stall Number],
+            StallSize                          AS [Stall Size],
+            MonthlyRental                      AS [Monthly Rental],
+            PaymentStatus                      AS [Payment Status],
+            Penalty                            AS [Penalty],
+            AdditionalCharge                   AS [Additional Charge],
+            strftime('%m/%d/%Y', StartDate)    AS [Date of Occupancy]
+        FROM Profiling
+        WHERE IsArchived = 1
+        ORDER BY ROWID DESC";
+
+            using var cmd = new SQLiteCommand(query, con);
             using var adapter = new SQLiteDataAdapter(cmd);
 
             var dt = new DataTable();
@@ -502,20 +679,16 @@ namespace BusinessPermitLicensingSystem
                 start.Month == 12 ? 1 : start.Month + 1,
                 20);
 
-            // No penalty if first due date hasn't passed yet
             if (today <= firstDueDate) return 0;
 
-            // ✅ Count how many due dates have passed and are unpaid
             int missedMonths = 0;
             DateTime dueDate = firstDueDate;
 
             while (dueDate < today)
             {
-                // Only count if the due date has fully passed
                 if (today > dueDate)
                     missedMonths++;
 
-                // Move to next month's due date
                 dueDate = new DateTime(
                     dueDate.Month == 12 ? dueDate.Year + 1 : dueDate.Year,
                     dueDate.Month == 12 ? 1 : dueDate.Month + 1,
@@ -524,9 +697,7 @@ namespace BusinessPermitLicensingSystem
 
             if (missedMonths <= 0) return 0;
 
-            // ✅ Penalty = 25% × monthly rental × number of missed months
-            double penalty = monthlyRental * 0.25 * missedMonths;
-            return Math.Round(penalty, 2);
+            return Math.Round(monthlyRental * 0.25 * missedMonths, 2);
         }
 
         public static void UpdatePenalty(string sin, double penalty)
@@ -567,7 +738,6 @@ namespace BusinessPermitLicensingSystem
                     WHERE PaymentStatus != 'Paid'", con);
 
                 using var reader = cmd.ExecuteReader();
-
                 var records = new List<(string sin, double rental, string status, string startDate)>();
 
                 while (reader.Read())
@@ -639,7 +809,7 @@ namespace BusinessPermitLicensingSystem
                 SELECT
                     a.Id,
                     a.Action,
-                    u.Username  AS [Username],
+                    u.Username AS [Username],
                     a.Timestamp,
                     a.Details
                 FROM AuditTrail a
@@ -768,7 +938,7 @@ namespace BusinessPermitLicensingSystem
             return list;
         }
 
-        // CHECK IF OR NUMBER ALREADY EXISTS //
+        // ===================== OR NUMBER ===================== //
         public static bool ORNumberExists(string orNumber)
         {
             try

@@ -31,7 +31,6 @@
             menuStrip1 = new MenuStrip();
             txtFName = new TextBox();
             txtBName = new TextBox();
-            txtBSection = new TextBox();
             txtSNumber = new TextBox();
             txtSSize = new TextBox();
             txtMRental = new TextBox();
@@ -50,6 +49,10 @@
             cmbPaymentStatus = new ComboBox();
             dtpStartDate = new DateTimePicker();
             label9 = new Label();
+            cmbBSection = new ComboBox();
+            chkAdditional = new CheckBox();
+            label10 = new Label();
+            txtAdditionalCharge = new TextBox();
             SuspendLayout();
             // 
             // menuStrip1
@@ -63,42 +66,35 @@
             // 
             // txtFName
             // 
-            txtFName.Location = new Point(212, 99);
+            txtFName.Location = new Point(212, 62);
             txtFName.Name = "txtFName";
             txtFName.Size = new Size(402, 31);
             txtFName.TabIndex = 1;
             // 
             // txtBName
             // 
-            txtBName.Location = new Point(212, 146);
+            txtBName.Location = new Point(212, 106);
             txtBName.Name = "txtBName";
             txtBName.Size = new Size(402, 31);
             txtBName.TabIndex = 2;
             // 
-            // txtBSection
-            // 
-            txtBSection.Location = new Point(212, 194);
-            txtBSection.Name = "txtBSection";
-            txtBSection.Size = new Size(402, 31);
-            txtBSection.TabIndex = 3;
-            // 
             // txtSNumber
             // 
-            txtSNumber.Location = new Point(212, 245);
+            txtSNumber.Location = new Point(212, 196);
             txtSNumber.Name = "txtSNumber";
             txtSNumber.Size = new Size(402, 31);
             txtSNumber.TabIndex = 4;
             // 
             // txtSSize
             // 
-            txtSSize.Location = new Point(212, 293);
+            txtSSize.Location = new Point(212, 247);
             txtSSize.Name = "txtSSize";
             txtSSize.Size = new Size(402, 31);
             txtSSize.TabIndex = 5;
             // 
             // txtMRental
             // 
-            txtMRental.Location = new Point(212, 400);
+            txtMRental.Location = new Point(212, 406);
             txtMRental.Name = "txtMRental";
             txtMRental.Size = new Size(402, 31);
             txtMRental.TabIndex = 6;
@@ -107,7 +103,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(16, 105);
+            label1.Location = new Point(19, 68);
             label1.Name = "label1";
             label1.Size = new Size(100, 25);
             label1.TabIndex = 7;
@@ -116,7 +112,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(16, 152);
+            label2.Location = new Point(19, 106);
             label2.Name = "label2";
             label2.Size = new Size(140, 25);
             label2.TabIndex = 8;
@@ -125,7 +121,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(14, 200);
+            label3.Location = new Point(19, 156);
             label3.Name = "label3";
             label3.Size = new Size(142, 25);
             label3.TabIndex = 9;
@@ -134,7 +130,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(14, 251);
+            label4.Location = new Point(19, 202);
             label4.Name = "label4";
             label4.Size = new Size(123, 25);
             label4.TabIndex = 10;
@@ -143,7 +139,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(12, 299);
+            label5.Location = new Point(19, 253);
             label5.Name = "label5";
             label5.Size = new Size(89, 25);
             label5.TabIndex = 11;
@@ -152,7 +148,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(12, 400);
+            label6.Location = new Point(16, 412);
             label6.Name = "label6";
             label6.Size = new Size(140, 25);
             label6.TabIndex = 12;
@@ -160,7 +156,7 @@
             // 
             // txtBIN
             // 
-            txtBIN.Location = new Point(212, 53);
+            txtBIN.Location = new Point(212, 18);
             txtBIN.Name = "txtBIN";
             txtBIN.Size = new Size(402, 31);
             txtBIN.TabIndex = 13;
@@ -168,7 +164,7 @@
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(16, 56);
+            label7.Location = new Point(19, 24);
             label7.Name = "label7";
             label7.Size = new Size(49, 25);
             label7.TabIndex = 14;
@@ -176,7 +172,7 @@
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(106, 530);
+            btnSave.Location = new Point(19, 582);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(155, 34);
             btnSave.TabIndex = 15;
@@ -186,7 +182,7 @@
             // 
             // button1
             // 
-            button1.Location = new Point(297, 530);
+            button1.Location = new Point(180, 582);
             button1.Name = "button1";
             button1.Size = new Size(145, 34);
             button1.TabIndex = 16;
@@ -205,7 +201,7 @@
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new Point(14, 460);
+            label8.Location = new Point(19, 468);
             label8.Name = "label8";
             label8.Size = new Size(137, 25);
             label8.TabIndex = 19;
@@ -214,14 +210,14 @@
             // cmbPaymentStatus
             // 
             cmbPaymentStatus.FormattingEnabled = true;
-            cmbPaymentStatus.Location = new Point(212, 452);
+            cmbPaymentStatus.Location = new Point(212, 460);
             cmbPaymentStatus.Name = "cmbPaymentStatus";
             cmbPaymentStatus.Size = new Size(402, 33);
             cmbPaymentStatus.TabIndex = 20;
             // 
             // dtpStartDate
             // 
-            dtpStartDate.Location = new Point(212, 348);
+            dtpStartDate.Location = new Point(212, 302);
             dtpStartDate.Name = "dtpStartDate";
             dtpStartDate.Size = new Size(402, 31);
             dtpStartDate.TabIndex = 21;
@@ -229,17 +225,56 @@
             // label9
             // 
             label9.AutoSize = true;
-            label9.Location = new Point(16, 353);
+            label9.Location = new Point(19, 308);
             label9.Name = "label9";
             label9.Size = new Size(172, 25);
             label9.TabIndex = 22;
             label9.Text = "Date of Occupancy: ";
             // 
+            // cmbBSection
+            // 
+            cmbBSection.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbBSection.FormattingEnabled = true;
+            cmbBSection.Location = new Point(212, 148);
+            cmbBSection.Name = "cmbBSection";
+            cmbBSection.Size = new Size(402, 33);
+            cmbBSection.TabIndex = 23;
+            // 
+            // chkAdditional
+            // 
+            chkAdditional.AutoSize = true;
+            chkAdditional.Location = new Point(620, 352);
+            chkAdditional.Name = "chkAdditional";
+            chkAdditional.Size = new Size(226, 29);
+            chkAdditional.TabIndex = 24;
+            chkAdditional.Text = "Has additional charges?";
+            chkAdditional.UseVisualStyleBackColor = true;
+            // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.Location = new Point(19, 358);
+            label10.Name = "label10";
+            label10.Size = new Size(172, 25);
+            label10.TabIndex = 25;
+            label10.Text = "Additional Charges: ";
+            // 
+            // txtAdditionalCharge
+            // 
+            txtAdditionalCharge.Location = new Point(212, 352);
+            txtAdditionalCharge.Name = "txtAdditionalCharge";
+            txtAdditionalCharge.Size = new Size(402, 31);
+            txtAdditionalCharge.TabIndex = 26;
+            // 
             // ProfilingForm
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1765, 598);
+            ClientSize = new Size(1765, 709);
+            Controls.Add(txtAdditionalCharge);
+            Controls.Add(label10);
+            Controls.Add(chkAdditional);
+            Controls.Add(cmbBSection);
             Controls.Add(label9);
             Controls.Add(dtpStartDate);
             Controls.Add(cmbPaymentStatus);
@@ -258,7 +293,6 @@
             Controls.Add(txtMRental);
             Controls.Add(txtSSize);
             Controls.Add(txtSNumber);
-            Controls.Add(txtBSection);
             Controls.Add(txtBName);
             Controls.Add(txtFName);
             Controls.Add(menuStrip1);
@@ -296,5 +330,9 @@
         private ComboBox cmbPaymentStatus;
         private DateTimePicker dtpStartDate;
         private Label label9;
+        private ComboBox cmbBSection;
+        private CheckBox chkAdditional;
+        private Label label10;
+        private TextBox txtAdditionalCharge;
     }
 }

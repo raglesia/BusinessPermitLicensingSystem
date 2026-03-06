@@ -46,11 +46,11 @@ namespace BusinessPermitLicensingSystem.Forms
                     Session.CurrentUserId ?? 0,
                     $"User '{username}' logged in.");
 
-                MessageBox.Show(
-                    "Login successful!",
-                    "Masinloc-BPLS",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                //MessageBox.Show(
+                    //"Login successful!",
+                   // "Masinloc-BPLS",
+                   // MessageBoxButtons.OK,
+                   // MessageBoxIcon.Information);
 
                 // Navigate to dashboard
                 DashboardForm dash = new DashboardForm();

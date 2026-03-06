@@ -63,6 +63,16 @@ namespace BusinessPermitLicensingSystem.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap icons8_archive_64 {
+            get {
+                object obj = ResourceManager.GetObject("icons8-archive-64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap icons8_audit_64 {
             get {
                 object obj = ResourceManager.GetObject("icons8-audit-64", resourceCulture);
@@ -216,6 +226,16 @@ namespace BusinessPermitLicensingSystem.Properties {
         internal static System.Drawing.Bitmap icons8_reports_64 {
             get {
                 object obj = ResourceManager.GetObject("icons8-reports-64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap icons8_view_64 {
+            get {
+                object obj = ResourceManager.GetObject("icons8-view-64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

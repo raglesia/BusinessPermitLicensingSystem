@@ -17,6 +17,8 @@ namespace BusinessPermitLicensingSystem.Models
         public double Penalty { get; set; } = 0;          // ✅ Add
         public string StartDate { get; set; } = "";        // ✅ Add
         public double TotalDue => MonthlyRental + Penalty; // ✅ Auto calculates
+        public double AdditionalCharge { get; set; } = 0;                       // ✅
+
 
 
     }

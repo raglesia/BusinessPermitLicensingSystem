@@ -1,6 +1,8 @@
 ﻿using BusinessPermitLicensingSystem.Helpers;
 using System;
+using System.Data;
 using System.Data.SQLite;
+using System.Drawing;
 using System.Windows.Forms;
 using static BusinessPermitLicensingSystem.Helpers.InputValidator;
 
@@ -13,7 +15,7 @@ namespace BusinessPermitLicensingSystem.Forms
         private string currentSIN = "";
 
         // ===================== CONSTRUCTOR ===================== //
-        public ProfilingForm(ProfilingLists caller = null)
+        public ProfilingForm()
         {
             InitializeComponent();
         }
@@ -35,15 +37,38 @@ namespace BusinessPermitLicensingSystem.Forms
         {
             txtFName.KeyPress += (s, e) => InputValidator.AllowOnlyLetters(e, allowDot: true);
             txtBName.KeyPress += (s, e) => InputValidator.AllowLettersDigitsDotCommaSpace(e);
-            txtBSection.KeyPress += (s, e) => InputValidator.AllowOnlyLetters(e, allowDot: true);
             txtSNumber.KeyPress += (s, e) => InputValidator.AllowOnlyDigits(e);
             txtSSize.KeyPress += (s, e) => InputValidator.AllowDecimalNumbers(e, txtSSize);
-            txtMRental.KeyPress += (s, e) => InputValidator.AllowDecimalNumbers(e, txtMRental);
+            txtAdditionalCharge.KeyPress += (s, e) => InputValidator.AllowDecimalNumbers(e, txtAdditionalCharge);
+
+            // Auto-compute when section or stall size changes
+            cmbBSection.SelectedIndexChanged += (s, e) => ComputeMonthlyRental();
+            txtSSize.TextChanged += (s, e) => ComputeMonthlyRental();
+
+            // Recompute when additional charge changes
+            txtAdditionalCharge.TextChanged += (s, e) => ComputeMonthlyRental();
+
+            // Toggle additional charges
+            chkAdditional.CheckedChanged += (s, e) =>
+            {
+                txtAdditionalCharge.Enabled = chkAdditional.Checked;
+
+                if (!chkAdditional.Checked)
+                    txtAdditionalCharge.Text = "0.00";
+
+                ComputeMonthlyRental();
+            };
         }
 
         private void SetupControls()
         {
             txtBIN.Enabled = false;
+
+            // Load sections from RentalRates table
+            cmbBSection.Items.Clear();
+            DataTable rates = Database.GetRentalRates();
+            foreach (DataRow row in rates.Rows)
+                cmbBSection.Items.Add(row["Section"].ToString());
 
             cmbPaymentStatus.Items.Clear();
             cmbPaymentStatus.Items.AddRange(new string[] { "Unpaid", "Partial", "Paid" });
@@ -51,6 +76,14 @@ namespace BusinessPermitLicensingSystem.Forms
 
             dtpStartDate.Value = DateTime.Today;
             dtpStartDate.Format = DateTimePickerFormat.Short;
+
+            // Additional charges — disabled by default
+            txtAdditionalCharge.Enabled = false;
+            txtAdditionalCharge.Text = "0.00";
+
+            // Monthly Rental is read-only — auto computed
+            txtMRental.ReadOnly = true;
+            txtMRental.BackColor = Color.LightGray;
         }
 
         // ===================== LOAD FOR EDIT ===================== //
@@ -63,22 +96,30 @@ namespace BusinessPermitLicensingSystem.Forms
             string stallSize,
             string monthlyRental,
             string paymentStatus,
-            string startDate)
+            string startDate,
+            double additionalCharge = 0)
         {
             isEditMode = true;
             currentSIN = sin;
 
-            // Fill fields
             txtBIN.Text = sin;
             txtFName.Text = fullName;
             txtBName.Text = businessName;
-            txtBSection.Text = businessSection;
+            cmbBSection.SelectedItem = businessSection;
             txtSNumber.Text = stallNumber;
             txtSSize.Text = stallSize;
             txtMRental.Text = monthlyRental;
             cmbPaymentStatus.SelectedItem = paymentStatus ?? "Unpaid";
             btnSave.Text = "Update Record";
             txtBIN.Enabled = false;
+
+            // Load additional charge if exists
+            if (additionalCharge > 0)
+            {
+                chkAdditional.Checked = true;
+                txtAdditionalCharge.Enabled = true;
+                txtAdditionalCharge.Text = additionalCharge.ToString("N2");
+            }
 
             // Set start date
             if (!string.IsNullOrWhiteSpace(startDate) &&
@@ -88,16 +129,61 @@ namespace BusinessPermitLicensingSystem.Forms
                 dtpStartDate.Value = DateTime.Today;
         }
 
+        // ===================== COMPUTE ===================== //
+        private void ComputeMonthlyRental()
+        {
+            string section = cmbBSection.SelectedItem?.ToString() ?? "";
+            if (string.IsNullOrWhiteSpace(section)) return;
+
+            var (ratePerSqm, flatRate, rateType) = Database.GetRateBySection(section);
+
+            double baseRental = 0;
+
+            if (rateType == "Flat")
+            {
+                baseRental = flatRate;
+                txtSSize.Enabled = false;
+                txtSSize.Text = "0";
+            }
+            else
+            {
+                txtSSize.Enabled = true;
+                if (!double.TryParse(txtSSize.Text, out double stallSize)) return;
+                if (stallSize <= 0) return;
+
+                baseRental = stallSize * ratePerSqm;
+            }
+
+            // Add additional charge if checked
+            double.TryParse(txtAdditionalCharge.Text, out double additional);
+            double total = baseRental + (chkAdditional.Checked ? additional : 0);
+
+            txtMRental.Text = total.ToString("N2");
+        }
+
         // ===================== SAVE ===================== //
         private void btnSave_Click(object sender, EventArgs e)
         {
             string fullName = txtFName.Text.Trim();
             string businessName = txtBName.Text.Trim();
-            string businessSection = txtBSection.Text.Trim();
+            string businessSection = cmbBSection.SelectedItem?.ToString() ?? "";
             string stallNumber = txtSNumber.Text.Trim();
             string stallSize = txtSSize.Text.Trim();
             string paymentStatus = cmbPaymentStatus.SelectedItem?.ToString() ?? "Unpaid";
             string startDate = dtpStartDate.Value.ToString("yyyy-MM-dd");
+
+            string excludeSIN = isEditMode ? currentSIN : "";
+            if (Database.StallNumberExists(stallNumber, excludeSIN))
+            {
+                MessageBox.Show(
+                    $"Stall Number '{stallNumber}' is already assigned to another stall owner.\n\n" +
+                    "Please enter a different Stall Number.",
+                    "Duplicate Stall Number",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                txtSNumber.Focus();
+                return;
+            }
 
             if (!double.TryParse(txtMRental.Text, out double monthlyRental))
             {
@@ -105,11 +191,13 @@ namespace BusinessPermitLicensingSystem.Forms
                 return;
             }
 
+            double.TryParse(txtAdditionalCharge.Text, out double additionalCharge);
+
             long currentUserId = Session.CurrentUserId ?? 0;
             string orNumber = "";
             double penalty = 0;
 
-            // ✅ Only ask for OR Number in EDIT mode when marking as Paid
+            // Only ask for OR Number in EDIT mode when marking as Paid
             if (isEditMode && paymentStatus == "Paid")
             {
                 penalty = Database.CalculatePenalty(monthlyRental, paymentStatus, startDate);
@@ -132,24 +220,25 @@ namespace BusinessPermitLicensingSystem.Forms
                 SaveEdit(fullName, businessName, businessSection,
                     stallNumber, stallSize, monthlyRental,
                     startDate, paymentStatus, orNumber,
-                    penalty, currentUserId);
+                    penalty, additionalCharge, currentUserId);
             else
                 SaveNew(fullName, businessName, businessSection,
                     stallNumber, stallSize, monthlyRental,
                     startDate, paymentStatus, orNumber,
-                    penalty, currentUserId);
+                    penalty, additionalCharge, currentUserId);
         }
 
         private void SaveEdit(
             string fullName, string businessName, string businessSection,
             string stallNumber, string stallSize, double monthlyRental,
             string startDate, string paymentStatus, string orNumber,
-            double penalty, long currentUserId)
+            double penalty, double additionalCharge, long currentUserId)
         {
             var result = Database.UpdateProfiling(
                 currentSIN, fullName, businessName,
                 businessSection, stallNumber,
-                stallSize, monthlyRental, startDate);
+                stallSize, monthlyRental, startDate,
+                additionalCharge);
 
             if (result.Success)
             {
@@ -176,12 +265,13 @@ namespace BusinessPermitLicensingSystem.Forms
             string fullName, string businessName, string businessSection,
             string stallNumber, string stallSize, double monthlyRental,
             string startDate, string paymentStatus, string orNumber,
-            double penalty, long currentUserId)
+            double penalty, double additionalCharge, long currentUserId)
         {
             var result = Database.AddProfiling(
                 txtBIN.Text, fullName, businessName,
                 businessSection, stallNumber,
-                stallSize, monthlyRental, startDate);
+                stallSize, monthlyRental, startDate,
+                additionalCharge);
 
             if (result.Success)
             {
@@ -197,6 +287,10 @@ namespace BusinessPermitLicensingSystem.Forms
                 MessageBox.Show("Record added successfully!");
                 ClearFields();
                 AssignNewBIN();
+            }
+            else
+            {
+                MessageBox.Show(result.ErrorMessage ?? "Unknown error.");
             }
         }
 
@@ -223,10 +317,12 @@ namespace BusinessPermitLicensingSystem.Forms
         {
             txtFName.Clear();
             txtBName.Clear();
-            txtBSection.Clear();
+            cmbBSection.SelectedIndex = -1;
             txtSNumber.Clear();
             txtSSize.Clear();
             txtMRental.Clear();
+            txtAdditionalCharge.Text = "0.00";
+            chkAdditional.Checked = false;
             cmbPaymentStatus.SelectedIndex = 0;
             dtpStartDate.Value = DateTime.Today;
         }
@@ -234,7 +330,18 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== NAVIGATION ===================== //
         private void button1_Click(object sender, EventArgs e)
         {
-            this.Close();
+            if (isEditMode)
+            {
+                // ✅ Edit mode — just close, ShowDialog returns to ProfilingLists
+                this.Close();
+            }
+            else
+            {
+                // ✅ Add mode — go back to Dashboard
+                var dashboard = new DashboardForm();
+                dashboard.Show();
+                this.Close();
+            }
         }
 
         // ===================== EVENTS ===================== //

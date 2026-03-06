@@ -28,14 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProfilingLists));
-            txtFilterMonthlyRental = new TextBox();
-            txtFilterStallSize = new TextBox();
-            txtFilterStallNumber = new TextBox();
-            txtFilterBusinessSection = new TextBox();
-            txtFilterBusinessName = new TextBox();
-            txtFilterFullName = new TextBox();
-            txtFilterBIN = new TextBox();
             button1 = new Button();
             btnDelete = new Button();
             btnExport = new Button();
@@ -43,10 +37,10 @@
             button2 = new Button();
             btnPaymentHistory = new Button();
             panelButtons = new Panel();
+            btnViewArcRec = new Button();
+            btnArchive = new Button();
             panelFilters = new Panel();
-            txtFilterDOC = new TextBox();
-            txtFilterPenalty = new TextBox();
-            txtFilterPayment = new TextBox();
+            txtSearch = new TextBox();
             tableLayoutPanel1 = new TableLayoutPanel();
             dataGridView1 = new DataGridView();
             panelButtons.SuspendLayout();
@@ -55,62 +49,6 @@
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
-            // txtFilterMonthlyRental
-            // 
-            txtFilterMonthlyRental.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            txtFilterMonthlyRental.Location = new Point(1297, 3);
-            txtFilterMonthlyRental.Name = "txtFilterMonthlyRental";
-            txtFilterMonthlyRental.Size = new Size(125, 31);
-            txtFilterMonthlyRental.TabIndex = 30;
-            // 
-            // txtFilterStallSize
-            // 
-            txtFilterStallSize.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            txtFilterStallSize.Location = new Point(1162, 3);
-            txtFilterStallSize.Name = "txtFilterStallSize";
-            txtFilterStallSize.Size = new Size(129, 31);
-            txtFilterStallSize.TabIndex = 29;
-            // 
-            // txtFilterStallNumber
-            // 
-            txtFilterStallNumber.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            txtFilterStallNumber.Location = new Point(947, 3);
-            txtFilterStallNumber.Name = "txtFilterStallNumber";
-            txtFilterStallNumber.Size = new Size(209, 31);
-            txtFilterStallNumber.TabIndex = 28;
-            // 
-            // txtFilterBusinessSection
-            // 
-            txtFilterBusinessSection.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            txtFilterBusinessSection.Location = new Point(722, 3);
-            txtFilterBusinessSection.Name = "txtFilterBusinessSection";
-            txtFilterBusinessSection.Size = new Size(219, 31);
-            txtFilterBusinessSection.TabIndex = 27;
-            // 
-            // txtFilterBusinessName
-            // 
-            txtFilterBusinessName.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            txtFilterBusinessName.Location = new Point(469, 3);
-            txtFilterBusinessName.Name = "txtFilterBusinessName";
-            txtFilterBusinessName.Size = new Size(247, 31);
-            txtFilterBusinessName.TabIndex = 26;
-            // 
-            // txtFilterFullName
-            // 
-            txtFilterFullName.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            txtFilterFullName.Location = new Point(276, 3);
-            txtFilterFullName.Name = "txtFilterFullName";
-            txtFilterFullName.Size = new Size(187, 31);
-            txtFilterFullName.TabIndex = 25;
-            // 
-            // txtFilterBIN
-            // 
-            txtFilterBIN.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            txtFilterBIN.Location = new Point(3, 3);
-            txtFilterBIN.Name = "txtFilterBIN";
-            txtFilterBIN.Size = new Size(267, 31);
-            txtFilterBIN.TabIndex = 24;
-            // 
             // button1
             // 
             button1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
@@ -118,10 +56,10 @@
             button1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             button1.Image = Properties.Resources.icons8_menu_64;
             button1.ImageAlign = ContentAlignment.MiddleLeft;
-            button1.Location = new Point(1657, 3);
+            button1.Location = new Point(1657, 1);
             button1.Name = "button1";
-            button1.Size = new Size(219, 62);
-            button1.TabIndex = 31;
+            button1.Size = new Size(219, 68);
+            button1.TabIndex = 7;
             button1.Text = "         Main Menu";
             button1.UseVisualStyleBackColor = false;
             button1.Click += button1_Click;
@@ -133,10 +71,10 @@
             btnDelete.ForeColor = Color.Black;
             btnDelete.Image = Properties.Resources.icons8_remove_64;
             btnDelete.ImageAlign = ContentAlignment.MiddleLeft;
-            btnDelete.Location = new Point(453, 3);
+            btnDelete.Location = new Point(678, 0);
             btnDelete.Name = "btnDelete";
             btnDelete.Size = new Size(219, 68);
-            btnDelete.TabIndex = 32;
+            btnDelete.TabIndex = 4;
             btnDelete.Text = "           Delete Record";
             btnDelete.UseVisualStyleBackColor = false;
             btnDelete.Click += btnDelete_Click;
@@ -148,10 +86,10 @@
             btnExport.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnExport.Image = Properties.Resources.icons8_xls_64;
             btnExport.ImageAlign = ContentAlignment.MiddleLeft;
-            btnExport.Location = new Point(1432, 3);
+            btnExport.Location = new Point(1432, 1);
             btnExport.Name = "btnExport";
-            btnExport.Size = new Size(219, 64);
-            btnExport.TabIndex = 33;
+            btnExport.Size = new Size(219, 68);
+            btnExport.TabIndex = 6;
             btnExport.Text = "         Export Report";
             btnExport.UseVisualStyleBackColor = false;
             btnExport.Click += btnExport_Click;
@@ -160,9 +98,10 @@
             // 
             lblUsername.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             lblUsername.AutoSize = true;
+            lblUsername.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblUsername.Location = new Point(3, 594);
             lblUsername.Name = "lblUsername";
-            lblUsername.Size = new Size(91, 25);
+            lblUsername.Size = new Size(96, 25);
             lblUsername.TabIndex = 34;
             lblUsername.Text = "Username";
             // 
@@ -172,10 +111,10 @@
             button2.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             button2.Image = Properties.Resources.icons8_receipt_64;
             button2.ImageAlign = ContentAlignment.MiddleLeft;
-            button2.Location = new Point(228, 3);
+            button2.Location = new Point(228, 1);
             button2.Name = "button2";
             button2.Size = new Size(219, 68);
-            button2.TabIndex = 35;
+            button2.TabIndex = 2;
             button2.Text = "Generate Receipt";
             button2.TextAlign = ContentAlignment.MiddleRight;
             button2.UseVisualStyleBackColor = false;
@@ -187,10 +126,10 @@
             btnPaymentHistory.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnPaymentHistory.Image = Properties.Resources.icons8_payment_history_64;
             btnPaymentHistory.ImageAlign = ContentAlignment.MiddleLeft;
-            btnPaymentHistory.Location = new Point(3, 3);
+            btnPaymentHistory.Location = new Point(3, 1);
             btnPaymentHistory.Name = "btnPaymentHistory";
-            btnPaymentHistory.Size = new Size(219, 64);
-            btnPaymentHistory.TabIndex = 36;
+            btnPaymentHistory.Size = new Size(219, 68);
+            btnPaymentHistory.TabIndex = 1;
             btnPaymentHistory.Text = "Payment History";
             btnPaymentHistory.TextAlign = ContentAlignment.MiddleRight;
             btnPaymentHistory.UseVisualStyleBackColor = false;
@@ -198,64 +137,75 @@
             // 
             // panelButtons
             // 
-            panelButtons.Controls.Add(button1);
-            panelButtons.Controls.Add(btnExport);
-            panelButtons.Controls.Add(btnPaymentHistory);
+            panelButtons.Controls.Add(btnViewArcRec);
+            panelButtons.Controls.Add(btnArchive);
             panelButtons.Controls.Add(btnDelete);
             panelButtons.Controls.Add(button2);
+            panelButtons.Controls.Add(btnPaymentHistory);
+            panelButtons.Controls.Add(button1);
+            panelButtons.Controls.Add(btnExport);
             panelButtons.Dock = DockStyle.Fill;
             panelButtons.Location = new Point(3, 3);
             panelButtons.Name = "panelButtons";
             panelButtons.Size = new Size(1879, 69);
             panelButtons.TabIndex = 38;
+            panelButtons.Paint += panelButtons_Paint;
+            // 
+            // btnViewArcRec
+            // 
+            btnViewArcRec.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnViewArcRec.BackColor = SystemColors.GradientActiveCaption;
+            btnViewArcRec.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnViewArcRec.Image = Properties.Resources.icons8_view_64;
+            btnViewArcRec.ImageAlign = ContentAlignment.MiddleLeft;
+            btnViewArcRec.Location = new Point(1207, 1);
+            btnViewArcRec.Name = "btnViewArcRec";
+            btnViewArcRec.Size = new Size(219, 68);
+            btnViewArcRec.TabIndex = 5;
+            btnViewArcRec.Text = "View Archived Records";
+            btnViewArcRec.UseVisualStyleBackColor = false;
+            btnViewArcRec.Click += btnViewArcRec_Click;
+            // 
+            // btnArchive
+            // 
+            btnArchive.BackColor = SystemColors.GradientActiveCaption;
+            btnArchive.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnArchive.Image = Properties.Resources.icons8_archive_64;
+            btnArchive.ImageAlign = ContentAlignment.MiddleLeft;
+            btnArchive.Location = new Point(453, 0);
+            btnArchive.Name = "btnArchive";
+            btnArchive.Size = new Size(219, 68);
+            btnArchive.TabIndex = 3;
+            btnArchive.Text = "Archive Record";
+            btnArchive.TextAlign = ContentAlignment.MiddleRight;
+            btnArchive.UseVisualStyleBackColor = false;
+            btnArchive.Click += btnArchive_Click;
             // 
             // panelFilters
             // 
-            panelFilters.Controls.Add(txtFilterDOC);
-            panelFilters.Controls.Add(txtFilterBIN);
-            panelFilters.Controls.Add(txtFilterPenalty);
-            panelFilters.Controls.Add(txtFilterFullName);
-            panelFilters.Controls.Add(txtFilterPayment);
-            panelFilters.Controls.Add(txtFilterBusinessName);
-            panelFilters.Controls.Add(txtFilterBusinessSection);
-            panelFilters.Controls.Add(txtFilterMonthlyRental);
-            panelFilters.Controls.Add(txtFilterStallNumber);
-            panelFilters.Controls.Add(txtFilterStallSize);
+            panelFilters.Controls.Add(txtSearch);
             panelFilters.Dock = DockStyle.Fill;
             panelFilters.Location = new Point(3, 78);
             panelFilters.Name = "panelFilters";
             panelFilters.Size = new Size(1879, 39);
             panelFilters.TabIndex = 39;
             // 
-            // txtFilterDOC
+            // txtSearch
             // 
-            txtFilterDOC.Location = new Point(1744, 3);
-            txtFilterDOC.Name = "txtFilterDOC";
-            txtFilterDOC.Size = new Size(126, 31);
-            txtFilterDOC.TabIndex = 39;
-            // 
-            // txtFilterPenalty
-            // 
-            txtFilterPenalty.Location = new Point(1588, 3);
-            txtFilterPenalty.Name = "txtFilterPenalty";
-            txtFilterPenalty.Size = new Size(150, 31);
-            txtFilterPenalty.TabIndex = 38;
-            // 
-            // txtFilterPayment
-            // 
-            txtFilterPayment.Location = new Point(1432, 3);
-            txtFilterPayment.Name = "txtFilterPayment";
-            txtFilterPayment.Size = new Size(150, 31);
-            txtFilterPayment.TabIndex = 37;
+            txtSearch.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            txtSearch.Location = new Point(3, 3);
+            txtSearch.Name = "txtSearch";
+            txtSearch.Size = new Size(1873, 31);
+            txtSearch.TabIndex = 0;
             // 
             // tableLayoutPanel1
             // 
             tableLayoutPanel1.ColumnCount = 1;
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             tableLayoutPanel1.Controls.Add(panelButtons, 0, 0);
-            tableLayoutPanel1.Controls.Add(lblUsername, 0, 3);
             tableLayoutPanel1.Controls.Add(dataGridView1, 0, 2);
             tableLayoutPanel1.Controls.Add(panelFilters, 0, 1);
+            tableLayoutPanel1.Controls.Add(lblUsername, 0, 3);
             tableLayoutPanel1.Dock = DockStyle.Fill;
             tableLayoutPanel1.Location = new Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -271,6 +221,14 @@
             // 
             dataGridView1.AllowUserToResizeColumns = false;
             dataGridView1.AllowUserToResizeRows = false;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = SystemColors.Control;
+            dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Dock = DockStyle.Fill;
             dataGridView1.Location = new Point(3, 123);
@@ -286,6 +244,7 @@
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = SystemColors.GradientActiveCaption;
             ClientSize = new Size(1885, 619);
             Controls.Add(tableLayoutPanel1);
             FormBorderStyle = FormBorderStyle.FixedSingle;
@@ -307,14 +266,6 @@
         }
 
         #endregion
-
-        private TextBox txtFilterMonthlyRental;
-        private TextBox txtFilterStallSize;
-        private TextBox txtFilterStallNumber;
-        private TextBox txtFilterBusinessSection;
-        private TextBox txtFilterBusinessName;
-        private TextBox txtFilterFullName;
-        private TextBox txtFilterBIN;
         private Button button1;
         private Button btnDelete;
         private Button btnExport;
@@ -325,8 +276,8 @@
         private Panel panelFilters;
         private TableLayoutPanel tableLayoutPanel1;
         private DataGridView dataGridView1;
-        private TextBox txtFilterDOC;
-        private TextBox txtFilterPenalty;
-        private TextBox txtFilterPayment;
+        private TextBox txtSearch;
+        private Button btnArchive;
+        private Button btnViewArcRec;
     }
 }
