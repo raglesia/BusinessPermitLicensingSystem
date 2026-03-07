@@ -36,7 +36,7 @@
             // dataGridView1
             // 
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(38, 188);
+            dataGridView1.Location = new Point(12, 12);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 62;
             dataGridView1.Size = new Size(1243, 225);
@@ -55,11 +55,14 @@
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1278, 585);
+            ClientSize = new Size(1565, 585);
             Controls.Add(btnRestore);
             Controls.Add(dataGridView1);
+            MinimumSize = new Size(1024, 600);
             Name = "ArchivedForm";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "ArchivedForm";
+            WindowState = FormWindowState.Maximized;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
         }

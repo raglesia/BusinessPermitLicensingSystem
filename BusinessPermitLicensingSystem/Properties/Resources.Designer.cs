@@ -83,6 +83,16 @@ namespace BusinessPermitLicensingSystem.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap icons8_back_64 {
+            get {
+                object obj = ResourceManager.GetObject("icons8-back-64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap icons8_billing_64 {
             get {
                 object obj = ResourceManager.GetObject("icons8-billing-64", resourceCulture);
@@ -203,6 +213,16 @@ namespace BusinessPermitLicensingSystem.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap icons8_profile_64 {
+            get {
+                object obj = ResourceManager.GetObject("icons8-profile-64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap icons8_receipt_64 {
             get {
                 object obj = ResourceManager.GetObject("icons8-receipt-64", resourceCulture);
@@ -226,6 +246,16 @@ namespace BusinessPermitLicensingSystem.Properties {
         internal static System.Drawing.Bitmap icons8_reports_64 {
             get {
                 object obj = ResourceManager.GetObject("icons8-reports-64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap icons8_save_64 {
+            get {
+                object obj = ResourceManager.GetObject("icons8-save-64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

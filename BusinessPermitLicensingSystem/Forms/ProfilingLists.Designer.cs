@@ -30,113 +30,70 @@
         {
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProfilingLists));
-            button1 = new Button();
-            btnDelete = new Button();
-            btnExport = new Button();
-            lblUsername = new Label();
-            button2 = new Button();
-            btnPaymentHistory = new Button();
-            panelButtons = new Panel();
-            btnViewArcRec = new Button();
-            btnArchive = new Button();
             panelFilters = new Panel();
             txtSearch = new TextBox();
-            tableLayoutPanel1 = new TableLayoutPanel();
             dataGridView1 = new DataGridView();
-            panelButtons.SuspendLayout();
+            panelButtons = new Panel();
+            lblTotalRecords = new Label();
+            btnViewArcRec = new Button();
+            btnArchive = new Button();
+            btnDelete = new Button();
+            button2 = new Button();
+            btnPaymentHistory = new Button();
+            button1 = new Button();
+            btnExport = new Button();
+            lblUsername = new Label();
+            tableLayoutPanel1 = new TableLayoutPanel();
             panelFilters.SuspendLayout();
-            tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            panelButtons.SuspendLayout();
+            tableLayoutPanel1.SuspendLayout();
             SuspendLayout();
             // 
-            // button1
+            // panelFilters
             // 
-            button1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            button1.BackColor = SystemColors.GradientActiveCaption;
-            button1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            button1.Image = Properties.Resources.icons8_menu_64;
-            button1.ImageAlign = ContentAlignment.MiddleLeft;
-            button1.Location = new Point(1657, 1);
-            button1.Name = "button1";
-            button1.Size = new Size(219, 68);
-            button1.TabIndex = 7;
-            button1.Text = "         Main Menu";
-            button1.UseVisualStyleBackColor = false;
-            button1.Click += button1_Click;
+            panelFilters.Controls.Add(txtSearch);
+            panelFilters.Dock = DockStyle.Fill;
+            panelFilters.Location = new Point(3, 78);
+            panelFilters.Name = "panelFilters";
+            panelFilters.Size = new Size(1879, 39);
+            panelFilters.TabIndex = 39;
             // 
-            // btnDelete
+            // txtSearch
             // 
-            btnDelete.BackColor = SystemColors.GradientActiveCaption;
-            btnDelete.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnDelete.ForeColor = Color.Black;
-            btnDelete.Image = Properties.Resources.icons8_remove_64;
-            btnDelete.ImageAlign = ContentAlignment.MiddleLeft;
-            btnDelete.Location = new Point(678, 0);
-            btnDelete.Name = "btnDelete";
-            btnDelete.Size = new Size(219, 68);
-            btnDelete.TabIndex = 4;
-            btnDelete.Text = "           Delete Record";
-            btnDelete.UseVisualStyleBackColor = false;
-            btnDelete.Click += btnDelete_Click;
+            txtSearch.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            txtSearch.BackColor = SystemColors.GradientActiveCaption;
+            txtSearch.Location = new Point(3, 3);
+            txtSearch.Name = "txtSearch";
+            txtSearch.Size = new Size(1873, 31);
+            txtSearch.TabIndex = 0;
             // 
-            // btnExport
+            // dataGridView1
             // 
-            btnExport.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnExport.BackColor = SystemColors.GradientActiveCaption;
-            btnExport.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnExport.Image = Properties.Resources.icons8_xls_64;
-            btnExport.ImageAlign = ContentAlignment.MiddleLeft;
-            btnExport.Location = new Point(1432, 1);
-            btnExport.Name = "btnExport";
-            btnExport.Size = new Size(219, 68);
-            btnExport.TabIndex = 6;
-            btnExport.Text = "         Export Report";
-            btnExport.UseVisualStyleBackColor = false;
-            btnExport.Click += btnExport_Click;
-            // 
-            // lblUsername
-            // 
-            lblUsername.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            lblUsername.AutoSize = true;
-            lblUsername.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblUsername.Location = new Point(3, 594);
-            lblUsername.Name = "lblUsername";
-            lblUsername.Size = new Size(96, 25);
-            lblUsername.TabIndex = 34;
-            lblUsername.Text = "Username";
-            // 
-            // button2
-            // 
-            button2.BackColor = SystemColors.GradientActiveCaption;
-            button2.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            button2.Image = Properties.Resources.icons8_receipt_64;
-            button2.ImageAlign = ContentAlignment.MiddleLeft;
-            button2.Location = new Point(228, 1);
-            button2.Name = "button2";
-            button2.Size = new Size(219, 68);
-            button2.TabIndex = 2;
-            button2.Text = "Generate Receipt";
-            button2.TextAlign = ContentAlignment.MiddleRight;
-            button2.UseVisualStyleBackColor = false;
-            button2.Click += button2_Click;
-            // 
-            // btnPaymentHistory
-            // 
-            btnPaymentHistory.BackColor = SystemColors.GradientActiveCaption;
-            btnPaymentHistory.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnPaymentHistory.Image = Properties.Resources.icons8_payment_history_64;
-            btnPaymentHistory.ImageAlign = ContentAlignment.MiddleLeft;
-            btnPaymentHistory.Location = new Point(3, 1);
-            btnPaymentHistory.Name = "btnPaymentHistory";
-            btnPaymentHistory.Size = new Size(219, 68);
-            btnPaymentHistory.TabIndex = 1;
-            btnPaymentHistory.Text = "Payment History";
-            btnPaymentHistory.TextAlign = ContentAlignment.MiddleRight;
-            btnPaymentHistory.UseVisualStyleBackColor = false;
-            btnPaymentHistory.Click += btnPaymentHistory_Click;
+            dataGridView1.AllowUserToResizeColumns = false;
+            dataGridView1.AllowUserToResizeRows = false;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = SystemColors.Control;
+            dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView1.Dock = DockStyle.Fill;
+            dataGridView1.Location = new Point(3, 123);
+            dataGridView1.Name = "dataGridView1";
+            dataGridView1.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dataGridView1.RowHeadersWidth = 62;
+            dataGridView1.Size = new Size(1879, 458);
+            dataGridView1.TabIndex = 23;
+            dataGridView1.CellContentClick += dataGridView1_CellContentClick;
+            dataGridView1.CellDoubleClick += dataGridView1_CellDoubleClick;
             // 
             // panelButtons
             // 
+            panelButtons.Controls.Add(lblTotalRecords);
             panelButtons.Controls.Add(btnViewArcRec);
             panelButtons.Controls.Add(btnArchive);
             panelButtons.Controls.Add(btnDelete);
@@ -150,6 +107,16 @@
             panelButtons.Size = new Size(1879, 69);
             panelButtons.TabIndex = 38;
             panelButtons.Paint += panelButtons_Paint;
+            // 
+            // lblTotalRecords
+            // 
+            lblTotalRecords.AutoSize = true;
+            lblTotalRecords.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTotalRecords.Location = new Point(960, 20);
+            lblTotalRecords.Name = "lblTotalRecords";
+            lblTotalRecords.Size = new Size(211, 28);
+            lblTotalRecords.TabIndex = 41;
+            lblTotalRecords.Text = "Total Records: 00000";
             // 
             // btnViewArcRec
             // 
@@ -181,22 +148,92 @@
             btnArchive.UseVisualStyleBackColor = false;
             btnArchive.Click += btnArchive_Click;
             // 
-            // panelFilters
+            // btnDelete
             // 
-            panelFilters.Controls.Add(txtSearch);
-            panelFilters.Dock = DockStyle.Fill;
-            panelFilters.Location = new Point(3, 78);
-            panelFilters.Name = "panelFilters";
-            panelFilters.Size = new Size(1879, 39);
-            panelFilters.TabIndex = 39;
+            btnDelete.BackColor = SystemColors.GradientActiveCaption;
+            btnDelete.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnDelete.ForeColor = Color.Black;
+            btnDelete.Image = Properties.Resources.icons8_remove_64;
+            btnDelete.ImageAlign = ContentAlignment.MiddleLeft;
+            btnDelete.Location = new Point(678, 0);
+            btnDelete.Name = "btnDelete";
+            btnDelete.Size = new Size(219, 68);
+            btnDelete.TabIndex = 4;
+            btnDelete.Text = "           Delete Record";
+            btnDelete.UseVisualStyleBackColor = false;
+            btnDelete.Click += btnDelete_Click;
             // 
-            // txtSearch
+            // button2
             // 
-            txtSearch.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            txtSearch.Location = new Point(3, 3);
-            txtSearch.Name = "txtSearch";
-            txtSearch.Size = new Size(1873, 31);
-            txtSearch.TabIndex = 0;
+            button2.BackColor = SystemColors.GradientActiveCaption;
+            button2.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            button2.Image = Properties.Resources.icons8_receipt_64;
+            button2.ImageAlign = ContentAlignment.MiddleLeft;
+            button2.Location = new Point(228, 1);
+            button2.Name = "button2";
+            button2.Size = new Size(219, 68);
+            button2.TabIndex = 2;
+            button2.Text = "Generate Receipt";
+            button2.TextAlign = ContentAlignment.MiddleRight;
+            button2.UseVisualStyleBackColor = false;
+            button2.Click += button2_Click;
+            // 
+            // btnPaymentHistory
+            // 
+            btnPaymentHistory.BackColor = SystemColors.GradientActiveCaption;
+            btnPaymentHistory.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnPaymentHistory.Image = Properties.Resources.icons8_payment_history_64;
+            btnPaymentHistory.ImageAlign = ContentAlignment.MiddleLeft;
+            btnPaymentHistory.Location = new Point(3, 1);
+            btnPaymentHistory.Name = "btnPaymentHistory";
+            btnPaymentHistory.Size = new Size(219, 68);
+            btnPaymentHistory.TabIndex = 1;
+            btnPaymentHistory.Text = "Payment History";
+            btnPaymentHistory.TextAlign = ContentAlignment.MiddleRight;
+            btnPaymentHistory.UseVisualStyleBackColor = false;
+            btnPaymentHistory.Click += btnPaymentHistory_Click;
+            // 
+            // button1
+            // 
+            button1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            button1.BackColor = SystemColors.GradientActiveCaption;
+            button1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            button1.Image = Properties.Resources.icons8_menu_64;
+            button1.ImageAlign = ContentAlignment.MiddleLeft;
+            button1.Location = new Point(1657, 1);
+            button1.Name = "button1";
+            button1.Size = new Size(219, 68);
+            button1.TabIndex = 7;
+            button1.Text = "         Main Menu";
+            button1.UseVisualStyleBackColor = false;
+            button1.Click += button1_Click;
+            // 
+            // btnExport
+            // 
+            btnExport.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnExport.BackColor = SystemColors.GradientActiveCaption;
+            btnExport.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnExport.Image = Properties.Resources.icons8_xls_64;
+            btnExport.ImageAlign = ContentAlignment.MiddleLeft;
+            btnExport.Location = new Point(1432, 1);
+            btnExport.Name = "btnExport";
+            btnExport.Size = new Size(219, 68);
+            btnExport.TabIndex = 6;
+            btnExport.Text = "         Export Report";
+            btnExport.UseVisualStyleBackColor = false;
+            btnExport.Click += btnExport_Click;
+            // 
+            // lblUsername
+            // 
+            lblUsername.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            lblUsername.AutoSize = true;
+            lblUsername.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblUsername.Location = new Point(3, 594);
+            lblUsername.Name = "lblUsername";
+            lblUsername.Size = new Size(101, 25);
+            lblUsername.TabIndex = 34;
+            lblUsername.Text = "Username ";
+            lblUsername.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // tableLayoutPanel1
             // 
@@ -216,29 +253,7 @@
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 35F));
             tableLayoutPanel1.Size = new Size(1885, 619);
             tableLayoutPanel1.TabIndex = 40;
-            // 
-            // dataGridView1
-            // 
-            dataGridView1.AllowUserToResizeColumns = false;
-            dataGridView1.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = SystemColors.Control;
-            dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F);
-            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Dock = DockStyle.Fill;
-            dataGridView1.Location = new Point(3, 123);
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
-            dataGridView1.RowHeadersWidth = 62;
-            dataGridView1.Size = new Size(1879, 458);
-            dataGridView1.TabIndex = 23;
-            dataGridView1.CellContentClick += dataGridView1_CellContentClick;
-            dataGridView1.CellDoubleClick += dataGridView1_CellDoubleClick;
+            tableLayoutPanel1.Paint += tableLayoutPanel1_Paint;
             // 
             // ProfilingLists
             // 
@@ -256,28 +271,31 @@
             Text = "Masinloc - BPLS";
             WindowState = FormWindowState.Maximized;
             Load += ProfilingLists_Load;
-            panelButtons.ResumeLayout(false);
             panelFilters.ResumeLayout(false);
             panelFilters.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            panelButtons.ResumeLayout(false);
+            panelButtons.PerformLayout();
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
-        private Button button1;
-        private Button btnDelete;
-        private Button btnExport;
+
+        private Panel panelFilters;
+        private TextBox txtSearch;
+        private DataGridView dataGridView1;
+        private Panel panelButtons;
+        private Button btnViewArcRec;
+        private Button btnArchive;
         private Label lblUsername;
+        private Button btnDelete;
         private Button button2;
         private Button btnPaymentHistory;
-        private Panel panelButtons;
-        private Panel panelFilters;
+        private Button button1;
+        private Button btnExport;
         private TableLayoutPanel tableLayoutPanel1;
-        private DataGridView dataGridView1;
-        private TextBox txtSearch;
-        private Button btnArchive;
-        private Button btnViewArcRec;
+        private Label lblTotalRecords;
     }
 }

@@ -79,13 +79,12 @@
             button3.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             button3.Image = Properties.Resources.icons8_billing_64;
             button3.ImageAlign = ContentAlignment.MiddleLeft;
-            button3.Location = new Point(12, 101);
+            button3.Location = new Point(12, 187);
             button3.Name = "button3";
             button3.Size = new Size(379, 80);
             button3.TabIndex = 2;
             button3.Text = "Billing";
             button3.UseVisualStyleBackColor = false;
-            button3.Click += button3_Click;
             // 
             // button4
             // 
@@ -108,7 +107,7 @@
             button5.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             button5.Image = Properties.Resources.icons8_audit_64;
             button5.ImageAlign = ContentAlignment.MiddleLeft;
-            button5.Location = new Point(12, 187);
+            button5.Location = new Point(12, 101);
             button5.Name = "button5";
             button5.Size = new Size(379, 80);
             button5.TabIndex = 4;
@@ -126,37 +125,37 @@
             button6.Name = "button6";
             button6.Size = new Size(378, 80);
             button6.TabIndex = 5;
-            button6.Text = "Exit / Log Out";
+            button6.Text = "Log Out / Exit";
             button6.UseVisualStyleBackColor = false;
             button6.Click += button6_Click;
             // 
             // lblUsername
             // 
             lblUsername.AutoSize = true;
+            lblUsername.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblUsername.Location = new Point(12, 392);
             lblUsername.Name = "lblUsername";
-            lblUsername.Size = new Size(64, 25);
+            lblUsername.Size = new Size(69, 25);
             lblUsername.TabIndex = 6;
             lblUsername.Text = "lbluser";
             // 
             // lblPenaltyNotice
             // 
             lblPenaltyNotice.AutoSize = true;
-            lblPenaltyNotice.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblPenaltyNotice.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblPenaltyNotice.ForeColor = Color.Red;
             lblPenaltyNotice.Location = new Point(12, 289);
             lblPenaltyNotice.Name = "lblPenaltyNotice";
-            lblPenaltyNotice.Size = new Size(70, 28);
+            lblPenaltyNotice.Size = new Size(63, 28);
             lblPenaltyNotice.TabIndex = 7;
             lblPenaltyNotice.Text = "label1";
             lblPenaltyNotice.Visible = false;
-            lblPenaltyNotice.Click += lblPenaltyNotice_Click;
             // 
             // pictureBox1
             // 
             pictureBox1.BackColor = Color.Transparent;
             pictureBox1.Image = Properties.Resources.Untitled_1__1_;
-            pictureBox1.Location = new Point(454, 362);
+            pictureBox1.Location = new Point(442, 377);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(439, 80);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
@@ -172,13 +171,12 @@
             // lblDateTime
             // 
             lblDateTime.AutoSize = true;
-            lblDateTime.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblDateTime.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblDateTime.Location = new Point(12, 417);
             lblDateTime.Name = "lblDateTime";
-            lblDateTime.Size = new Size(63, 25);
+            lblDateTime.Size = new Size(62, 25);
             lblDateTime.TabIndex = 9;
             lblDateTime.Text = "label2";
-            lblDateTime.Click += lblDateTime_Click;
             // 
             // DashboardForm
             // 

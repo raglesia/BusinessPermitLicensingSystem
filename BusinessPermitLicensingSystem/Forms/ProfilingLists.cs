@@ -30,11 +30,21 @@ namespace BusinessPermitLicensingSystem
         {
             lblUsername.Text = $"{Session.CurrentPosition} | {Session.CurrentFullName}";
             btnPaymentHistory.Focus();
+
+
+
         }
 
         // ===================== SETUP ===================== //
         private void SetupGrid()
         {
+            // ✅ Enable double buffering first
+            typeof(DataGridView)
+                .GetProperty("DoubleBuffered",
+                    System.Reflection.BindingFlags.Instance |
+                    System.Reflection.BindingFlags.NonPublic)!
+                .SetValue(dataGridView1, true);
+
             dataGridView1.ReadOnly = true;
             dataGridView1.AllowUserToAddRows = false;
             dataGridView1.AllowUserToDeleteRows = false;
@@ -71,6 +81,9 @@ namespace BusinessPermitLicensingSystem
         // ===================== DATA LOADING ===================== //
         private void LoadProfiles()
         {
+            dataGridView1.SuspendLayout();
+            dataGridView1.DataSource = null;
+
             dtProfiles = Database.GetAllProfiles();
             dataGridView1.DataSource = dtProfiles;
 
@@ -78,6 +91,10 @@ namespace BusinessPermitLicensingSystem
             FormatCurrencyColumn("Penalty");
             FormatCurrencyColumn("Additional Charge");
             ColorPaymentStatusColumn();
+
+            lblTotalRecords.Text = $"Total Records: {dtProfiles.Rows.Count}";
+
+            dataGridView1.ResumeLayout();
 
         }
 
@@ -100,6 +117,7 @@ namespace BusinessPermitLicensingSystem
                 if (string.IsNullOrWhiteSpace(search))
                 {
                     dtProfiles.DefaultView.RowFilter = string.Empty;
+                    lblTotalRecords.Text = $"Total Records: {dtProfiles.Rows.Count}";
                     return;
                 }
 
@@ -115,6 +133,9 @@ namespace BusinessPermitLicensingSystem
             [Payment Status]                           = '{search}'       OR
             Convert([Penalty], 'System.String')        LIKE '%{search}%' OR
             [Date of Occupancy]                        LIKE '%{search}%'";
+
+
+            lblTotalRecords.Text = $"Total Records: {dtProfiles.DefaultView.Count}";
             }
             catch (Exception ex)
             {
@@ -497,6 +518,11 @@ namespace BusinessPermitLicensingSystem
         }
 
         private void panelButtons_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
         {
 
         }

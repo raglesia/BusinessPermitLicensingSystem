@@ -114,16 +114,6 @@ namespace BusinessPermitLicensingSystem.Forms
                     MessageBoxIcon.Information);
             }
         }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lblPenaltyNotice_Click(object sender, EventArgs e)
-        {
-
-        }
         private void UpdateDateTime()
         {
             string date = DateTime.Now.ToString("dddd, MMMM dd, yyyy");
@@ -138,12 +128,6 @@ namespace BusinessPermitLicensingSystem.Forms
         {
             UpdateDateTime();
         }
-
-        private void lblDateTime_Click(object sender, EventArgs e)
-        {
-
-        }
-
         protected override CreateParams CreateParams
         {
             get

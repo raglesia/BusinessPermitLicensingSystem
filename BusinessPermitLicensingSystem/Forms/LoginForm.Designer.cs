@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LogInForm));
             txtPass = new TextBox();
             btnCreate = new Button();
@@ -38,12 +37,12 @@
             label2 = new Label();
             label1 = new Label();
             panel1 = new Panel();
-            toolTip1 = new ToolTip(components);
             panel1.SuspendLayout();
             SuspendLayout();
             // 
             // txtPass
             // 
+            txtPass.BackColor = SystemColors.GradientActiveCaption;
             txtPass.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtPass.Location = new Point(152, 77);
             txtPass.Name = "txtPass";
@@ -54,19 +53,21 @@
             // btnCreate
             // 
             btnCreate.BackColor = SystemColors.GradientActiveCaption;
-            btnCreate.BackgroundImage = Properties.Resources.icons8_create_64;
             btnCreate.BackgroundImageLayout = ImageLayout.Center;
+            btnCreate.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnCreate.Image = Properties.Resources.icons8_profile_64;
             btnCreate.ImageAlign = ContentAlignment.MiddleLeft;
-            btnCreate.Location = new Point(128, 211);
+            btnCreate.Location = new Point(127, 211);
             btnCreate.Name = "btnCreate";
-            btnCreate.Size = new Size(201, 73);
+            btnCreate.Size = new Size(224, 73);
             btnCreate.TabIndex = 5;
-            toolTip1.SetToolTip(btnCreate, "Create Account");
+            btnCreate.Text = "           Create Account";
             btnCreate.UseVisualStyleBackColor = false;
             btnCreate.Click += btnCreate_Click_1;
             // 
             // txtUser
             // 
+            txtUser.BackColor = SystemColors.GradientActiveCaption;
             txtUser.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtUser.Location = new Point(152, 24);
             txtUser.Name = "txtUser";
@@ -76,48 +77,50 @@
             // btnExit
             // 
             btnExit.BackColor = SystemColors.GradientActiveCaption;
-            btnExit.BackgroundImage = Properties.Resources.icons8_exit_64__1_;
             btnExit.BackgroundImageLayout = ImageLayout.Center;
+            btnExit.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnExit.Image = Properties.Resources.icons8_exit_64__1_;
             btnExit.ImageAlign = ContentAlignment.MiddleLeft;
             btnExit.Location = new Point(239, 132);
             btnExit.Name = "btnExit";
             btnExit.Size = new Size(201, 73);
             btnExit.TabIndex = 4;
-            toolTip1.SetToolTip(btnExit, "Exit");
+            btnExit.Text = "      Exit";
             btnExit.UseVisualStyleBackColor = false;
             btnExit.Click += btnExit_Click;
             // 
             // btnLogIn
             // 
             btnLogIn.BackColor = SystemColors.GradientInactiveCaption;
-            btnLogIn.BackgroundImage = Properties.Resources.icons8_log_in_64;
             btnLogIn.BackgroundImageLayout = ImageLayout.Center;
+            btnLogIn.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnLogIn.Image = Properties.Resources.icons8_log_in_64;
             btnLogIn.ImageAlign = ContentAlignment.MiddleLeft;
             btnLogIn.Location = new Point(13, 132);
             btnLogIn.Name = "btnLogIn";
             btnLogIn.Size = new Size(201, 73);
             btnLogIn.TabIndex = 3;
-            toolTip1.SetToolTip(btnLogIn, "Log In");
+            btnLogIn.Text = "      Log In";
             btnLogIn.UseVisualStyleBackColor = false;
             btnLogIn.Click += btnLogIn_Click;
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label2.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label2.Location = new Point(13, 84);
             label2.Name = "label2";
-            label2.Size = new Size(123, 32);
+            label2.Size = new Size(128, 32);
             label2.TabIndex = 6;
             label2.Text = "Password: ";
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label1.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label1.Location = new Point(13, 31);
             label1.Name = "label1";
-            label1.Size = new Size(133, 32);
+            label1.Size = new Size(137, 32);
             label1.TabIndex = 5;
             label1.Text = "Username: ";
             // 
@@ -134,14 +137,6 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(484, 301);
             panel1.TabIndex = 7;
-            panel1.Paint += panel1_Paint;
-            // 
-            // toolTip1
-            // 
-            toolTip1.AutoPopDelay = 3000;
-            toolTip1.InitialDelay = 500;
-            toolTip1.IsBalloon = true;
-            toolTip1.ReshowDelay = 200;
             // 
             // LogInForm
             // 
@@ -173,6 +168,5 @@
         private Label label2;
         private Label label1;
         private Panel panel1;
-        private ToolTip toolTip1;
     }
 }

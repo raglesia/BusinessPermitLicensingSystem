@@ -18,11 +18,17 @@ namespace BusinessPermitLicensingSystem.Forms
         public ProfilingForm()
         {
             InitializeComponent();
+
+            this.Size = new Size(700, 696);
+            this.StartPosition = FormStartPosition.CenterScreen;
         }
 
         // ===================== FORM LOAD ===================== //
         private void ProfilingForm_Load(object sender, EventArgs e)
         {
+
+
+
             lblUsername.Text = $"{Session.CurrentPosition} | {Session.CurrentFullName}";
 
             SetupInputValidators();
@@ -63,6 +69,7 @@ namespace BusinessPermitLicensingSystem.Forms
         private void SetupControls()
         {
             txtBIN.Enabled = false;
+            txtMRental.Enabled = false;
 
             // Load sections from RentalRates table
             cmbBSection.Items.Clear();
@@ -71,7 +78,7 @@ namespace BusinessPermitLicensingSystem.Forms
                 cmbBSection.Items.Add(row["Section"].ToString());
 
             cmbPaymentStatus.Items.Clear();
-            cmbPaymentStatus.Items.AddRange(new string[] { "Unpaid", "Partial", "Paid" });
+            cmbPaymentStatus.Items.AddRange(new string[] { "Unpaid", "Paid" });
             cmbPaymentStatus.SelectedIndex = 0;
 
             dtpStartDate.Value = DateTime.Today;
@@ -81,9 +88,11 @@ namespace BusinessPermitLicensingSystem.Forms
             txtAdditionalCharge.Enabled = false;
             txtAdditionalCharge.Text = "0.00";
 
-            // Monthly Rental is read-only — auto computed
-            txtMRental.ReadOnly = true;
-            txtMRental.BackColor = Color.LightGray;
+            txtAdditionalCharge.Leave += (s, e) =>
+            {
+                if (double.TryParse(txtAdditionalCharge.Text, out double value))
+                    txtAdditionalCharge.Text = value.ToString("N2");
+            };
         }
 
         // ===================== LOAD FOR EDIT ===================== //
@@ -164,6 +173,7 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== SAVE ===================== //
         private void btnSave_Click(object sender, EventArgs e)
         {
+
             string fullName = txtFName.Text.Trim();
             string businessName = txtBName.Text.Trim();
             string businessSection = cmbBSection.SelectedItem?.ToString() ?? "";
@@ -332,12 +342,10 @@ namespace BusinessPermitLicensingSystem.Forms
         {
             if (isEditMode)
             {
-                // ✅ Edit mode — just close, ShowDialog returns to ProfilingLists
                 this.Close();
             }
             else
             {
-                // ✅ Add mode — go back to Dashboard
                 var dashboard = new DashboardForm();
                 dashboard.Show();
                 this.Close();
@@ -350,5 +358,17 @@ namespace BusinessPermitLicensingSystem.Forms
             if (double.TryParse(txtMRental.Text, out double value))
                 txtMRental.Text = value.ToString("N2");
         }
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                const int CS_NOCLOSE = 0x200;
+                CreateParams cp = base.CreateParams;
+                cp.ClassStyle |= CS_NOCLOSE;
+                return cp;
+            }
+        }
+
     }
 }

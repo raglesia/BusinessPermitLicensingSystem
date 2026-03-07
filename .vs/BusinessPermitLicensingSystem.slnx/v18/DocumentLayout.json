@@ -3,8 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|c:\\users\\brian\\source\\repos\\businesspermitlicensingsystem\\businesspermitlicensingsystem\\forms\\profilinglists.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|solutionrelative:businesspermitlicensingsystem\\forms\\profilinglists.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|c:\\users\\brian\\source\\repos\\businesspermitlicensingsystem\\businesspermitlicensingsystem\\forms\\dashboardform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|solutionrelative:businesspermitlicensingsystem\\forms\\dashboardform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|c:\\users\\brian\\source\\repos\\businesspermitlicensingsystem\\businesspermitlicensingsystem\\forms\\profilingform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|solutionrelative:businesspermitlicensingsystem\\forms\\profilingform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|c:\\users\\brian\\source\\repos\\businesspermitlicensingsystem\\businesspermitlicensingsystem\\forms\\loginform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|solutionrelative:businesspermitlicensingsystem\\forms\\loginform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|c:\\users\\brian\\source\\repos\\businesspermitlicensingsystem\\businesspermitlicensingsystem\\forms\\profilinglists.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
@@ -15,56 +23,16 @@
       "RelativeMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|solutionrelative:businesspermitlicensingsystem\\forms\\profilingform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\businesspermitlicensingsystem\\forms\\profilingform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|solutionrelative:businesspermitlicensingsystem\\forms\\profilingform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|c:\\users\\brian\\source\\repos\\businesspermitlicensingsystem\\businesspermitlicensingsystem\\forms\\dashboardform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|solutionrelative:businesspermitlicensingsystem\\forms\\dashboardform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|c:\\users\\brian\\source\\repos\\businesspermitlicensingsystem\\businesspermitlicensingsystem\\forms\\dashboardform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|solutionrelative:businesspermitlicensingsystem\\forms\\dashboardform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|c:\\users\\brian\\source\\repos\\businesspermitlicensingsystem\\businesspermitlicensingsystem\\database\\database.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|solutionrelative:businesspermitlicensingsystem\\database\\database.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|c:\\users\\brian\\source\\repos\\businesspermitlicensingsystem\\businesspermitlicensingsystem\\forms\\archivedform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|solutionrelative:businesspermitlicensingsystem\\forms\\archivedform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|c:\\users\\brian\\source\\repos\\businesspermitlicensingsystem\\businesspermitlicensingsystem\\forms\\archivedform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|solutionrelative:businesspermitlicensingsystem\\forms\\archivedform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|c:\\users\\brian\\source\\repos\\businesspermitlicensingsystem\\businesspermitlicensingsystem\\forms\\loginform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|solutionrelative:businesspermitlicensingsystem\\forms\\loginform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|c:\\users\\brian\\source\\repos\\businesspermitlicensingsystem\\businesspermitlicensingsystem\\forms\\reportviewerform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|solutionrelative:businesspermitlicensingsystem\\forms\\reportviewerform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\businesspermitlicensingsystem\\forms\\loginform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|c:\\users\\brian\\source\\repos\\businesspermitlicensingsystem\\businesspermitlicensingsystem\\forms\\loginform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|solutionrelative:businesspermitlicensingsystem\\forms\\loginform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|c:\\users\\brian\\source\\repos\\businesspermitlicensingsystem\\businesspermitlicensingsystem\\forms\\accountcreationform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|solutionrelative:businesspermitlicensingsystem\\forms\\accountcreationform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\businesspermitlicensingsystem\\forms\\accountcreationform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|c:\\users\\brian\\source\\repos\\businesspermitlicensingsystem\\businesspermitlicensingsystem\\forms\\accountcreationform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|solutionrelative:businesspermitlicensingsystem\\forms\\accountcreationform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|c:\\users\\brian\\source\\repos\\businesspermitlicensingsystem\\businesspermitlicensingsystem\\forms\\ornumberdialog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|solutionrelative:businesspermitlicensingsystem\\forms\\ornumberdialog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\businesspermitlicensingsystem\\forms\\ornumberdialog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{4443AF50-5034-29E0-F086-15A5802883B8}|BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj|solutionrelative:businesspermitlicensingsystem\\forms\\ornumberdialog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     }
   ],
   "DocumentGroupContainers": [
@@ -87,200 +55,101 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "ProfilingLists.cs",
-              "DocumentMoniker": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\ProfilingLists.cs",
-              "RelativeDocumentMoniker": "BusinessPermitLicensingSystem\\Forms\\ProfilingLists.cs",
-              "ToolTip": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\ProfilingLists.cs",
-              "RelativeToolTip": "BusinessPermitLicensingSystem\\Forms\\ProfilingLists.cs",
-              "ViewState": "AgIAAEoAAAAAAAAAAAAgwEUAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-06T07:36:07.46Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "ProfilingForm.cs [Design]",
-              "DocumentMoniker": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\ProfilingForm.cs",
-              "RelativeDocumentMoniker": "BusinessPermitLicensingSystem\\Forms\\ProfilingForm.cs",
-              "ToolTip": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\ProfilingForm.cs [Design]",
-              "RelativeToolTip": "BusinessPermitLicensingSystem\\Forms\\ProfilingForm.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-05T05:02:05.339Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "ProfilingForm.cs",
-              "DocumentMoniker": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\ProfilingForm.cs",
-              "RelativeDocumentMoniker": "BusinessPermitLicensingSystem\\Forms\\ProfilingForm.cs",
-              "ToolTip": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\ProfilingForm.cs",
-              "RelativeToolTip": "BusinessPermitLicensingSystem\\Forms\\ProfilingForm.cs",
-              "ViewState": "AgIAALQAAAAAAAAAAAAYwLoAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-05T05:02:07.739Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ProfilingLists.cs [Design]",
-              "DocumentMoniker": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\ProfilingLists.cs",
-              "RelativeDocumentMoniker": "BusinessPermitLicensingSystem\\Forms\\ProfilingLists.cs",
-              "ToolTip": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\ProfilingLists.cs [Design]",
-              "RelativeToolTip": "BusinessPermitLicensingSystem\\Forms\\ProfilingLists.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-06T07:40:52.583Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
               "Title": "DashboardForm.cs [Design]",
               "DocumentMoniker": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\DashboardForm.cs",
               "RelativeDocumentMoniker": "BusinessPermitLicensingSystem\\Forms\\DashboardForm.cs",
               "ToolTip": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\DashboardForm.cs [Design]",
               "RelativeToolTip": "BusinessPermitLicensingSystem\\Forms\\DashboardForm.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-06T07:50:05.555Z",
+              "WhenOpened": "2026-03-07T12:35:04.449Z",
               "EditorCaption": " [Design]"
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
-              "Title": "DashboardForm.cs",
-              "DocumentMoniker": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\DashboardForm.cs",
-              "RelativeDocumentMoniker": "BusinessPermitLicensingSystem\\Forms\\DashboardForm.cs",
-              "ToolTip": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\DashboardForm.cs",
-              "RelativeToolTip": "BusinessPermitLicensingSystem\\Forms\\DashboardForm.cs",
-              "ViewState": "AgIAAC4AAAAAAAAAAIAwwDkAAAAiAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-04T16:20:08.344Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
               "Title": "Database.cs",
               "DocumentMoniker": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Database\\Database.cs",
               "RelativeDocumentMoniker": "BusinessPermitLicensingSystem\\Database\\Database.cs",
               "ToolTip": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Database\\Database.cs",
               "RelativeToolTip": "BusinessPermitLicensingSystem\\Database\\Database.cs",
-              "ViewState": "AgIAAHAAAAAAAAAAAAAYwHYAAAAOAAAAAAAAAA==",
+              "ViewState": "AgIAAFcDAAAAAAAAAAAlwGUDAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-04T15:57:12.676Z",
+              "WhenOpened": "2026-03-07T12:27:36.941Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "ArchivedForm.cs",
-              "DocumentMoniker": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\ArchivedForm.cs",
-              "RelativeDocumentMoniker": "BusinessPermitLicensingSystem\\Forms\\ArchivedForm.cs",
-              "ToolTip": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\ArchivedForm.cs",
-              "RelativeToolTip": "BusinessPermitLicensingSystem\\Forms\\ArchivedForm.cs",
-              "ViewState": "AgIAAAEAAAAAAAAAAAAUwFcAAAAFAAAAAAAAAA==",
+              "DocumentIndex": 3,
+              "Title": "ProfilingLists.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\ProfilingLists.cs",
+              "RelativeDocumentMoniker": "BusinessPermitLicensingSystem\\Forms\\ProfilingLists.cs",
+              "ToolTip": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\ProfilingLists.cs [Design]",
+              "RelativeToolTip": "BusinessPermitLicensingSystem\\Forms\\ProfilingLists.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-06T07:43:56.421Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "ArchivedForm.cs [Design]",
-              "DocumentMoniker": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\ArchivedForm.cs",
-              "RelativeDocumentMoniker": "BusinessPermitLicensingSystem\\Forms\\ArchivedForm.cs",
-              "ToolTip": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\ArchivedForm.cs [Design]",
-              "RelativeToolTip": "BusinessPermitLicensingSystem\\Forms\\ArchivedForm.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-06T07:43:04.991Z",
+              "WhenOpened": "2026-03-07T12:25:57.989Z",
               "EditorCaption": " [Design]"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 2,
               "Title": "LogInForm.cs",
               "DocumentMoniker": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\LogInForm.cs",
               "RelativeDocumentMoniker": "BusinessPermitLicensingSystem\\Forms\\LogInForm.cs",
               "ToolTip": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\LogInForm.cs",
               "RelativeToolTip": "BusinessPermitLicensingSystem\\Forms\\LogInForm.cs",
-              "ViewState": "AgIAACIAAAAAAAAAAAAYwDYAAAAoAAAAAAAAAA==",
+              "ViewState": "AgIAAGQAAAAAAAAAAAAwwG4AAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-05T16:15:11.757Z",
+              "WhenOpened": "2026-03-07T11:57:08.681Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "ReportViewerForm.cs",
-              "DocumentMoniker": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\ReportViewerForm.cs",
-              "RelativeDocumentMoniker": "BusinessPermitLicensingSystem\\Forms\\ReportViewerForm.cs",
-              "ToolTip": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\ReportViewerForm.cs",
-              "RelativeToolTip": "BusinessPermitLicensingSystem\\Forms\\ReportViewerForm.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAqwBAAAAA7AAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "ProfilingForm.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\ProfilingForm.cs",
+              "RelativeDocumentMoniker": "BusinessPermitLicensingSystem\\Forms\\ProfilingForm.cs",
+              "ToolTip": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\ProfilingForm.cs [Design]",
+              "RelativeToolTip": "BusinessPermitLicensingSystem\\Forms\\ProfilingForm.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-06T05:55:39.679Z",
+              "WhenOpened": "2026-03-07T11:50:16.989Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ProfilingForm.cs",
+              "DocumentMoniker": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\ProfilingForm.cs",
+              "RelativeDocumentMoniker": "BusinessPermitLicensingSystem\\Forms\\ProfilingForm.cs",
+              "ToolTip": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\ProfilingForm.cs",
+              "RelativeToolTip": "BusinessPermitLicensingSystem\\Forms\\ProfilingForm.cs",
+              "ViewState": "AgIAAFMAAAAAAAAAAAAYwFkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-07T11:06:01.794Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 6,
               "Title": "LogInForm.cs [Design]",
               "DocumentMoniker": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\LogInForm.cs",
               "RelativeDocumentMoniker": "BusinessPermitLicensingSystem\\Forms\\LogInForm.cs",
               "ToolTip": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\LogInForm.cs [Design]",
               "RelativeToolTip": "BusinessPermitLicensingSystem\\Forms\\LogInForm.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-05T16:14:42.385Z"
+              "WhenOpened": "2026-03-07T12:07:55.157Z",
+              "EditorCaption": " [Design]"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "AccountCreationForm.cs",
-              "DocumentMoniker": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\AccountCreationForm.cs",
-              "RelativeDocumentMoniker": "BusinessPermitLicensingSystem\\Forms\\AccountCreationForm.cs",
-              "ToolTip": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\AccountCreationForm.cs",
-              "RelativeToolTip": "BusinessPermitLicensingSystem\\Forms\\AccountCreationForm.cs",
-              "ViewState": "AgIAAE0AAAAAAAAAAAAAwFsAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-05T07:45:31.428Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 7,
               "Title": "AccountCreationForm.cs [Design]",
               "DocumentMoniker": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\AccountCreationForm.cs",
               "RelativeDocumentMoniker": "BusinessPermitLicensingSystem\\Forms\\AccountCreationForm.cs",
               "ToolTip": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\AccountCreationForm.cs [Design]",
               "RelativeToolTip": "BusinessPermitLicensingSystem\\Forms\\AccountCreationForm.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-05T07:45:27.118Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "ORNumberDialog.cs",
-              "DocumentMoniker": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\ORNumberDialog.cs",
-              "RelativeDocumentMoniker": "BusinessPermitLicensingSystem\\Forms\\ORNumberDialog.cs",
-              "ToolTip": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\ORNumberDialog.cs",
-              "RelativeToolTip": "BusinessPermitLicensingSystem\\Forms\\ORNumberDialog.cs",
-              "ViewState": "AgIAACwAAAAAAAAAAAAQwA4AAAAPAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-04T16:13:13.014Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "ORNumberDialog.cs [Design]",
-              "DocumentMoniker": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\ORNumberDialog.cs",
-              "RelativeDocumentMoniker": "BusinessPermitLicensingSystem\\Forms\\ORNumberDialog.cs",
-              "ToolTip": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\Forms\\ORNumberDialog.cs [Design]",
-              "RelativeToolTip": "BusinessPermitLicensingSystem\\Forms\\ORNumberDialog.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-04T16:13:11.944Z"
+              "WhenOpened": "2026-03-07T12:00:33.609Z",
+              "EditorCaption": " [Design]"
             }
           ]
         }

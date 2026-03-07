@@ -22,7 +22,7 @@ namespace BusinessPermitLicensingSystem.Forms
             {
                 MessageBox.Show(
                     "Please enter both username and password.",
-                    "Masinloc-BPLS",
+                    "Masinloc - BPLS",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
                 return;
@@ -46,13 +46,6 @@ namespace BusinessPermitLicensingSystem.Forms
                     Session.CurrentUserId ?? 0,
                     $"User '{username}' logged in.");
 
-                //MessageBox.Show(
-                    //"Login successful!",
-                   // "Masinloc-BPLS",
-                   // MessageBoxButtons.OK,
-                   // MessageBoxIcon.Information);
-
-                // Navigate to dashboard
                 DashboardForm dash = new DashboardForm();
                 dash.Show();
                 this.Hide();
@@ -60,8 +53,8 @@ namespace BusinessPermitLicensingSystem.Forms
             else
             {
                 MessageBox.Show(
-                    messageOrUserId ?? "Invalid username or password.",
-                    "Masinloc-BPLS",
+                    messageOrUserId ?? "Invalid Username or Password.",
+                    "Masinloc - BPLS",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
 
@@ -86,13 +79,16 @@ namespace BusinessPermitLicensingSystem.Forms
         private void btnCreate_Click_1(object sender, EventArgs e)
         {
             AccountCreationForm form = new AccountCreationForm();
-            form.ShowDialog();
+            form.Show();
+            this.Hide();
         }
 
         private void LogInForm_Load(object sender, EventArgs e)
         {
             {
                 this.MaximizeBox = false;  // Hide maximize
+                txtUser.Focus();
+                SetupSecurity();
             }
         }
 
@@ -103,13 +99,26 @@ namespace BusinessPermitLicensingSystem.Forms
             {
                 const int CS_NOCLOSE = 0x200;
                 CreateParams cp = base.CreateParams;
-                cp.ClassStyle |= CS_NOCLOSE; // ✅ Disables X button
+                cp.ClassStyle |= CS_NOCLOSE;
                 return cp;
             }
         }
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
 
+        private void SetupSecurity()
+        {
+            txtUser.KeyDown += (s, e) =>
+            {
+                if (e.Control && e.KeyCode == Keys.V)
+                    e.SuppressKeyPress = true;
+            };
+
+            txtPass.KeyDown += (s, e) =>
+            {
+                if (e.Control && e.KeyCode == Keys.V)
+                    e.SuppressKeyPress = true;
+            };
+            txtUser.ContextMenuStrip = new ContextMenuStrip();
+            txtPass.ContextMenuStrip = new ContextMenuStrip();
         }
     }
 
