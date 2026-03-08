@@ -907,12 +907,14 @@ namespace BusinessPermitLicensingSystem
                 con.Open();
 
                 using var cmd = new SQLiteCommand(@"
-                    INSERT INTO AuditTrail (Action, SIN, UserId, Details)
-                    VALUES (@action, @sin, @user, @details)", con);
+                    INSERT INTO AuditTrail (Action, SIN, UserId, Timestamp, Details)
+                    VALUES (@action, @sin, @user, @timestamp, @details)", con);
 
                 cmd.Parameters.AddWithValue("@action", action);
                 cmd.Parameters.AddWithValue("@sin", sin ?? "");
                 cmd.Parameters.AddWithValue("@user", userId);
+                cmd.Parameters.AddWithValue("@timestamp",
+                    DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")); 
                 cmd.Parameters.AddWithValue("@details", details ?? "");
 
                 cmd.ExecuteNonQuery();
