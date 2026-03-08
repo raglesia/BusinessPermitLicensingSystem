@@ -1,6 +1,7 @@
 ﻿using BusinessPermitLicensingSystem.Forms;
 using BusinessPermitLicensingSystem.Models;
 using ClosedXML.Excel;
+using SQLitePCL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -30,8 +31,6 @@ namespace BusinessPermitLicensingSystem
         {
             lblUsername.Text = $"{Session.CurrentPosition} | {Session.CurrentFullName}";
             btnPaymentHistory.Focus();
-
-
 
         }
 
@@ -147,39 +146,6 @@ namespace BusinessPermitLicensingSystem
         {
             if (!string.IsNullOrWhiteSpace(value))
                 filters.Add($"{column} LIKE '%{value.Replace("'", "''")}%'");
-        }
-
-        // ===================== COLOR CODING ===================== //
-        private void ColorPaymentStatusColumn()
-        {
-            foreach (DataGridViewRow row in dataGridView1.Rows)
-            {
-                if (row.IsNewRow) continue;
-
-                // ✅ Apply alternating row color to entire row first
-                Color rowColor = row.Index % 2 == 0 ? Color.White : Color.AliceBlue;
-                row.DefaultCellStyle.BackColor = rowColor;
-
-                // ✅ Then override only the Payment Status cell
-                var cell = row.Cells["Payment Status"];
-                if (cell?.Value == null) continue;
-
-                switch (cell.Value.ToString())
-                {
-                    case "Paid":
-                        cell.Style.BackColor = Color.LightGreen;
-                        cell.Style.ForeColor = Color.DarkGreen;
-                        break;
-                    case "Partial":
-                        cell.Style.BackColor = Color.LightYellow;
-                        cell.Style.ForeColor = Color.DarkOrange;
-                        break;
-                    case "Unpaid":
-                        cell.Style.BackColor = Color.LightCoral;
-                        cell.Style.ForeColor = Color.DarkRed;
-                        break;
-                }
-            }
         }
 
         // ===================== EDIT RECORD ===================== //
@@ -307,8 +273,8 @@ namespace BusinessPermitLicensingSystem
                 MonthlyRental = monthlyRental,
                 PaymentStatus = paymentStatus,
                 Penalty = penalty,
-                AdditionalCharge = Convert.ToDouble(row.Cells["Additional Charge"].Value ?? 0), // ✅
-                StartDate = startDate
+                AdditionalCharge = Convert.ToDouble(row.Cells["Additional Charge"].Value ?? 0),
+                StartDate = startDate,
             };
 
             var rpt = new ReportViewerForm(selectedProfile);
@@ -439,6 +405,39 @@ namespace BusinessPermitLicensingSystem
             this.Hide();
         }
 
+        // ===================== COLOR CODING ===================== //
+        private void ColorPaymentStatusColumn()
+        {
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                if (row.IsNewRow) continue;
+
+                // ✅ Apply alternating row color to entire row first
+                Color rowColor = row.Index % 2 == 0 ? Color.White : Color.AliceBlue;
+                row.DefaultCellStyle.BackColor = rowColor;
+
+                // ✅ Then override only the Payment Status cell
+                var cell = row.Cells["Payment Status"];
+                if (cell?.Value == null) continue;
+
+                switch (cell.Value.ToString())
+                {
+                    case "Paid":
+                        cell.Style.BackColor = Color.LightGreen;
+                        cell.Style.ForeColor = Color.DarkGreen;
+                        break;
+                    case "Partial":
+                        cell.Style.BackColor = Color.LightYellow;
+                        cell.Style.ForeColor = Color.DarkOrange;
+                        break;
+                    case "Unpaid":
+                        cell.Style.BackColor = Color.LightCoral;
+                        cell.Style.ForeColor = Color.DarkRed;
+                        break;
+                }
+            }
+        }
+
 
 
         // ===================== WINDOW SETTINGS ===================== //
@@ -453,9 +452,7 @@ namespace BusinessPermitLicensingSystem
             }
         }
 
-        // ===================== UNUSED EVENTS ===================== //
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
-
+        // ARCHIVE RECORD (SOFT DELETE) //
         private void btnArchive_Click(object sender, EventArgs e)
         {
             {

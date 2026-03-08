@@ -32,52 +32,78 @@
             dataGridView1 = new DataGridView();
             btnRestore = new Button();
             btnClose = new Button();
+            tableLayoutPanel1 = new TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            tableLayoutPanel1.SuspendLayout();
             SuspendLayout();
             // 
             // dataGridView1
             // 
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(26, 12);
+            dataGridView1.Location = new Point(3, 3);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 62;
-            dataGridView1.Size = new Size(1243, 225);
+            dataGridView1.Size = new Size(1561, 515);
             dataGridView1.TabIndex = 0;
             // 
             // btnRestore
             // 
-            btnRestore.Location = new Point(85, 292);
+            btnRestore.BackColor = SystemColors.GradientActiveCaption;
+            btnRestore.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnRestore.Image = Properties.Resources.icons8_restore_page_64;
+            btnRestore.ImageAlign = ContentAlignment.MiddleLeft;
+            btnRestore.Location = new Point(0, 527);
             btnRestore.Name = "btnRestore";
-            btnRestore.Size = new Size(112, 34);
+            btnRestore.Size = new Size(149, 67);
             btnRestore.TabIndex = 1;
-            btnRestore.Text = "button1";
-            btnRestore.UseVisualStyleBackColor = true;
+            btnRestore.Text = "          Restore";
+            btnRestore.UseVisualStyleBackColor = false;
             // 
             // btnClose
             // 
-            btnClose.Location = new Point(203, 292);
+            btnClose.BackColor = SystemColors.GradientActiveCaption;
+            btnClose.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnClose.Image = Properties.Resources.icons8_back_64;
+            btnClose.ImageAlign = ContentAlignment.MiddleLeft;
+            btnClose.Location = new Point(155, 527);
             btnClose.Name = "btnClose";
-            btnClose.Size = new Size(112, 34);
+            btnClose.Size = new Size(146, 67);
             btnClose.TabIndex = 2;
-            btnClose.Text = "BACK";
-            btnClose.UseVisualStyleBackColor = true;
+            btnClose.Text = "           Back";
+            btnClose.UseVisualStyleBackColor = false;
             btnClose.Click += btnClose_Click;
+            // 
+            // tableLayoutPanel1
+            // 
+            tableLayoutPanel1.ColumnCount = 1;
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel1.Controls.Add(dataGridView1, 0, 0);
+            tableLayoutPanel1.Dock = DockStyle.Top;
+            tableLayoutPanel1.Location = new Point(0, 0);
+            tableLayoutPanel1.Name = "tableLayoutPanel1";
+            tableLayoutPanel1.RowCount = 1;
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel1.Size = new Size(1567, 521);
+            tableLayoutPanel1.TabIndex = 3;
             // 
             // ArchivedForm
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1565, 585);
+            BackColor = SystemColors.GradientActiveCaption;
+            ClientSize = new Size(1567, 594);
+            Controls.Add(tableLayoutPanel1);
             Controls.Add(btnClose);
             Controls.Add(btnRestore);
-            Controls.Add(dataGridView1);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             Icon = (Icon)resources.GetObject("$this.Icon");
+            MaximizeBox = false;
             MinimumSize = new Size(1024, 600);
             Name = "ArchivedForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Masinloc BPLS - Archived ";
-            WindowState = FormWindowState.Maximized;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            tableLayoutPanel1.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -86,5 +112,6 @@
         private DataGridView dataGridView1;
         private Button btnRestore;
         private Button btnClose;
+        private TableLayoutPanel tableLayoutPanel1;
     }
 }

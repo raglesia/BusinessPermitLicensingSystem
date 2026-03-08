@@ -114,7 +114,8 @@ namespace BusinessPermitLicensingSystem
                 "ALTER TABLE Profiling ADD COLUMN AdditionalCharge REAL DEFAULT 0",
                 "ALTER TABLE Users ADD COLUMN Position TEXT NOT NULL DEFAULT ''",
                 "CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_stallnumber ON Profiling(StallNumber) WHERE IsArchived = 0",
-                "ALTER TABLE Profiling ADD COLUMN IsArchived INTEGER DEFAULT 0", // ✅ Add this
+                "ALTER TABLE Profiling ADD COLUMN IsArchived INTEGER DEFAULT 0",
+                "ALTER TABLE Profiling ADD COLUMN DatePaid TEXT DEFAULT ''",
                 "CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_ornumber ON PaymentHistory(ORNumber)"
             };
 
@@ -490,6 +491,75 @@ namespace BusinessPermitLicensingSystem
             catch { return (0, 0, "PerSqm"); }
         }
 
+
+        // CHANGE RENTAL RATES //
+        public static (bool Success, string? ErrorMessage) UpdateRentalRate(
+            string section,
+            double ratePerSqm,
+            double flatRate,
+            string rateType)
+        {
+            try
+            {
+                using var con = new SQLiteConnection(ConnectionString);
+                con.Open();
+
+                using var cmd = new SQLiteCommand(@"
+            UPDATE RentalRates
+            SET
+                RatePerSqm = @ratePerSqm,
+                FlatRate   = @flatRate,
+                RateType   = @rateType
+            WHERE Section  = @section", con);
+
+                cmd.Parameters.AddWithValue("@ratePerSqm", ratePerSqm);
+                cmd.Parameters.AddWithValue("@flatRate", flatRate);
+                cmd.Parameters.AddWithValue("@rateType", rateType);
+                cmd.Parameters.AddWithValue("@section", section);
+
+                cmd.ExecuteNonQuery();
+                return (true, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
+            }
+        }
+
+        // ADD NEW RATE SECTION // 
+        public static (bool Success, string? ErrorMessage) AddRentalRate(
+            string section,
+            double ratePerSqm,
+            double flatRate,
+            string rateType)
+        {
+            try
+            {
+                using var con = new SQLiteConnection(ConnectionString);
+                con.Open();
+
+                using var cmd = new SQLiteCommand(@"
+            INSERT INTO RentalRates (Section, RatePerSqm, FlatRate, RateType)
+            VALUES (@section, @ratePerSqm, @flatRate, @rateType)", con);
+
+                cmd.Parameters.AddWithValue("@section", section.Trim());
+                cmd.Parameters.AddWithValue("@ratePerSqm", ratePerSqm);
+                cmd.Parameters.AddWithValue("@flatRate", flatRate);
+                cmd.Parameters.AddWithValue("@rateType", rateType);
+
+                cmd.ExecuteNonQuery();
+                return (true, null);
+            }
+            catch (SQLiteException ex) when (ex.ResultCode == SQLiteErrorCode.Constraint)
+            {
+                return (false, "Section already exists.");
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
+            }
+        }
+
         // ===================== PAYMENT STATUS ===================== //
         public static (bool Success, string? ErrorMessage) UpdatePaymentStatus(
             string sin,
@@ -587,7 +657,7 @@ namespace BusinessPermitLicensingSystem
             adapter.Fill(dt);
             return dt;
         }
-
+       
         // ===================== ARCHIVE ===================== //
         public static (bool Success, string? ErrorMessage) ArchiveProfiling(string sin)
         {

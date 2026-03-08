@@ -136,6 +136,12 @@ namespace BusinessPermitLicensingSystem.Forms
             this.Hide();
         }
 
+        private void button3_Click(object sender, EventArgs e)
+        {
+            var form = new RentalRatesForm();
+            form.ShowDialog();
+        }
+
         protected override CreateParams CreateParams
         {
             get

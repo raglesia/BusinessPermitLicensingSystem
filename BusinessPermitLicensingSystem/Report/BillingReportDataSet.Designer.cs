@@ -301,6 +301,8 @@ namespace BusinessPermitLicensingSystem.Report {
             
             private global::System.Data.DataColumn columnPenalty;
             
+            private global::System.Data.DataColumn columnAddtionalCharge;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
             public BillingTableDataTable() {
@@ -418,6 +420,14 @@ namespace BusinessPermitLicensingSystem.Report {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
+            public global::System.Data.DataColumn AddtionalChargeColumn {
+                get {
+                    return this.columnAddtionalCharge;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -453,7 +463,7 @@ namespace BusinessPermitLicensingSystem.Report {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
-            public BillingTableRow AddBillingTableRow(string SIN, string FullName, string BusinessName, string BusinessSection, string StallNumber, string StallSize, double MonthlyRental, string PaymentStatus, string StartDate, string Penalty) {
+            public BillingTableRow AddBillingTableRow(string SIN, string FullName, string BusinessName, string BusinessSection, string StallNumber, string StallSize, double MonthlyRental, string PaymentStatus, string StartDate, string Penalty, string AddtionalCharge) {
                 BillingTableRow rowBillingTableRow = ((BillingTableRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         SIN,
@@ -465,7 +475,8 @@ namespace BusinessPermitLicensingSystem.Report {
                         MonthlyRental,
                         PaymentStatus,
                         StartDate,
-                        Penalty};
+                        Penalty,
+                        AddtionalCharge};
                 rowBillingTableRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowBillingTableRow);
                 return rowBillingTableRow;
@@ -498,6 +509,7 @@ namespace BusinessPermitLicensingSystem.Report {
                 this.columnPaymentStatus = base.Columns["PaymentStatus"];
                 this.columnStartDate = base.Columns["StartDate"];
                 this.columnPenalty = base.Columns["Penalty"];
+                this.columnAddtionalCharge = base.Columns["AddtionalCharge"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -523,6 +535,8 @@ namespace BusinessPermitLicensingSystem.Report {
                 base.Columns.Add(this.columnStartDate);
                 this.columnPenalty = new global::System.Data.DataColumn("Penalty", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnPenalty);
+                this.columnAddtionalCharge = new global::System.Data.DataColumn("AddtionalCharge", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnAddtionalCharge);
                 this.columnSIN.AllowDBNull = false;
             }
             
@@ -821,6 +835,22 @@ namespace BusinessPermitLicensingSystem.Report {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
+            public string AddtionalCharge {
+                get {
+                    try {
+                        return ((string)(this[this.tableBillingTable.AddtionalChargeColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'AddtionalCharge\' in table \'BillingTable\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableBillingTable.AddtionalChargeColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
             public bool IsFullNameNull() {
                 return this.IsNull(this.tableBillingTable.FullNameColumn);
             }
@@ -925,6 +955,18 @@ namespace BusinessPermitLicensingSystem.Report {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
             public void SetPenaltyNull() {
                 this[this.tableBillingTable.PenaltyColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
+            public bool IsAddtionalChargeNull() {
+                return this.IsNull(this.tableBillingTable.AddtionalChargeColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
+            public void SetAddtionalChargeNull() {
+                this[this.tableBillingTable.AddtionalChargeColumn] = global::System.Convert.DBNull;
             }
         }
         

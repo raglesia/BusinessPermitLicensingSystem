@@ -184,6 +184,7 @@
             // btnSave
             // 
             btnSave.BackColor = SystemColors.GradientActiveCaption;
+            btnSave.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnSave.Image = Properties.Resources.icons8_save_64;
             btnSave.ImageAlign = ContentAlignment.MiddleLeft;
             btnSave.Location = new Point(101, 535);
@@ -197,6 +198,7 @@
             // button1
             // 
             button1.BackColor = SystemColors.GradientActiveCaption;
+            button1.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             button1.Image = Properties.Resources.icons8_back_64;
             button1.ImageAlign = ContentAlignment.MiddleLeft;
             button1.Location = new Point(370, 535);

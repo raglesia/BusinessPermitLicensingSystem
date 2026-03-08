@@ -13,6 +13,18 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== FIELDS ===================== //
         private bool isEditMode = false;
         private string currentSIN = "";
+        private bool isLoading = true; // ✅ Prevent ComputeMonthlyRental during load
+
+        // ✅ Store edit data temporarily
+        private string _editFullName = "";
+        private string _editBusinessName = "";
+        private string _editBusinessSection = "";
+        private string _editStallNumber = "";
+        private string _editStallSize = "";
+        private string _editMonthlyRental = "";
+        private string _editPaymentStatus = "";
+        private string _editStartDate = "";
+        private double _editAdditionalCharge = 0;
 
         // ===================== CONSTRUCTOR ===================== //
         public ProfilingForm()
@@ -26,16 +38,20 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== FORM LOAD ===================== //
         private void ProfilingForm_Load(object sender, EventArgs e)
         {
-
-
+            isLoading = true; // ✅ Block ComputeMonthlyRental
 
             lblUsername.Text = $"{Session.CurrentPosition} | {Session.CurrentFullName}";
 
             SetupInputValidators();
-            SetupControls();
+            SetupControls();   // ✅ Loads cmbBSection items first
+            SetupSecurity();
 
-            if (!isEditMode)
+            if (isEditMode)
+                PopulateEditFields(); // ✅ Populate AFTER cmbBSection is loaded
+            else
                 AssignNewBIN();
+
+            isLoading = false; // ✅ Allow ComputeMonthlyRental now
         }
 
         // ===================== SETUP ===================== //
@@ -50,8 +66,6 @@ namespace BusinessPermitLicensingSystem.Forms
             // Auto-compute when section or stall size changes
             cmbBSection.SelectedIndexChanged += (s, e) => ComputeMonthlyRental();
             txtSSize.TextChanged += (s, e) => ComputeMonthlyRental();
-
-            // Recompute when additional charge changes
             txtAdditionalCharge.TextChanged += (s, e) => ComputeMonthlyRental();
 
             // Toggle additional charges
@@ -71,7 +85,7 @@ namespace BusinessPermitLicensingSystem.Forms
             txtBIN.Enabled = false;
             txtMRental.Enabled = false;
 
-            // Load sections from RentalRates table
+            // ✅ Load sections from RentalRates table
             cmbBSection.Items.Clear();
             DataTable rates = Database.GetRentalRates();
             foreach (DataRow row in rates.Rows)
@@ -108,31 +122,73 @@ namespace BusinessPermitLicensingSystem.Forms
             string startDate,
             double additionalCharge = 0)
         {
+            // ✅ Just store values — populate in ProfilingForm_Load after SetupControls()
             isEditMode = true;
             currentSIN = sin;
+            _editFullName = fullName;
+            _editBusinessName = businessName;
+            _editBusinessSection = businessSection;
+            _editStallNumber = stallNumber;
+            _editStallSize = stallSize;
+            _editMonthlyRental = monthlyRental;
+            _editPaymentStatus = paymentStatus;
+            _editStartDate = startDate;
+            _editAdditionalCharge = additionalCharge;
+        }
 
-            txtBIN.Text = sin;
-            txtFName.Text = fullName;
-            txtBName.Text = businessName;
-            cmbBSection.SelectedItem = businessSection;
-            txtSNumber.Text = stallNumber;
-            txtSSize.Text = stallSize;
-            txtMRental.Text = monthlyRental;
-            cmbPaymentStatus.SelectedItem = paymentStatus ?? "Unpaid";
-            btnSave.Text = "Update Record";
+        // ===================== POPULATE EDIT FIELDS ===================== //
+        private void PopulateEditFields()
+        {
+            txtBIN.Text = currentSIN;
             txtBIN.Enabled = false;
+            txtFName.Text = _editFullName;
+            txtBName.Text = _editBusinessName;
 
-            // Load additional charge if exists
-            if (additionalCharge > 0)
+            // ✅ Match combobox item by text
+            cmbBSection.SelectedIndex = -1;
+            foreach (var item in cmbBSection.Items)
+            {
+                if (item.ToString() == _editBusinessSection)
+                {
+                    cmbBSection.SelectedItem = item;
+                    break;
+                }
+            }
+
+            txtSNumber.Text = _editStallNumber;
+            txtSSize.Text = _editStallSize;
+            txtMRental.Text = _editMonthlyRental;
+
+            // ✅ Match payment status
+            cmbPaymentStatus.SelectedIndex = -1;
+            foreach (var item in cmbPaymentStatus.Items)
+            {
+                if (item.ToString() == _editPaymentStatus)
+                {
+                    cmbPaymentStatus.SelectedItem = item;
+                    break;
+                }
+            }
+
+            btnSave.Text = "           Update Record";
+
+            // ✅ Additional Charge
+            if (_editAdditionalCharge > 0)
             {
                 chkAdditional.Checked = true;
                 txtAdditionalCharge.Enabled = true;
-                txtAdditionalCharge.Text = additionalCharge.ToString("N2");
+                txtAdditionalCharge.Text = _editAdditionalCharge.ToString("N2");
+            }
+            else
+            {
+                chkAdditional.Checked = false;
+                txtAdditionalCharge.Enabled = false;
+                txtAdditionalCharge.Text = "0.00";
             }
 
-            // Set start date
-            if (!string.IsNullOrWhiteSpace(startDate) &&
-                DateTime.TryParse(startDate, out DateTime parsedDate))
+            // ✅ Start Date
+            if (!string.IsNullOrWhiteSpace(_editStartDate) &&
+                DateTime.TryParse(_editStartDate, out DateTime parsedDate))
                 dtpStartDate.Value = parsedDate;
             else
                 dtpStartDate.Value = DateTime.Today;
@@ -141,6 +197,8 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== COMPUTE ===================== //
         private void ComputeMonthlyRental()
         {
+            if (isLoading) return; // ✅ Skip during load
+
             string section = cmbBSection.SelectedItem?.ToString() ?? "";
             if (string.IsNullOrWhiteSpace(section)) return;
 
@@ -173,7 +231,6 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== SAVE ===================== //
         private void btnSave_Click(object sender, EventArgs e)
         {
-
             string fullName = txtFName.Text.Trim();
             string businessName = txtBName.Text.Trim();
             string businessSection = cmbBSection.SelectedItem?.ToString() ?? "";
@@ -341,9 +398,7 @@ namespace BusinessPermitLicensingSystem.Forms
         private void button1_Click(object sender, EventArgs e)
         {
             if (isEditMode)
-            {
                 this.Close();
-            }
             else
             {
                 var dashboard = new DashboardForm();
@@ -370,5 +425,21 @@ namespace BusinessPermitLicensingSystem.Forms
             }
         }
 
+        private void SetupSecurity()
+        {
+            txtBIN.KeyDown += (s, e) => { if (e.Control && e.KeyCode == Keys.V) e.SuppressKeyPress = true; };
+            txtFName.KeyDown += (s, e) => { if (e.Control && e.KeyCode == Keys.V) e.SuppressKeyPress = true; };
+            txtBName.KeyDown += (s, e) => { if (e.Control && e.KeyCode == Keys.V) e.SuppressKeyPress = true; };
+            txtSNumber.KeyDown += (s, e) => { if (e.Control && e.KeyCode == Keys.V) e.SuppressKeyPress = true; };
+            txtSSize.KeyDown += (s, e) => { if (e.Control && e.KeyCode == Keys.V) e.SuppressKeyPress = true; };
+            txtAdditionalCharge.KeyDown += (s, e) => { if (e.Control && e.KeyCode == Keys.V) e.SuppressKeyPress = true; };
+
+            txtBIN.ContextMenuStrip = new ContextMenuStrip();
+            txtFName.ContextMenuStrip = new ContextMenuStrip();
+            txtBName.ContextMenuStrip = new ContextMenuStrip();
+            txtSNumber.ContextMenuStrip = new ContextMenuStrip();
+            txtSSize.ContextMenuStrip = new ContextMenuStrip();
+            txtAdditionalCharge.ContextMenuStrip = new ContextMenuStrip();
+        }
     }
 }

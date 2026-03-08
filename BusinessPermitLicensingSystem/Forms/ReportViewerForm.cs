@@ -72,20 +72,20 @@ namespace BusinessPermitLicensingSystem
             reportViewer1.LocalReport.DataSources.Add(
                 new ReportDataSource("BillingReportDataSet", data));
 
-            // Set parameters
             reportViewer1.LocalReport.SetParameters(new[]
             {
-                new ReportParameter("ProcessedBy",       Session.CurrentFullName                  ?? ""),
-                new ReportParameter("Position",          Session.CurrentPosition                  ?? ""),
-                new ReportParameter("PaymentStatus",     _profile.PaymentStatus                   ?? "Unpaid"),
-                new ReportParameter("Penalty",           _profile.Penalty.ToString("F2")),
-                new ReportParameter("AdditionalCharge",  _profile.AdditionalCharge.ToString("F2")), // ✅
-                new ReportParameter("TotalDue",          _profile.TotalDue.ToString("F2"))
+                new ReportParameter("ProcessedBy",      Session.CurrentFullName                   ?? ""),
+                new ReportParameter("Position",         Session.CurrentPosition                   ?? ""),
+                new ReportParameter("PaymentStatus",    _profile.PaymentStatus                    ?? "Unpaid"),
+                new ReportParameter("Penalty",          _profile.Penalty.ToString("F2")),
+                new ReportParameter("AdditionalCharge", _profile.AdditionalCharge.ToString("F2")),
+                new ReportParameter("TotalDue",         _profile.TotalDue.ToString("F2")),
             });
 
             reportViewer1.RefreshReport();
             reportViewer1.SetDisplayMode(DisplayMode.PrintLayout);
-            reportViewer1.ZoomMode = ZoomMode.PageWidth;
+            reportViewer1.ZoomMode = ZoomMode.Percent;
+            reportViewer1.ZoomPercent = 100;
         }
     }
 }

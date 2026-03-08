@@ -14,11 +14,10 @@ namespace BusinessPermitLicensingSystem.Models
         public string StallSize { get; set; } = string.Empty;
         public double MonthlyRental { get; set; } = 0;
         public string PaymentStatus { get; set; } = "Unpaid";
-        public double Penalty { get; set; } = 0;          // ✅ Add
-        public string StartDate { get; set; } = "";        // ✅ Add
-        public double TotalDue => MonthlyRental + Penalty; // ✅ Auto calculates
-        public double AdditionalCharge { get; set; } = 0;                       // ✅
-
+        public double Penalty { get; set; } = 0;        
+        public string StartDate { get; set; } = "";
+        public double TotalDue => MonthlyRental + Penalty; 
+        public double AdditionalCharge { get; set; } = 0;
 
 
     }
