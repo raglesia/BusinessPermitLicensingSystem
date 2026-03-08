@@ -508,23 +508,5 @@ namespace BusinessPermitLicensingSystem
                 }
             }
         }
-
-        private void btnViewArcRec_Click(object sender, EventArgs e)
-        {
-            ArchivedForm archivedForm = new ArchivedForm();
-
-            archivedForm.Show();
-            this.Hide();
-        }
-
-        private void panelButtons_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
     }
 }

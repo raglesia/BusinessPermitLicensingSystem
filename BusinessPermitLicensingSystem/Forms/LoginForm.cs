@@ -22,7 +22,7 @@ namespace BusinessPermitLicensingSystem.Forms
             {
                 MessageBox.Show(
                     "Please enter both username and password.",
-                    "Masinloc - BPLS",
+                    "Masinloc BPLS - Log In",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
                 return;
@@ -54,7 +54,7 @@ namespace BusinessPermitLicensingSystem.Forms
             {
                 MessageBox.Show(
                     messageOrUserId ?? "Invalid Username or Password.",
-                    "Masinloc - BPLS",
+                    "Masinloc BPLS - Log In",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
 

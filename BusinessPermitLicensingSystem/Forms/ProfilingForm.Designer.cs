@@ -361,7 +361,7 @@
             MaximizeBox = false;
             Name = "ProfilingForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Masinloc - BPLS";
+            Text = "Masinloc BPLS - Profiling";
             Load += ProfilingForm_Load;
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();

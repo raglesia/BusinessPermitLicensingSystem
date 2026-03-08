@@ -34,10 +34,9 @@
             txtSearch = new TextBox();
             dataGridView1 = new DataGridView();
             panelButtons = new Panel();
-            lblTotalRecords = new Label();
-            btnViewArcRec = new Button();
             btnArchive = new Button();
             btnDelete = new Button();
+            lblTotalRecords = new Label();
             button2 = new Button();
             btnPaymentHistory = new Button();
             button1 = new Button();
@@ -93,10 +92,9 @@
             // 
             // panelButtons
             // 
-            panelButtons.Controls.Add(lblTotalRecords);
-            panelButtons.Controls.Add(btnViewArcRec);
             panelButtons.Controls.Add(btnArchive);
             panelButtons.Controls.Add(btnDelete);
+            panelButtons.Controls.Add(lblTotalRecords);
             panelButtons.Controls.Add(button2);
             panelButtons.Controls.Add(btnPaymentHistory);
             panelButtons.Controls.Add(button1);
@@ -106,32 +104,6 @@
             panelButtons.Name = "panelButtons";
             panelButtons.Size = new Size(1879, 69);
             panelButtons.TabIndex = 38;
-            panelButtons.Paint += panelButtons_Paint;
-            // 
-            // lblTotalRecords
-            // 
-            lblTotalRecords.AutoSize = true;
-            lblTotalRecords.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblTotalRecords.Location = new Point(960, 20);
-            lblTotalRecords.Name = "lblTotalRecords";
-            lblTotalRecords.Size = new Size(211, 28);
-            lblTotalRecords.TabIndex = 41;
-            lblTotalRecords.Text = "Total Records: 00000";
-            // 
-            // btnViewArcRec
-            // 
-            btnViewArcRec.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnViewArcRec.BackColor = SystemColors.GradientActiveCaption;
-            btnViewArcRec.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnViewArcRec.Image = Properties.Resources.icons8_view_64;
-            btnViewArcRec.ImageAlign = ContentAlignment.MiddleLeft;
-            btnViewArcRec.Location = new Point(1207, 1);
-            btnViewArcRec.Name = "btnViewArcRec";
-            btnViewArcRec.Size = new Size(219, 68);
-            btnViewArcRec.TabIndex = 5;
-            btnViewArcRec.Text = "View Archived Records";
-            btnViewArcRec.UseVisualStyleBackColor = false;
-            btnViewArcRec.Click += btnViewArcRec_Click;
             // 
             // btnArchive
             // 
@@ -162,6 +134,16 @@
             btnDelete.Text = "           Delete Record";
             btnDelete.UseVisualStyleBackColor = false;
             btnDelete.Click += btnDelete_Click;
+            // 
+            // lblTotalRecords
+            // 
+            lblTotalRecords.AutoSize = true;
+            lblTotalRecords.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTotalRecords.Location = new Point(1074, 20);
+            lblTotalRecords.Name = "lblTotalRecords";
+            lblTotalRecords.Size = new Size(211, 28);
+            lblTotalRecords.TabIndex = 41;
+            lblTotalRecords.Text = "Total Records: 00000";
             // 
             // button2
             // 
@@ -239,10 +221,11 @@
             // 
             tableLayoutPanel1.ColumnCount = 1;
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
             tableLayoutPanel1.Controls.Add(panelButtons, 0, 0);
             tableLayoutPanel1.Controls.Add(dataGridView1, 0, 2);
-            tableLayoutPanel1.Controls.Add(panelFilters, 0, 1);
             tableLayoutPanel1.Controls.Add(lblUsername, 0, 3);
+            tableLayoutPanel1.Controls.Add(panelFilters, 0, 1);
             tableLayoutPanel1.Dock = DockStyle.Fill;
             tableLayoutPanel1.Location = new Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -251,9 +234,9 @@
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 45F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 35F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tableLayoutPanel1.Size = new Size(1885, 619);
             tableLayoutPanel1.TabIndex = 40;
-            tableLayoutPanel1.Paint += tableLayoutPanel1_Paint;
             // 
             // ProfilingLists
             // 
@@ -268,7 +251,7 @@
             MinimumSize = new Size(1024, 600);
             Name = "ProfilingLists";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Masinloc - BPLS";
+            Text = "Masinloc BPLS - Stall Owners List";
             WindowState = FormWindowState.Maximized;
             Load += ProfilingLists_Load;
             panelFilters.ResumeLayout(false);
@@ -287,7 +270,6 @@
         private TextBox txtSearch;
         private DataGridView dataGridView1;
         private Panel panelButtons;
-        private Button btnViewArcRec;
         private Button btnArchive;
         private Label lblUsername;
         private Button btnDelete;

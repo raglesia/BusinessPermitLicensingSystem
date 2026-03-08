@@ -80,10 +80,13 @@ namespace BusinessPermitLicensingSystem.Forms
             }
         }
 
-        // ===================== NAVIGATION ===================== //
         private void btnClose_Click(object sender, EventArgs e)
         {
+            DashboardForm dashboard = new DashboardForm();
+            dashboard.Show();
             this.Close();
         }
+
+        // ===================== NAVIGATION ===================== //
     }
 }

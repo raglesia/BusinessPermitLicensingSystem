@@ -150,3 +150,5 @@ C:\Users\brian\source\repos\BusinessPermitLicensingSystem\BusinessPermitLicensin
 C:\Users\brian\source\repos\BusinessPermitLicensingSystem\BusinessPermitLicensingSystem\obj\Debug\net10.0-windows\BusinessPermitLicensingSystem.genruntimeconfig.cache
 C:\Users\brian\source\repos\BusinessPermitLicensingSystem\BusinessPermitLicensingSystem\obj\Debug\net10.0-windows\ref\BusinessPermitLicensingSystem.dll
 C:\Users\brian\source\repos\BusinessPermitLicensingSystem\BusinessPermitLicensingSystem\obj\Debug\net10.0-windows\BusinessPermitLicensingSystem.Forms.ArchivedForm.resources
+C:\Users\brian\source\repos\BusinessPermitLicensingSystem\BusinessPermitLicensingSystem\bin\Debug\net10.0-windows\Resources\Masinloc Logo.png
+C:\Users\brian\source\repos\BusinessPermitLicensingSystem\BusinessPermitLicensingSystem\bin\Debug\net10.0-windows\Resources\MasinlocLogoIcon.ico

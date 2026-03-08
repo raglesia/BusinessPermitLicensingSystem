@@ -64,20 +64,21 @@
             button2.BackColor = SystemColors.GradientActiveCaption;
             button2.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             button2.ForeColor = Color.Black;
-            button2.Image = Properties.Resources.icons8_reports_64;
+            button2.Image = Properties.Resources.icons8_archive_64;
             button2.ImageAlign = ContentAlignment.MiddleLeft;
             button2.Location = new Point(397, 101);
             button2.Name = "button2";
             button2.Size = new Size(378, 80);
             button2.TabIndex = 3;
-            button2.Text = "Reports";
+            button2.Text = "      View Archived Records";
             button2.UseVisualStyleBackColor = false;
+            button2.Click += button2_Click;
             // 
             // button3
             // 
             button3.BackColor = SystemColors.GradientActiveCaption;
             button3.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
-            button3.Image = Properties.Resources.icons8_billing_64;
+            button3.Image = Properties.Resources.icons8_settings_64__1_;
             button3.ImageAlign = ContentAlignment.MiddleLeft;
             button3.Location = new Point(12, 187);
             button3.Name = "button3";
@@ -199,7 +200,7 @@
             MaximizeBox = false;
             Name = "DashboardForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Masinloc - BPLS";
+            Text = "Masinloc BPLS - Dashboard";
             Load += DashboardForm_Load;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);

@@ -151,7 +151,7 @@
             MaximizeBox = false;
             Name = "LogInForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Masinloc - BPLS";
+            Text = "Masinloc BPLS - Log In";
             Load += LogInForm_Load;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();

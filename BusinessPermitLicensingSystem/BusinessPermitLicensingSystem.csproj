@@ -51,6 +51,12 @@
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>BillingReportDataSet.Designer.cs</LastGenOutput>
     </None>
+    <None Update="Resources\Masinloc Logo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\MasinlocLogoIcon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

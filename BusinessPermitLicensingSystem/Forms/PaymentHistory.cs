@@ -31,16 +31,20 @@ namespace BusinessPermitLicensingSystem.Forms
 
         private void SetupForm()
         {
-            this.Text = "Payment History";
-            this.Size = new Size(850, 500);
+            this.Text = "Masinloc - BPLS";
+            this.Size = new Size(1619, 610);
             this.StartPosition = FormStartPosition.CenterParent;
             this.BackColor = Color.White;
             this.MinimizeBox = false;
+            this.MaximizeBox = false;
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.Font = new Font("Segoe UI", 10);
+            this.Icon = new Icon(Path.Combine(
+                Application.StartupPath, "Resources", "MasinlocLogoIcon.ico"));
         }
 
         private void SetupLabels(string sin, string businessName)
         {
-            // Title
             lblTitle = new Label
             {
                 Text = $"Payment History — {businessName}",
@@ -50,7 +54,6 @@ namespace BusinessPermitLicensingSystem.Forms
             };
             this.Controls.Add(lblTitle);
 
-            // SIN
             var lblSIN = new Label
             {
                 Text = $"{sin}",
@@ -66,8 +69,11 @@ namespace BusinessPermitLicensingSystem.Forms
         {
             dgvHistory = new DataGridView
             {
+                // ✅ Stretch to fill form width
                 Location = new Point(15, 75),
-                Size = new Size(805, 330),
+                Size = new Size(1580, 430),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left |
+                                        AnchorStyles.Right | AnchorStyles.Bottom,
                 DataSource = history,
                 ReadOnly = true,
                 AllowUserToAddRows = false,
@@ -80,12 +86,28 @@ namespace BusinessPermitLicensingSystem.Forms
                 Font = new Font("Segoe UI", 9)
             };
 
+            // ✅ Double buffering
+            typeof(DataGridView)
+                .GetProperty("DoubleBuffered",
+                    System.Reflection.BindingFlags.Instance |
+                    System.Reflection.BindingFlags.NonPublic)!
+                .SetValue(dgvHistory, true);
+
             dgvHistory.ColumnHeadersDefaultCellStyle.Font =
                 new Font("Segoe UI", 9, FontStyle.Bold);
 
-            // Format currency columns
+            // ✅ Alternating row colors
+            dgvHistory.RowsDefaultCellStyle.BackColor = Color.White;
+            dgvHistory.AlternatingRowsDefaultCellStyle.BackColor = Color.AliceBlue;
+
+            // ✅ Format currency + hide # column
             dgvHistory.DataBindingComplete += (s, e) =>
             {
+                // Hide # (ID) column
+                if (dgvHistory.Columns["#"] != null)
+                    dgvHistory.Columns["#"].Visible = false;
+
+                // Format currency columns
                 foreach (string col in new[] { "Amount Paid", "Penalty", "Total Paid" })
                 {
                     if (dgvHistory.Columns[col] != null)
@@ -102,7 +124,6 @@ namespace BusinessPermitLicensingSystem.Forms
 
         private void SetupSummary(DataTable history)
         {
-            // Calculate totals
             double totalPaid = 0;
             double totalPenalty = 0;
 
@@ -112,15 +133,13 @@ namespace BusinessPermitLicensingSystem.Forms
                 totalPenalty += Convert.ToDouble(row["Penalty"]);
             }
 
-            // Summary label
             lblSummary = new Label
             {
-                Text =
-                    $"Total Payments: {history.Rows.Count}     " +
-                    $"Total Amount Paid: {totalPaid.ToString("C2", new CultureInfo("en-PH"))}     " +
-                    $"Total Penalty: {totalPenalty.ToString("C2", new CultureInfo("en-PH"))}",
+                Text = $"Total Payments: {history.Rows.Count}     " +
+                           $"Total Amount Paid: {totalPaid.ToString("C2", new CultureInfo("en-PH"))}     " +
+                           $"Total Penalty: {totalPenalty.ToString("C2", new CultureInfo("en-PH"))}",
                 Font = new Font("Segoe UI", 9, FontStyle.Bold),
-                Location = new Point(15, 415),
+                Location = new Point(15, 520),
                 AutoSize = true
             };
             this.Controls.Add(lblSummary);
@@ -131,15 +150,22 @@ namespace BusinessPermitLicensingSystem.Forms
             var btnClose = new Button
             {
                 Text = "Close",
-                Location = new Point(735, 410),
+                Location = new Point(1509, 515),
                 Size = new Size(85, 32),
                 BackColor = Color.IndianRed,
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9)
+                Font = new Font("Segoe UI", 9),
+                Cursor = Cursors.Hand
             };
+            btnClose.FlatAppearance.BorderSize = 0;
             btnClose.Click += (s, e) => this.Close();
             this.Controls.Add(btnClose);
+        }
+
+        private void InitializeComponent()
+        {
+
         }
     }
 }

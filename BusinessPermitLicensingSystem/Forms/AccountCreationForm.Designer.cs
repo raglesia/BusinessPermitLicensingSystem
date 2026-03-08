@@ -40,7 +40,6 @@
             label4 = new Label();
             btnCreate = new Button();
             btnCancel = new Button();
-            lblMessage = new Label();
             txtPosition = new TextBox();
             label5 = new Label();
             toolTip1 = new ToolTip(components);
@@ -129,7 +128,7 @@
             btnCreate.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnCreate.Image = Properties.Resources.icons8_create_64;
             btnCreate.ImageAlign = ContentAlignment.MiddleLeft;
-            btnCreate.Location = new Point(50, 255);
+            btnCreate.Location = new Point(44, 255);
             btnCreate.Name = "btnCreate";
             btnCreate.Size = new Size(223, 73);
             btnCreate.TabIndex = 5;
@@ -153,14 +152,6 @@
             toolTip1.SetToolTip(btnCancel, "Cancel");
             btnCancel.UseVisualStyleBackColor = false;
             btnCancel.Click += btnCancel_Click;
-            // 
-            // lblMessage
-            // 
-            lblMessage.AutoSize = true;
-            lblMessage.Location = new Point(249, 303);
-            lblMessage.Name = "lblMessage";
-            lblMessage.Size = new Size(0, 25);
-            lblMessage.TabIndex = 10;
             // 
             // txtPosition
             // 
@@ -196,7 +187,6 @@
             panel1.Controls.Add(txtpass);
             panel1.Controls.Add(txtPosition);
             panel1.Controls.Add(txtconpass);
-            panel1.Controls.Add(lblMessage);
             panel1.Controls.Add(label1);
             panel1.Controls.Add(label2);
             panel1.Controls.Add(btnCreate);
@@ -221,7 +211,7 @@
             MaximizeBox = false;
             Name = "AccountCreationForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Masinloc - BPLS";
+            Text = "Masinloc BPLS - Account Creation";
             Load += AccountCreationForm_Load;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
@@ -240,7 +230,6 @@
         private Label label4;
         private Button btnCreate;
         private Button btnCancel;
-        private Label lblMessage;
         private TextBox txtPosition;
         private Label label5;
         private ToolTip toolTip1;

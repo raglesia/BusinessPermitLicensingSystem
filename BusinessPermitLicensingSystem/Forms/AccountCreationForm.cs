@@ -20,9 +20,6 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== CREATE ACCOUNT ===================== //
         private void btnCreate_Click(object sender, EventArgs e)
         {
-            // Clear previous messages
-            lblMessage.ForeColor = Color.Red;
-            lblMessage.Text = "";
 
             // Get input values
             string fullname = txtFullName.Text.Trim();
@@ -34,7 +31,11 @@ namespace BusinessPermitLicensingSystem.Forms
             // Validate confirm password
             if (password != confirmPassword)
             {
-                lblMessage.Text = "Passwords do not match.";
+                MessageBox.Show(
+                    "Passwords do not match. Please try again.",
+                    "Masinloc BPLS - Account Creation",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -45,7 +46,7 @@ namespace BusinessPermitLicensingSystem.Forms
             {
                 MessageBox.Show(
                     "Account created successfully!",
-                    "Masinloc-BPLS",
+                    "Masinloc BPLS - Account Creation",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
 
@@ -58,7 +59,7 @@ namespace BusinessPermitLicensingSystem.Forms
             }
             else
             {
-                lblMessage.Text = result.ErrorMessage;
+                MessageBox.Show(result.ErrorMessage);
             }
         }
 

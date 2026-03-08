@@ -72,7 +72,7 @@ namespace BusinessPermitLicensingSystem.Forms
 
             if (updated > 0)
             {
-                lblPenaltyNotice.ForeColor = Color.DarkOrange;
+                lblPenaltyNotice.ForeColor = Color.DarkRed;
                 lblPenaltyNotice.Text =
                     $"⚠️ {updated} unpaid record(s) have been charged a 25% penalty.";
             }
@@ -128,6 +128,14 @@ namespace BusinessPermitLicensingSystem.Forms
         {
             UpdateDateTime();
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            ArchivedForm archivedForm = new ArchivedForm();
+            archivedForm.Show();
+            this.Hide();
+        }
+
         protected override CreateParams CreateParams
         {
             get
