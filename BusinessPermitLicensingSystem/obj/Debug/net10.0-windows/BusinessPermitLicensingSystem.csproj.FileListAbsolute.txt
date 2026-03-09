@@ -1,4 +1,6 @@
 C:\Users\brian\source\repos\BusinessPermitLicensingSystem\BusinessPermitLicensingSystem\bin\Debug\net10.0-windows\Report\BillingReport.rdlc
+C:\Users\brian\source\repos\BusinessPermitLicensingSystem\BusinessPermitLicensingSystem\bin\Debug\net10.0-windows\Resources\Masinloc Logo.jpg
+C:\Users\brian\source\repos\BusinessPermitLicensingSystem\BusinessPermitLicensingSystem\bin\Debug\net10.0-windows\Resources\Masinloc-Logo-HD.ico
 C:\Users\brian\source\repos\BusinessPermitLicensingSystem\BusinessPermitLicensingSystem\bin\Debug\net10.0-windows\Resources\MasinlocLogoIcon.ico
 C:\Users\brian\source\repos\BusinessPermitLicensingSystem\BusinessPermitLicensingSystem\bin\Debug\net10.0-windows\BusinessPermitLicensingSystem.exe
 C:\Users\brian\source\repos\BusinessPermitLicensingSystem\BusinessPermitLicensingSystem\bin\Debug\net10.0-windows\BusinessPermitLicensingSystem.deps.json

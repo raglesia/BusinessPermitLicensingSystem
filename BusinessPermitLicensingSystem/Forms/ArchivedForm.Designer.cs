@@ -33,8 +33,11 @@
             btnRestore = new Button();
             btnClose = new Button();
             tableLayoutPanel1 = new TableLayoutPanel();
+            panel1 = new Panel();
+            lblUsername = new Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             tableLayoutPanel1.SuspendLayout();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // dataGridView1
@@ -86,15 +89,37 @@
             tableLayoutPanel1.Size = new Size(1567, 521);
             tableLayoutPanel1.TabIndex = 3;
             // 
+            // panel1
+            // 
+            panel1.Controls.Add(lblUsername);
+            panel1.Dock = DockStyle.Bottom;
+            panel1.Location = new Point(0, 593);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(1567, 31);
+            panel1.TabIndex = 4;
+            // 
+            // lblUsername
+            // 
+            lblUsername.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            lblUsername.AutoSize = true;
+            lblUsername.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblUsername.Location = new Point(3, 6);
+            lblUsername.Name = "lblUsername";
+            lblUsername.Size = new Size(96, 25);
+            lblUsername.TabIndex = 0;
+            lblUsername.Text = "Username";
+            // 
             // ArchivedForm
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.GradientActiveCaption;
-            ClientSize = new Size(1567, 594);
+            ClientSize = new Size(1567, 624);
+            Controls.Add(panel1);
             Controls.Add(tableLayoutPanel1);
             Controls.Add(btnClose);
             Controls.Add(btnRestore);
+            Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
@@ -102,8 +127,11 @@
             Name = "ArchivedForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Masinloc BPLS - Archived ";
+            Load += ArchivedForm_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             tableLayoutPanel1.ResumeLayout(false);
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -113,5 +141,7 @@
         private Button btnRestore;
         private Button btnClose;
         private TableLayoutPanel tableLayoutPanel1;
+        private Panel panel1;
+        private Label lblUsername;
     }
 }

@@ -27,8 +27,10 @@ namespace BusinessPermitLicensingSystem.Forms
             this.StartPosition = FormStartPosition.CenterParent;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Size = new Size(380, 180);
+            this.Size = new Size(380, 200);
             this.BackColor = Color.White;
+            this.Icon = new Icon(Path.Combine(
+                Application.StartupPath, "Resources", "Masinloc-Logo-HD.ico"));
 
             // Label
             var lbl = new Label
@@ -55,7 +57,7 @@ namespace BusinessPermitLicensingSystem.Forms
             {
                 Text = "Confirm",
                 Location = new Point(170, 95),
-                Size = new Size(85, 32),
+                Size = new Size(85, 30),
                 BackColor = Color.SeaGreen,
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
@@ -69,7 +71,7 @@ namespace BusinessPermitLicensingSystem.Forms
             {
                 Text = "Cancel",
                 Location = new Point(265, 95),
-                Size = new Size(85, 32),
+                Size = new Size(85, 30),
                 BackColor = Color.IndianRed,
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,

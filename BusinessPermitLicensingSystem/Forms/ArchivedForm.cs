@@ -86,7 +86,13 @@ namespace BusinessPermitLicensingSystem.Forms
             dashboard.Show();
             this.Close();
         }
-   protected override CreateParams CreateParams
+
+        private void ArchivedForm_Load(object sender, EventArgs e)
+        {
+            lblUsername.Text = $"{Session.CurrentPosition} | {Session.CurrentFullName}";
+        }
+
+        protected override CreateParams CreateParams
         {
             get
             {

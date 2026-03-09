@@ -118,6 +118,7 @@
             Controls.Add(radioUsers);
             Controls.Add(button1);
             Controls.Add(dtAudit);
+            Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;

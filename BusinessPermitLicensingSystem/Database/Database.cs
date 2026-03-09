@@ -960,6 +960,38 @@ namespace BusinessPermitLicensingSystem
             }
             catch { return false; }
         }
+        
+        // MONTHLY AND YEARLY REPORTS //
+        public static DataTable GetMonthlyReport(int month, int year)
+        {
+            using var con = new SQLiteConnection(ConnectionString);
+            con.Open();
+
+            const string query = @"
+        SELECT
+            SIN                                AS [SIN],
+            FullName                           AS [Full Name],
+            BusinessName                       AS [Business Name],
+            BusinessSection                    AS [Business Section],
+            MonthlyRental                      AS [Monthly Rental],
+            Penalty                            AS [Penalty],
+            AdditionalCharge                   AS [Additional Charge],
+            PaymentStatus                      AS [Payment Status]
+        FROM Profiling
+        WHERE IsArchived = 0
+        AND   strftime('%m', StartDate) = @month
+        AND   strftime('%Y', StartDate) = @year
+        ORDER BY PaymentStatus ASC, FullName ASC";
+
+            using var cmd = new SQLiteCommand(query, con);
+            cmd.Parameters.AddWithValue("@month", month.ToString("D2"));
+            cmd.Parameters.AddWithValue("@year", year.ToString());
+
+            using var adapter = new SQLiteDataAdapter(cmd);
+            var dt = new DataTable();
+            adapter.Fill(dt);
+            return dt;
+        }
 
         // ===================== PASSWORD HASHING — DO NOT MODIFY ===================== //
         private static string HashPassword(string password)

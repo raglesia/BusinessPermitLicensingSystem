@@ -62,8 +62,7 @@ namespace BusinessPermitLicensingSystem
 
             return null;
         }
-
-        private void LoadReport(string reportPath)
+       private void LoadReport(string reportPath)
         {
             var data = new List<BillingReportModel> { _profile };
 
@@ -74,13 +73,13 @@ namespace BusinessPermitLicensingSystem
 
             reportViewer1.LocalReport.SetParameters(new[]
             {
-                new ReportParameter("ProcessedBy",      Session.CurrentFullName                   ?? ""),
-                new ReportParameter("Position",         Session.CurrentPosition                   ?? ""),
-                new ReportParameter("PaymentStatus",    _profile.PaymentStatus                    ?? "Unpaid"),
-                new ReportParameter("Penalty",          _profile.Penalty.ToString("F2")),
-                new ReportParameter("AdditionalCharge", _profile.AdditionalCharge.ToString("F2")),
-                new ReportParameter("TotalDue",         _profile.TotalDue.ToString("F2")),
-            });
+        new ReportParameter("ProcessedBy",      Session.CurrentFullName  ?? ""),
+        new ReportParameter("Position",         Session.CurrentPosition  ?? ""),
+        new ReportParameter("PaymentStatus",    _profile.PaymentStatus   ?? "Unpaid"),
+        new ReportParameter("Penalty",          _profile.Penalty.ToString("F2")),
+        new ReportParameter("AdditionalCharge", _profile.AdditionalCharge.ToString("F2")),
+        new ReportParameter("TotalDue",         _profile.TotalDue.ToString("F2")),
+    });
 
             reportViewer1.RefreshReport();
             reportViewer1.SetDisplayMode(DisplayMode.PrintLayout);

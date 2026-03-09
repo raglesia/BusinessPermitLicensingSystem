@@ -146,6 +146,7 @@
             BackColor = SystemColors.GradientActiveCaption;
             ClientSize = new Size(508, 319);
             Controls.Add(panel1);
+            Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;

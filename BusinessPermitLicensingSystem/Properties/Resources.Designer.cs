@@ -153,6 +153,16 @@ namespace BusinessPermitLicensingSystem.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap icons8_ledger_64 {
+            get {
+                object obj = ResourceManager.GetObject("icons8-ledger-64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap icons8_list_64 {
             get {
                 object obj = ResourceManager.GetObject("icons8-list-64", resourceCulture);
@@ -283,9 +293,9 @@ namespace BusinessPermitLicensingSystem.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Logo {
+        internal static System.Drawing.Bitmap MasinlocLogoHD {
             get {
-                object obj = ResourceManager.GetObject("Logo", resourceCulture);
+                object obj = ResourceManager.GetObject("MasinlocLogoHD", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
