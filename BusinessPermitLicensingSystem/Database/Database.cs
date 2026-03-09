@@ -72,12 +72,6 @@ namespace BusinessPermitLicensingSystem
                     FOREIGN KEY (SIN) REFERENCES Profiling(SIN)
                 );");
 
-            // Settings table
-            ExecuteNonQuery(con, @"
-                CREATE TABLE IF NOT EXISTS Settings (
-                    Key   TEXT PRIMARY KEY,
-                    Value TEXT NOT NULL
-                );");
 
             // Rental rates table
             ExecuteNonQuery(con, @"
@@ -920,66 +914,6 @@ namespace BusinessPermitLicensingSystem
                 cmd.ExecuteNonQuery();
             }
             catch { } // Fail silently
-        }
-
-        // ===================== SETTINGS ===================== //
-        public static string GetSetting(string key)
-        {
-            try
-            {
-                using var con = new SQLiteConnection(ConnectionString);
-                con.Open();
-
-                using var cmd = new SQLiteCommand(
-                    "SELECT Value FROM Settings WHERE Key = @key", con);
-                cmd.Parameters.AddWithValue("@key", key);
-
-                return cmd.ExecuteScalar()?.ToString() ?? "";
-            }
-            catch { return ""; }
-        }
-
-        public static void SaveSetting(string key, string value)
-        {
-            try
-            {
-                using var con = new SQLiteConnection(ConnectionString);
-                con.Open();
-
-                using var cmd = new SQLiteCommand(@"
-                    INSERT INTO Settings (Key, Value)
-                    VALUES (@key, @value)
-                    ON CONFLICT(Key) DO UPDATE SET Value = @value", con);
-
-                cmd.Parameters.AddWithValue("@key", key);
-                cmd.Parameters.AddWithValue("@value", value);
-
-                cmd.ExecuteNonQuery();
-            }
-            catch { }
-        }
-
-        public static (int Reset, string? ErrorMessage) ResetMonthlyPaymentStatus()
-        {
-            try
-            {
-                using var con = new SQLiteConnection(ConnectionString);
-                con.Open();
-
-                using var cmd = new SQLiteCommand(@"
-                    UPDATE Profiling
-                    SET
-                        PaymentStatus = 'Unpaid',
-                        Penalty       = 0
-                    WHERE PaymentStatus = 'Paid'", con);
-
-                int rowsAffected = cmd.ExecuteNonQuery();
-                return (rowsAffected, null);
-            }
-            catch (Exception ex)
-            {
-                return (0, $"Database error: {ex.Message}");
-            }
         }
 
         // ===================== BILLING REPORT ===================== //

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace BusinessPermitLicensingSystem.Forms
@@ -10,6 +11,7 @@ namespace BusinessPermitLicensingSystem.Forms
         public AuditTrail()
         {
             InitializeComponent();
+            SetupGrid();
             radioUsers.Checked = true;
             LoadAuditRecords();
         }
@@ -17,7 +19,36 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== FORM LOAD ===================== //
         private void AuditTrail_Load(object sender, EventArgs e)
         {
-            lblUsername.Text = $"{Session.CurrentFullName ?? "Unknown"} | {Session.CurrentPosition ?? ""}";
+            lblUsername.Text = $"{Session.CurrentPosition} | {Session.CurrentFullName}";
+        }
+
+        // ===================== SETUP ===================== //
+        private void SetupGrid()
+        {
+            // ✅ Double buffering
+            typeof(DataGridView)
+                .GetProperty("DoubleBuffered",
+                    System.Reflection.BindingFlags.Instance |
+                    System.Reflection.BindingFlags.NonPublic)!
+                .SetValue(dtAudit, true);
+
+            dtAudit.ReadOnly = true;
+            dtAudit.AllowUserToAddRows = false;
+            dtAudit.AllowUserToDeleteRows = false;
+            dtAudit.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dtAudit.MultiSelect = false;
+            dtAudit.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dtAudit.RowHeadersVisible = false;
+            dtAudit.BackgroundColor = Color.White;
+            dtAudit.BorderStyle = BorderStyle.None;
+            dtAudit.Font = new Font("Segoe UI", 9);
+
+            // ✅ Alternating row colors
+            dtAudit.RowsDefaultCellStyle.BackColor = Color.White;
+            dtAudit.AlternatingRowsDefaultCellStyle.BackColor = Color.AliceBlue;
+
+            dtAudit.ColumnHeadersDefaultCellStyle.Font =
+                new Font("Segoe UI", 9, FontStyle.Bold);
         }
 
         // ===================== DATA LOADING ===================== //
@@ -30,9 +61,20 @@ namespace BusinessPermitLicensingSystem.Forms
                     : Database.GetAuditTrail();
 
                 dtAudit.DataSource = dt;
+
+                // ✅ Hide Id and UserId columns
+                if (dtAudit.Columns["Id"] != null)
+                    dtAudit.Columns["Id"].Visible = false;
+                if (dtAudit.Columns["UserId"] != null)
+                    dtAudit.Columns["UserId"].Visible = false;
+
+                // ✅ Resize remaining columns equally
                 dtAudit.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-                dtAudit.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-                dtAudit.ReadOnly = true;
+                foreach (DataGridViewColumn col in dtAudit.Columns)
+                {
+                    if (col.Visible)
+                        col.FillWeight = 1;
+                }
             }
             catch (Exception ex)
             {

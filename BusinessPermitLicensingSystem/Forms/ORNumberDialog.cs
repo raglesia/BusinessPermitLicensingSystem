@@ -34,7 +34,7 @@ namespace BusinessPermitLicensingSystem.Forms
             var lbl = new Label
             {
                 Text = "Enter Official Receipt (OR) Number:",
-                Location = new Point(15, 20),
+                Location = new Point(30, 30),
                 AutoSize = true,
                 Font = new Font("Segoe UI", 10)
             };
@@ -54,7 +54,7 @@ namespace BusinessPermitLicensingSystem.Forms
             var btnConfirm = new Button
             {
                 Text = "Confirm",
-                Location = new Point(170, 100),
+                Location = new Point(170, 95),
                 Size = new Size(85, 32),
                 BackColor = Color.SeaGreen,
                 ForeColor = Color.White,
@@ -68,7 +68,7 @@ namespace BusinessPermitLicensingSystem.Forms
             var btnCancel = new Button
             {
                 Text = "Cancel",
-                Location = new Point(265, 100),
+                Location = new Point(265, 95),
                 Size = new Size(85, 32),
                 BackColor = Color.IndianRed,
                 ForeColor = Color.White,

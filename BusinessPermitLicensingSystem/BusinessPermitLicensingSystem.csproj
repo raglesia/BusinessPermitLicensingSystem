@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <ItemGroup>
@@ -50,9 +51,6 @@
     <None Update="Report\BillingReportDataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>BillingReportDataSet.Designer.cs</LastGenOutput>
-    </None>
-    <None Update="Resources\Masinloc Logo.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Resources\MasinlocLogoIcon.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

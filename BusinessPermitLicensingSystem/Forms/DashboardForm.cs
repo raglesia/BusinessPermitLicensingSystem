@@ -22,8 +22,6 @@ namespace BusinessPermitLicensingSystem.Forms
 
             timer1.Start();
 
-
-            CheckMonthlyReset();
             CheckPenalties();
         }
 
@@ -37,7 +35,21 @@ namespace BusinessPermitLicensingSystem.Forms
 
         private void button4_Click(object sender, EventArgs e)
         {
-            ProfilingForm profilingForm = new ProfilingForm();
+            var profilingForm = new ProfilingForm();
+
+            profilingForm.FormClosed += (s, args) =>
+            {
+                // ✅ Find ProfilingLists and refresh + highlight
+                foreach (Form f in Application.OpenForms)
+                {
+                    if (f is ProfilingLists lists)
+                    {
+                        lists.LoadProfiles();
+                        lists.HighlightLastAdded();
+                        break;
+                    }
+                }
+            };
 
             profilingForm.Show();
             this.Hide();
@@ -85,35 +97,6 @@ namespace BusinessPermitLicensingSystem.Forms
             lblPenaltyNotice.Visible = true;
         }
 
-        // ===================== MONTHLY RESET ===================== //
-        private void CheckMonthlyReset()
-        {
-            DateTime today = DateTime.Today;
-            string currentMonthYear = today.ToString("yyyy-MM");
-            string lastReset = Database.GetSetting("LastPaymentReset");
-
-            if (lastReset == currentMonthYear) return;
-
-            var (reset, error) = Database.ResetMonthlyPaymentStatus();
-
-            if (reset > 0)
-            {
-                Database.SaveSetting("LastPaymentReset", currentMonthYear);
-
-                Database.LogAudit(
-                    "MonthlyReset",
-                    null,
-                    Session.CurrentUserId ?? 0,
-                    $"Monthly reset — {reset} records reset to Unpaid for {today:MMMM yyyy}.");
-
-                MessageBox.Show(
-                    $"Monthly Reset:\n\n" +
-                    $"{reset} record(s) have been reset to Unpaid for {today:MMMM yyyy}.",
-                    "Monthly Reset",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-            }
-        }
         private void UpdateDateTime()
         {
             string date = DateTime.Now.ToString("dddd, MMMM dd, yyyy");

@@ -78,7 +78,7 @@ namespace BusinessPermitLicensingSystem
         }
 
         // ===================== DATA LOADING ===================== //
-        private void LoadProfiles()
+        public void LoadProfiles()
         {
             dataGridView1.SuspendLayout();
             dataGridView1.DataSource = null;
@@ -173,6 +173,7 @@ namespace BusinessPermitLicensingSystem
             form.ShowDialog();
 
             LoadProfiles();
+            HighlightRecord(sin);
         }
 
         // ===================== DELETE RECORD ===================== //
@@ -426,10 +427,6 @@ namespace BusinessPermitLicensingSystem
                         cell.Style.BackColor = Color.LightGreen;
                         cell.Style.ForeColor = Color.DarkGreen;
                         break;
-                    case "Partial":
-                        cell.Style.BackColor = Color.LightYellow;
-                        cell.Style.ForeColor = Color.DarkOrange;
-                        break;
                     case "Unpaid":
                         cell.Style.BackColor = Color.LightCoral;
                         cell.Style.ForeColor = Color.DarkRed;
@@ -504,6 +501,27 @@ namespace BusinessPermitLicensingSystem
                         MessageBoxIcon.Error);
                 }
             }
+        }
+        public void HighlightRecord(string sin)
+        {
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                if (row.Cells["SIN"].Value?.ToString() == sin)
+                {
+                    dataGridView1.ClearSelection();
+                    row.Selected = true;
+                    dataGridView1.FirstDisplayedScrollingRowIndex = row.Index;
+                    break;
+                }
+            }
+        }
+        public void HighlightLastAdded()
+        {
+            if (dataGridView1.Rows.Count == 0) return;
+
+            dataGridView1.ClearSelection();
+            dataGridView1.Rows[0].Selected = true;
+            dataGridView1.FirstDisplayedScrollingRowIndex = 0;
         }
     }
 }

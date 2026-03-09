@@ -36,6 +36,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <None Update="Report\BillingReportDataSet.xsd">
       <SubType>Designer</SubType>
     </None>

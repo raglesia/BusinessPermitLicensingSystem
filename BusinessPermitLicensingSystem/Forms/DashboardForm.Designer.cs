@@ -38,10 +38,8 @@
             button6 = new Button();
             lblUsername = new Label();
             lblPenaltyNotice = new Label();
-            pictureBox1 = new PictureBox();
             timer1 = new System.Windows.Forms.Timer(components);
             lblDateTime = new Label();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
             // button1
@@ -135,7 +133,7 @@
             // 
             lblUsername.AutoSize = true;
             lblUsername.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblUsername.Location = new Point(12, 392);
+            lblUsername.Location = new Point(12, 409);
             lblUsername.Name = "lblUsername";
             lblUsername.Size = new Size(69, 25);
             lblUsername.TabIndex = 6;
@@ -153,17 +151,6 @@
             lblPenaltyNotice.Text = "label1";
             lblPenaltyNotice.Visible = false;
             // 
-            // pictureBox1
-            // 
-            pictureBox1.BackColor = Color.Transparent;
-            pictureBox1.Image = Properties.Resources.Untitled_1__1_;
-            pictureBox1.Location = new Point(442, 377);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(439, 80);
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox1.TabIndex = 8;
-            pictureBox1.TabStop = false;
-            // 
             // timer1
             // 
             timer1.Enabled = true;
@@ -174,11 +161,11 @@
             // 
             lblDateTime.AutoSize = true;
             lblDateTime.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblDateTime.Location = new Point(12, 417);
+            lblDateTime.Location = new Point(440, 409);
             lblDateTime.Name = "lblDateTime";
-            lblDateTime.Size = new Size(62, 25);
+            lblDateTime.Size = new Size(51, 25);
             lblDateTime.TabIndex = 9;
-            lblDateTime.Text = "label2";
+            lblDateTime.Text = "Date";
             // 
             // DashboardForm
             // 
@@ -186,7 +173,6 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.GradientActiveCaption;
             ClientSize = new Size(779, 443);
-            Controls.Add(pictureBox1);
             Controls.Add(lblDateTime);
             Controls.Add(lblPenaltyNotice);
             Controls.Add(lblUsername);
@@ -203,7 +189,6 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Masinloc BPLS - Dashboard";
             Load += DashboardForm_Load;
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -218,7 +203,6 @@
         private Button button6;
         private Label lblUsername;
         private Label lblPenaltyNotice;
-        private PictureBox pictureBox1;
         private System.Windows.Forms.Timer timer1;
         private Label lblDateTime;
     }
