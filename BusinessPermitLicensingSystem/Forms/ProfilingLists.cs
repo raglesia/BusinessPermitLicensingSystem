@@ -16,6 +16,8 @@ namespace BusinessPermitLicensingSystem
     {
         // ===================== FIELDS ===================== //
         private DataTable dtProfiles = new DataTable();
+        private bool _sortAscending = true;  // ✅ Track sort direction
+        private int _lastSortedCol = -1;     // ✅ Track last sorted column
 
         // ===================== CONSTRUCTOR ===================== //
         public ProfilingLists()
@@ -31,7 +33,6 @@ namespace BusinessPermitLicensingSystem
         {
             lblUsername.Text = $"{Session.CurrentPosition} | {Session.CurrentFullName}";
             btnPaymentHistory.Focus();
-
         }
 
         // ===================== SETUP ===================== //
@@ -51,8 +52,8 @@ namespace BusinessPermitLicensingSystem
             dataGridView1.MultiSelect = false;
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridView1.RowHeadersVisible = false;
-            dataGridView1.DataBindingComplete += (s, e) =>
 
+            dataGridView1.DataBindingComplete += (s, e) =>
             {
                 dataGridView1.Columns["SIN"].DisplayIndex = 0;
                 dataGridView1.Columns["Full Name"].DisplayIndex = 1;
@@ -66,9 +67,15 @@ namespace BusinessPermitLicensingSystem
                 dataGridView1.Columns["Additional Charge"].DisplayIndex = 9;
                 dataGridView1.Columns["Payment Status"].DisplayIndex = 10;
 
-                ColorPaymentStatusColumn();
+                // ✅ Disable built-in sorting — we handle it manually
+                foreach (DataGridViewColumn col in dataGridView1.Columns)
+                    col.SortMode = DataGridViewColumnSortMode.Programmatic;
 
+                ColorPaymentStatusColumn();
             };
+
+            // ✅ Custom sort on header click
+            dataGridView1.ColumnHeaderMouseClick += DataGridView1_ColumnHeaderMouseClick;
         }
 
         private void SetupFilters()
@@ -86,6 +93,10 @@ namespace BusinessPermitLicensingSystem
             dtProfiles = Database.GetAllProfiles();
             dataGridView1.DataSource = dtProfiles;
 
+            // ✅ Disable built-in sorting after DataSource is set
+            foreach (DataGridViewColumn col in dataGridView1.Columns)
+                col.SortMode = DataGridViewColumnSortMode.Programmatic;
+
             FormatCurrencyColumn("Monthly Rental");
             FormatCurrencyColumn("Penalty");
             FormatCurrencyColumn("Additional Charge");
@@ -93,8 +104,11 @@ namespace BusinessPermitLicensingSystem
 
             lblTotalRecords.Text = $"Total Records: {dtProfiles.Rows.Count}";
 
-            dataGridView1.ResumeLayout();
+            // ✅ Reset sort trackers
+            _sortAscending = true;
+            _lastSortedCol = -1;
 
+            dataGridView1.ResumeLayout();
         }
 
         private void FormatCurrencyColumn(string columnName)
@@ -104,6 +118,53 @@ namespace BusinessPermitLicensingSystem
 
             column.DefaultCellStyle.Format = "C2";
             column.DefaultCellStyle.FormatProvider = new CultureInfo("en-PH");
+        }
+
+        // ===================== SORTING ===================== //
+        private void DataGridView1_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            string headerText = dataGridView1.Columns[e.ColumnIndex].HeaderText;
+
+            if (_lastSortedCol == e.ColumnIndex)
+                _sortAscending = !_sortAscending;
+            else
+            {
+                _sortAscending = true;
+                _lastSortedCol = e.ColumnIndex;
+            }
+
+            string sortDir = _sortAscending ? "ASC" : "DESC";
+
+            // ✅ Use database query to sort SIN numerically
+            if (headerText == "SIN")
+            {
+                var sorted = dtProfiles.AsEnumerable()
+                    .OrderBy(r => _sortAscending
+                        ? int.Parse(r["SIN"].ToString()!.Split('-')[2])
+                        : int.MaxValue - int.Parse(r["SIN"].ToString()!.Split('-')[2]))
+                    .CopyToDataTable();
+
+                dataGridView1.DataSource = sorted;
+            }
+            else
+            {
+                dtProfiles.DefaultView.Sort = $"[{headerText}] {sortDir}";
+                dataGridView1.DataSource = dtProfiles.DefaultView.ToTable();
+            }
+
+            // ✅ Disable built-in sorting after re-binding
+            foreach (DataGridViewColumn col in dataGridView1.Columns)
+                col.SortMode = DataGridViewColumnSortMode.Programmatic;
+
+            FormatCurrencyColumn("Monthly Rental");
+            FormatCurrencyColumn("Penalty");
+            FormatCurrencyColumn("Additional Charge");
+            ColorPaymentStatusColumn();
+
+            dataGridView1.Columns[e.ColumnIndex].HeaderCell.SortGlyphDirection =
+                _sortAscending ? SortOrder.Ascending : SortOrder.Descending;
+
+            lblTotalRecords.Text = $"Total Records: {dataGridView1.Rows.Count}";
         }
 
         // ===================== FILTERING ===================== //
@@ -122,19 +183,18 @@ namespace BusinessPermitLicensingSystem
 
                 // ✅ Payment Status uses exact match to differentiate Paid vs Unpaid
                 dtProfiles.DefaultView.RowFilter = $@"
-            Convert([SIN], 'System.String')            LIKE '%{search}%' OR
-            [Full Name]                                LIKE '%{search}%' OR
-            [Business Name]                            LIKE '%{search}%' OR
-            [Business Section]                         LIKE '%{search}%' OR
-            Convert([Stall Number], 'System.String')   LIKE '%{search}%' OR
-            Convert([Stall Size], 'System.String')     LIKE '%{search}%' OR
-            Convert([Monthly Rental], 'System.String') LIKE '%{search}%' OR
-            [Payment Status]                           = '{search}'       OR
-            Convert([Penalty], 'System.String')        LIKE '%{search}%' OR
-            [Date of Occupancy]                        LIKE '%{search}%'";
+                    Convert([SIN], 'System.String')            LIKE '%{search}%' OR
+                    [Full Name]                                LIKE '%{search}%' OR
+                    [Business Name]                            LIKE '%{search}%' OR
+                    [Business Section]                         LIKE '%{search}%' OR
+                    Convert([Stall Number], 'System.String')   LIKE '%{search}%' OR
+                    Convert([Stall Size], 'System.String')     LIKE '%{search}%' OR
+                    Convert([Monthly Rental], 'System.String') LIKE '%{search}%' OR
+                    [Payment Status]                           = '{search}'       OR
+                    Convert([Penalty], 'System.String')        LIKE '%{search}%' OR
+                    [Date of Occupancy]                        LIKE '%{search}%'";
 
-
-            lblTotalRecords.Text = $"Total Records: {dtProfiles.DefaultView.Count}";
+                lblTotalRecords.Text = $"Total Records: {dtProfiles.DefaultView.Count}";
             }
             catch (Exception ex)
             {
@@ -164,12 +224,12 @@ namespace BusinessPermitLicensingSystem
             string monthlyRental = row.Cells["Monthly Rental"].Value?.ToString() ?? "";
             string paymentStatus = row.Cells["Payment Status"].Value?.ToString() ?? "Unpaid";
             string startDate = row.Cells["Date of Occupancy"].Value?.ToString() ?? "";
-            double additionalCharge = Convert.ToDouble(row.Cells["Additional Charge"].Value ?? 0); // ✅
+            double additionalCharge = Convert.ToDouble(row.Cells["Additional Charge"].Value ?? 0);
 
             var form = new ProfilingForm();
             form.LoadForEdit(sin, fullName, businessName, businessSection,
                 stallNumber, stallSize, monthlyRental, paymentStatus,
-                startDate, additionalCharge); // ✅
+                startDate, additionalCharge);
             form.ShowDialog();
 
             LoadProfiles();
@@ -435,8 +495,6 @@ namespace BusinessPermitLicensingSystem
             }
         }
 
-
-
         // ===================== WINDOW SETTINGS ===================== //
         protected override CreateParams CreateParams
         {
@@ -449,59 +507,59 @@ namespace BusinessPermitLicensingSystem
             }
         }
 
-        // ARCHIVE RECORD (SOFT DELETE) //
+        // ===================== ARCHIVE RECORD ===================== //
         private void btnArchive_Click(object sender, EventArgs e)
         {
+            if (dataGridView1.SelectedRows.Count == 0)
             {
-                if (dataGridView1.SelectedRows.Count == 0)
-                {
-                    MessageBox.Show(
-                        "Please select a record first.",
-                        "No Selection",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning);
-                    return;
-                }
+                MessageBox.Show(
+                    "Please select a record first.",
+                    "No Selection",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
 
-                var row = dataGridView1.SelectedRows[0];
-                string sin = row.Cells["SIN"].Value?.ToString() ?? "";
-                string name = row.Cells["Full Name"].Value?.ToString() ?? "";
+            var row = dataGridView1.SelectedRows[0];
+            string sin = row.Cells["SIN"].Value?.ToString() ?? "";
+            string name = row.Cells["Full Name"].Value?.ToString() ?? "";
 
-                var confirm = MessageBox.Show(
-                    $"Archive record for {name}?\n\nArchived records are hidden from the list but kept in the database.",
-                    "Confirm Archive",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question);
+            var confirm = MessageBox.Show(
+                $"Archive record for {name}?\n\nArchived records are hidden from the list but kept in the database.",
+                "Confirm Archive",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
 
-                if (confirm != DialogResult.Yes) return;
+            if (confirm != DialogResult.Yes) return;
 
-                var result = Database.ArchiveProfiling(sin);
+            var result = Database.ArchiveProfiling(sin);
 
-                if (result.Success)
-                {
-                    Database.LogAudit(
-                        "Archive", sin,
-                        Session.CurrentUserId ?? 0,
-                        $"Archived profile for {name}.");
+            if (result.Success)
+            {
+                Database.LogAudit(
+                    "Archive", sin,
+                    Session.CurrentUserId ?? 0,
+                    $"Archived profile for {name}.");
 
-                    MessageBox.Show(
-                        "Record archived successfully.",
-                        "Archived",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
+                MessageBox.Show(
+                    "Record archived successfully.",
+                    "Archived",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
 
-                    LoadProfiles();
-                }
-                else
-                {
-                    MessageBox.Show(
-                        result.ErrorMessage,
-                        "Error",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
-                }
+                LoadProfiles();
+            }
+            else
+            {
+                MessageBox.Show(
+                    result.ErrorMessage,
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
+
+        // ===================== HIGHLIGHT HELPERS ===================== //
         public void HighlightRecord(string sin)
         {
             foreach (DataGridViewRow row in dataGridView1.Rows)
@@ -515,6 +573,7 @@ namespace BusinessPermitLicensingSystem
                 }
             }
         }
+
         public void HighlightLastAdded()
         {
             if (dataGridView1.Rows.Count == 0) return;

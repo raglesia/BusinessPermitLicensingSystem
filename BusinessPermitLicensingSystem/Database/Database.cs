@@ -88,10 +88,10 @@ namespace BusinessPermitLicensingSystem
                 ('Pharmacy (Below 100k)',   150,  0,    'PerSqm'),
                 ('Pharmacy (100k-250k)',    250,  0,    'PerSqm'),
                 ('Pharmacy (Above 250k)',   350,  0,    'PerSqm'),
-                ('Stalls in Mall',          150,  0,    'PerSqm'),
-                ('Food Court',              0,    1200, 'Flat'),
+                ('Masinloc Mall Stalls',          150,  0,    'PerSqm'),
+                ('Masinloc Mall Food Court',              0,    1200, 'Flat'),
                 ('Corridor',               0,    1200, 'Flat'),
-                ('Stalls',                 210,  0,    'PerSqm'),
+                ('Public Market Stalls',                 210,  0,    'PerSqm'),
                 ('Carinderia',             210,  0,    'PerSqm'),
                 ('Fruits and Vegetable',   600,  0,    'PerSqm'),
                 ('Fish',                   600,  0,    'PerSqm'),
@@ -263,7 +263,7 @@ namespace BusinessPermitLicensingSystem
                     strftime('%m/%d/%Y', StartDate)    AS [Date of Occupancy]
                 FROM Profiling
                 WHERE IsArchived = 0
-                ORDER BY ROWID DESC";
+                ORDER BY ROWID ASC";
 
             using var cmd = new SQLiteCommand(query, con);
             using var adapter = new SQLiteDataAdapter(cmd);
@@ -308,7 +308,7 @@ namespace BusinessPermitLicensingSystem
             if (string.IsNullOrWhiteSpace(fullName) ||
                 string.IsNullOrWhiteSpace(businessName) ||
                 string.IsNullOrWhiteSpace(businessSection) ||
-                string.IsNullOrWhiteSpace(stallNumber) ||
+                string.IsNullOrWhiteSpace(stallNumber) || 
                 string.IsNullOrWhiteSpace(stallSize))
                 return (false, "All fields are required.");
 

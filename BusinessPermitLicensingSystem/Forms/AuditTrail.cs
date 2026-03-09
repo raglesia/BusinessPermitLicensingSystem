@@ -106,5 +106,15 @@ namespace BusinessPermitLicensingSystem.Forms
             if (radioProfiling.Checked)
                 LoadAuditRecords();
         }
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                const int CS_NOCLOSE = 0x200;
+                CreateParams cp = base.CreateParams;
+                cp.ClassStyle |= CS_NOCLOSE; // ✅ Disables X button
+                return cp;
+            }
+        }
     }
 }

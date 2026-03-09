@@ -96,7 +96,7 @@
             // 
             // txtMRental
             // 
-            txtMRental.BackColor = SystemColors.GradientActiveCaption;
+            txtMRental.BackColor = Color.White;
             txtMRental.Location = new Point(238, 74);
             txtMRental.Name = "txtMRental";
             txtMRental.Size = new Size(410, 34);
@@ -165,7 +165,7 @@
             // 
             // txtBIN
             // 
-            txtBIN.BackColor = SystemColors.GradientActiveCaption;
+            txtBIN.BackColor = Color.White;
             txtBIN.Location = new Point(238, 38);
             txtBIN.Name = "txtBIN";
             txtBIN.Size = new Size(410, 34);
@@ -261,7 +261,7 @@
             cmbBSection.BackColor = SystemColors.GradientActiveCaption;
             cmbBSection.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbBSection.FormattingEnabled = true;
-            cmbBSection.Location = new Point(238, 31);
+            cmbBSection.Location = new Point(238, 28);
             cmbBSection.Name = "cmbBSection";
             cmbBSection.Size = new Size(410, 36);
             cmbBSection.TabIndex = 23;
@@ -341,7 +341,7 @@
             // 
             panel1.Controls.Add(lblUsername);
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 605);
+            panel1.Location = new Point(0, 603);
             panel1.Name = "panel1";
             panel1.Size = new Size(670, 35);
             panel1.TabIndex = 30;
@@ -351,7 +351,7 @@
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.GradientActiveCaption;
-            ClientSize = new Size(670, 640);
+            ClientSize = new Size(670, 638);
             Controls.Add(panel1);
             Controls.Add(groupBox3);
             Controls.Add(groupBox2);

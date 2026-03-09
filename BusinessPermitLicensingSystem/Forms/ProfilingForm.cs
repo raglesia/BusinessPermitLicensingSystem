@@ -13,7 +13,7 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== FIELDS ===================== //
         private bool isEditMode = false;
         private string currentSIN = "";
-        private bool isLoading = true; // ✅ Prevent ComputeMonthlyRental during load
+        private bool isLoading = true;
 
         // ✅ Store edit data temporarily
         private string _editFullName = "";
@@ -38,20 +38,20 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== FORM LOAD ===================== //
         private void ProfilingForm_Load(object sender, EventArgs e)
         {
-            isLoading = true; // ✅ Block ComputeMonthlyRental
+            isLoading = true;
 
             lblUsername.Text = $"{Session.CurrentPosition} | {Session.CurrentFullName}";
 
             SetupInputValidators();
-            SetupControls();   // ✅ Loads cmbBSection items first
+            SetupControls();
             SetupSecurity();
 
             if (isEditMode)
-                PopulateEditFields(); // ✅ Populate AFTER cmbBSection is loaded
+                PopulateEditFields();
             else
                 AssignNewBIN();
 
-            isLoading = false; // ✅ Allow ComputeMonthlyRental now
+            isLoading = false;
         }
 
         // ===================== SETUP ===================== //
@@ -122,7 +122,6 @@ namespace BusinessPermitLicensingSystem.Forms
             string startDate,
             double additionalCharge = 0)
         {
-            // ✅ Just store values — populate in ProfilingForm_Load after SetupControls()
             isEditMode = true;
             currentSIN = sin;
             _editFullName = fullName;
@@ -197,7 +196,7 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== COMPUTE ===================== //
         private void ComputeMonthlyRental()
         {
-            if (isLoading) return; // ✅ Skip during load
+            if (isLoading) return;
 
             string section = cmbBSection.SelectedItem?.ToString() ?? "";
             if (string.IsNullOrWhiteSpace(section)) return;
@@ -215,13 +214,20 @@ namespace BusinessPermitLicensingSystem.Forms
             else
             {
                 txtSSize.Enabled = true;
+
+                // ✅ Only clear when switching FROM Flat — not on every keystroke
+                if (!txtSSize.Enabled || txtSSize.Text == "0")
+                {
+                    txtSSize.Text = "";
+                    txtMRental.Text = "0.00";
+                }
+
                 if (!double.TryParse(txtSSize.Text, out double stallSize)) return;
                 if (stallSize <= 0) return;
 
                 baseRental = stallSize * ratePerSqm;
             }
 
-            // Add additional charge if checked
             double.TryParse(txtAdditionalCharge.Text, out double additional);
             double total = baseRental + (chkAdditional.Checked ? additional : 0);
 
@@ -239,6 +245,52 @@ namespace BusinessPermitLicensingSystem.Forms
             string paymentStatus = cmbPaymentStatus.SelectedItem?.ToString() ?? "Unpaid";
             string startDate = dtpStartDate.Value.ToString("yyyy-MM-dd");
 
+            // ✅ Validate required fields
+            if (string.IsNullOrWhiteSpace(fullName))
+            {
+                MessageBox.Show("Full Name is required.", "Required Field",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtFName.Focus();
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(businessName))
+            {
+                MessageBox.Show("Business Name is required.", "Required Field",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtBName.Focus();
+                return;
+            }
+
+            if (cmbBSection.SelectedIndex == -1)
+            {
+                MessageBox.Show("Business Section is required.", "Required Field",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cmbBSection.Focus();
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(stallNumber))
+            {
+                MessageBox.Show("Stall Number is required.", "Required Field",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtSNumber.Focus();
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(stallSize) || stallSize == "0")
+            {
+                var (_, _, rateType) = Database.GetRateBySection(businessSection);
+                if (rateType != "Flat")
+                {
+                    MessageBox.Show("Stall Size is required.", "Required Field",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtSSize.Focus();
+                    return;
+                }
+            }
+
+            // ✅ Check duplicate stall number
             string excludeSIN = isEditMode ? currentSIN : "";
             if (Database.StallNumberExists(stallNumber, excludeSIN))
             {

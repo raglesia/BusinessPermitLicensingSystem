@@ -86,8 +86,7 @@ namespace BusinessPermitLicensingSystem.Forms
             dashboard.Show();
             this.Close();
         }
-
-        protected override CreateParams CreateParams
+   protected override CreateParams CreateParams
         {
             get
             {

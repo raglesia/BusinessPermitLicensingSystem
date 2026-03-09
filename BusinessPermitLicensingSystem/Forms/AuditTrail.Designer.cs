@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AuditTrail));
             dtAudit = new DataGridView();
             button1 = new Button();
             radioUsers = new RadioButton();
@@ -117,7 +118,11 @@
             Controls.Add(radioUsers);
             Controls.Add(button1);
             Controls.Add(dtAudit);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            MaximizeBox = false;
             Name = "AuditTrail";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Masinloc BPLS - Audit Logs";
             Load += AuditTrail_Load;
             ((System.ComponentModel.ISupportInitialize)dtAudit).EndInit();
