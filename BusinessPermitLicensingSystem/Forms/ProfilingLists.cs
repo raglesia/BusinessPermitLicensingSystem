@@ -582,10 +582,12 @@ namespace BusinessPermitLicensingSystem
         }
 
         private void GenerateMonthlyReport(
-    int month, int year, string monthName, string filePath)
+            int fromMonth, int fromYear,
+            int toMonth, int toYear,
+            string rangeLabel, string filePath)
         {
             // ✅ Get data from database
-            DataTable dt = Database.GetMonthlyReport(month, year);
+            DataTable dt = Database.GetMonthlyReport(fromMonth, fromYear, toMonth, toYear);
 
             // ✅ Compute summary
             int totalRecords = dt.Rows.Count;
@@ -615,7 +617,7 @@ namespace BusinessPermitLicensingSystem
             ws.Range("A2:H2").Merge();
             ws.Cell("A2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-            ws.Cell("A3").Value = $"Monthly Collection Summary Report — {monthName} {year}";
+            ws.Cell("A3").Value = $"Monthly Collection Summary Report — {rangeLabel}";
             ws.Cell("A3").Style.Font.Bold = true;
             ws.Cell("A3").Style.Font.FontSize = 11;
             ws.Range("A3:H3").Merge();
@@ -727,105 +729,152 @@ namespace BusinessPermitLicensingSystem
 
         private void btnMonthlyReport_Click_1(object sender, EventArgs e)
         {
-            {
-                // ✅ Simple Month/Year picker using a small dialog
-                using var form = new Form();
-                form.Text = "Select Month & Year";
-                form.Size = new Size(300, 200);
-                form.BackColor = Color.White;
-                form.StartPosition = FormStartPosition.CenterParent;
-                form.FormBorderStyle = FormBorderStyle.FixedSingle;
-                form.MaximizeBox = false;
-                form.MinimizeBox = false;
-                form.Icon = new Icon(Path.Combine(
+            using var form = new Form();
+            form.Text = "Select Date Range";
+            form.Size = new Size(320, 200);
+            form.StartPosition = FormStartPosition.CenterParent;
+            form.FormBorderStyle = FormBorderStyle.FixedDialog;
+            form.MaximizeBox = false;
+            form.MinimizeBox = false;
+            BackColor = Color.White;
+            Icon = new Icon(Path.Combine(
                 Application.StartupPath, "Resources", "Masinloc-Logo-HD.ico"));
 
-                var lblMonth = new Label { Text = "Month:", Location = new Point(15, 18), AutoSize = true };
-                var lblYear = new Label { Text = "Year:", Location = new Point(15, 55), AutoSize = true };
-
-                var cmbMonth = new ComboBox
-                {
-                    Location = new Point(80, 15),
-                    Width = 180,
-                    DropDownStyle = ComboBoxStyle.DropDownList
-                };
-
-                var cmbYear = new ComboBox
-                {
-                    Location = new Point(80, 52),
-                    Width = 180,
-                    DropDownStyle = ComboBoxStyle.DropDownList
-                };
-
-                // ✅ Populate months
-                string[] months = {
+            string[] months = {
         "January", "February", "March", "April",
         "May", "June", "July", "August",
         "September", "October", "November", "December"
     };
-                cmbMonth.Items.AddRange(months);
-                cmbMonth.SelectedIndex = DateTime.Now.Month - 1;
 
-                // ✅ Populate years (5 years back to current)
-                for (int y = DateTime.Now.Year; y >= DateTime.Now.Year - 5; y--)
-                    cmbYear.Items.Add(y);
-                cmbYear.SelectedIndex = 0;
+            // ✅ From controls
+            var lblFrom = new Label { Text = "From:", Location = new Point(15, 20), AutoSize = true };
+            var cmbFromMonth = new ComboBox
+            {
+                Location = new Point(80, 17),
+                Width = 110,
+                DropDownStyle = ComboBoxStyle.DropDownList
+            };
+            var cmbFromYear = new ComboBox
+            {
+                Location = new Point(200, 17),
+                Width = 90,
+                DropDownStyle = ComboBoxStyle.DropDownList
+            };
 
-                var btnGenerate = new Button
+            // ✅ To controls
+            var lblTo = new Label { Text = "To:", Location = new Point(15, 57), AutoSize = true };
+            var cmbToMonth = new ComboBox
+            {
+                Location = new Point(80, 54),
+                Width = 110,
+                DropDownStyle = ComboBoxStyle.DropDownList
+            };
+            var cmbToYear = new ComboBox
+            {
+                Location = new Point(200, 54),
+                Width = 90,
+                DropDownStyle = ComboBoxStyle.DropDownList
+            };
+
+            // ✅ Populate months
+            cmbFromMonth.Items.AddRange(months);
+            cmbToMonth.Items.AddRange(months);
+            cmbFromMonth.SelectedIndex = 0;
+            cmbToMonth.SelectedIndex = DateTime.Now.Month - 1;
+
+            // ✅ Populate years
+            for (int y = DateTime.Now.Year; y >= DateTime.Now.Year - 5; y--)
+            {
+                cmbFromYear.Items.Add(y);
+                cmbToYear.Items.Add(y);
+            }
+            cmbFromYear.SelectedIndex = 0;
+            cmbToYear.SelectedIndex = 0;
+
+            var btnGenerate = new Button
+            {
+                Text = "Generate",
+                Location = new Point(80, 110),
+                Width = 140,
+                Height = 30,
+                BackColor = Color.SeaGreen,
+                ForeColor = Color.White,
+                Font = new Font("Segoe UI", 9)
+            };
+
+            btnGenerate.Click += (s, ev) =>
+            {
+                // ✅ Validate date range
+                int fromMonth = cmbFromMonth.SelectedIndex + 1;
+                int fromYear = (int)cmbFromYear.SelectedItem!;
+                int toMonth = cmbToMonth.SelectedIndex + 1;
+                int toYear = (int)cmbToYear.SelectedItem!;
+
+                var fromDate = new DateTime(fromYear, fromMonth, 1);
+                var toDate = new DateTime(toYear, toMonth, 1);
+
+                if (fromDate > toDate)
                 {
-                    Text = "Generate",
-                    Location = new Point(80, 88),
-                    Width = 180,
-                    Height = 30,
-                    BackColor = Color.SeaGreen,
-                    ForeColor = Color.White,
-                    Font = new Font("Segoe UI", 9)
+                    MessageBox.Show(
+                        "From date cannot be later than To date.",
+                        "Invalid Range",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return;
+                }
 
-                };
+                form.DialogResult = DialogResult.OK;
+            };
 
-
-                btnGenerate.Click += (s, ev) => form.DialogResult = DialogResult.OK;
-
-                form.Controls.AddRange(new Control[] {
-        lblMonth, lblYear, cmbMonth, cmbYear, btnGenerate
+            form.Controls.AddRange(new Control[] {
+        lblFrom, cmbFromMonth, cmbFromYear,
+        lblTo,   cmbToMonth,   cmbToYear,
+        btnGenerate
     });
 
-                if (form.ShowDialog() != DialogResult.OK) return;
+            if (form.ShowDialog() != DialogResult.OK) return;
 
-                int selectedMonth = cmbMonth.SelectedIndex + 1;
-                int selectedYear = (int)cmbYear.SelectedItem!;
-                string monthName = cmbMonth.SelectedItem!.ToString()!;
+            int selectedFromMonth = cmbFromMonth.SelectedIndex + 1;
+            int selectedFromYear = (int)cmbFromYear.SelectedItem!;
+            int selectedToMonth = cmbToMonth.SelectedIndex + 1;
+            int selectedToYear = (int)cmbToYear.SelectedItem!;
 
-                // ✅ Save file dialog
-                using var sfd = new SaveFileDialog();
-                sfd.Filter = "Excel Workbook|*.xlsx";
-                sfd.FileName = $"MonthlyReport_{monthName}_{selectedYear}.xlsx";
+            string rangeLabel = selectedFromMonth == selectedToMonth &&
+                                selectedFromYear == selectedToYear
+                ? $"{months[selectedFromMonth - 1]} {selectedFromYear}"
+                : $"{months[selectedFromMonth - 1]} {selectedFromYear} - {months[selectedToMonth - 1]} {selectedToYear}";
 
-                if (sfd.ShowDialog() != DialogResult.OK) return;
+            using var sfd = new SaveFileDialog();
+            sfd.Filter = "Excel Workbook|*.xlsx";
+            sfd.FileName = $"MonthlyReport_{rangeLabel.Replace(" ", "_").Replace("-", "to")}.xlsx";
 
-                try
-                {
-                    Cursor = Cursors.WaitCursor;
-                    GenerateMonthlyReport(selectedMonth, selectedYear, monthName, sfd.FileName);
-                    MessageBox.Show(
-                        "Monthly Report exported successfully!",
-                        "Success",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(
-                        $"Error generating report: {ex.Message}",
-                        "Error",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
-                }
-                finally
-                {
-                    Cursor = Cursors.Default;
-                }
+            if (sfd.ShowDialog() != DialogResult.OK) return;
 
+            try
+            {
+                Cursor = Cursors.WaitCursor;
+                GenerateMonthlyReport(
+                    selectedFromMonth, selectedFromYear,
+                    selectedToMonth, selectedToYear,
+                    rangeLabel, sfd.FileName);
+
+                MessageBox.Show(
+                    "Monthly Report exported successfully!",
+                    "Success",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Error generating report: {ex.Message}",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+            finally
+            {
+                Cursor = Cursors.Default;
             }
         }
     }

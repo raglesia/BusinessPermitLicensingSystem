@@ -266,6 +266,47 @@ namespace BusinessPermitLicensingSystem
             return dt;
         }
 
+        // ===================== MONTHLY REPORT ===================== //
+        public static DataTable GetMonthlyReport(
+            int fromMonth, int fromYear,
+            int toMonth, int toYear)
+        {
+            using var con = new SqlConnection(ConnectionString);
+            con.Open();
+
+            const string query = @"
+        SELECT
+            SIN                  AS [SIN],
+            FullName             AS [Full Name],
+            BusinessName         AS [Business Name],
+            BusinessSection      AS [Business Section],
+            MonthlyRental        AS [Monthly Rental],
+            Penalty              AS [Penalty],
+            AdditionalCharge     AS [Additional Charge],
+            PaymentStatus        AS [Payment Status]
+        FROM Profiling
+        WHERE IsArchived = 0
+        AND (
+            (YEAR (StartDate) * 12 + MONTH(StartDate))
+            BETWEEN
+            (@fromYear * 12 + @fromMonth)
+            AND
+            (@toYear * 12 + @toMonth)
+        )
+        ORDER BY PaymentStatus ASC, FullName ASC";
+
+            using var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@fromMonth", fromMonth);
+            cmd.Parameters.AddWithValue("@fromYear", fromYear);
+            cmd.Parameters.AddWithValue("@toMonth", toMonth);
+            cmd.Parameters.AddWithValue("@toYear", toYear);
+
+            using var adapter = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            adapter.Fill(dt);
+            return dt;
+        }
+
         public static bool StallNumberExists(string stallNumber, string excludeSIN = "")
         {
             try
