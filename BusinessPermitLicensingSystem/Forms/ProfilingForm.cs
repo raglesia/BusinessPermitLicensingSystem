@@ -1,7 +1,7 @@
 ﻿using BusinessPermitLicensingSystem.Helpers;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Data;
-using System.Data.SQLite;
 using System.Drawing;
 using System.Windows.Forms;
 using static BusinessPermitLicensingSystem.Helpers.InputValidator;
@@ -418,7 +418,7 @@ namespace BusinessPermitLicensingSystem.Forms
         {
             try
             {
-                using var con = new SQLiteConnection("Data Source=database.db;Version=3;");
+                using var con = new SqlConnection("Server=localhost;Database=Masinloc_BPLS;User Id=sa;Password=Strongpassword1;TrustServerCertificate=True;");
                 con.Open();
                 txtBIN.Text = Database.GenerateUniqueBIN(con);
             }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Drawing;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace BusinessPermitLicensingSystem.Forms
@@ -25,11 +26,9 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== SETUP ===================== //
         private void SetupGrid()
         {
-            // ✅ Double buffering
             typeof(DataGridView)
                 .GetProperty("DoubleBuffered",
-                    System.Reflection.BindingFlags.Instance |
-                    System.Reflection.BindingFlags.NonPublic)!
+                    BindingFlags.Instance | BindingFlags.NonPublic)!
                 .SetValue(dtAudit, true);
 
             dtAudit.ReadOnly = true;
@@ -43,12 +42,9 @@ namespace BusinessPermitLicensingSystem.Forms
             dtAudit.BorderStyle = BorderStyle.None;
             dtAudit.Font = new Font("Segoe UI", 9);
 
-            // ✅ Alternating row colors
             dtAudit.RowsDefaultCellStyle.BackColor = Color.White;
             dtAudit.AlternatingRowsDefaultCellStyle.BackColor = Color.AliceBlue;
-
-            dtAudit.ColumnHeadersDefaultCellStyle.Font =
-                new Font("Segoe UI", 9, FontStyle.Bold);
+            dtAudit.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9, FontStyle.Bold);
         }
 
         // ===================== DATA LOADING ===================== //
@@ -62,18 +58,14 @@ namespace BusinessPermitLicensingSystem.Forms
 
                 dtAudit.DataSource = dt;
 
-                // ✅ Hide Id and UserId columns
-                if (dtAudit.Columns["Id"] != null)
-                    dtAudit.Columns["Id"].Visible = false;
-                if (dtAudit.Columns["UserId"] != null)
-                    dtAudit.Columns["UserId"].Visible = false;
+                if (dtAudit.Columns["Id"] != null) dtAudit.Columns["Id"].Visible = false;
+                if (dtAudit.Columns["UserId"] != null) dtAudit.Columns["UserId"].Visible = false;
 
-                // ✅ Resize remaining columns equally
                 dtAudit.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
                 foreach (DataGridViewColumn col in dtAudit.Columns)
                 {
-                    if (col.Visible)
-                        col.FillWeight = 1;
+                    if (col.Visible) col.FillWeight = 1;
                 }
             }
             catch (Exception ex)
@@ -89,30 +81,29 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== NAVIGATION ===================== //
         private void button1_Click(object sender, EventArgs e)
         {
-            DashboardForm dashboardForm = new DashboardForm();
-            dashboardForm.Show();
-            this.Hide();
+            new DashboardForm().Show();
+            Hide();
         }
 
         // ===================== RADIO BUTTONS ===================== //
         private void radioUsers_CheckedChanged(object sender, EventArgs e)
         {
-            if (radioUsers.Checked)
-                LoadAuditRecords();
+            if (radioUsers.Checked) LoadAuditRecords();
         }
 
         private void radioProfiling_CheckedChanged(object sender, EventArgs e)
         {
-            if (radioProfiling.Checked)
-                LoadAuditRecords();
+            if (radioProfiling.Checked) LoadAuditRecords();
         }
+
+        // ===================== WINDOW SETTINGS ===================== //
         protected override CreateParams CreateParams
         {
             get
             {
                 const int CS_NOCLOSE = 0x200;
                 CreateParams cp = base.CreateParams;
-                cp.ClassStyle |= CS_NOCLOSE; // ✅ Disables X button
+                cp.ClassStyle |= CS_NOCLOSE;
                 return cp;
             }
         }

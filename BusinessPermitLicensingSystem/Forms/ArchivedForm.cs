@@ -1,10 +1,4 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
+﻿using System;
 using System.Windows.Forms;
 
 namespace BusinessPermitLicensingSystem.Forms
@@ -17,6 +11,12 @@ namespace BusinessPermitLicensingSystem.Forms
             InitializeComponent();
             SetupGrid();
             LoadArchived();
+        }
+
+        // ===================== FORM LOAD ===================== //
+        private void ArchivedForm_Load(object sender, EventArgs e)
+        {
+            lblUsername.Text = $"{Session.CurrentPosition} | {Session.CurrentFullName}";
         }
 
         // ===================== SETUP ===================== //
@@ -71,37 +71,41 @@ namespace BusinessPermitLicensingSystem.Forms
                     Session.CurrentUserId ?? 0,
                     $"Restored profile for {name}.");
 
-                MessageBox.Show("Record restored successfully.");
+                MessageBox.Show(
+                    "Record restored successfully.",
+                    "Restored",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+
                 LoadArchived();
             }
             else
             {
-                MessageBox.Show(result.ErrorMessage);
+                MessageBox.Show(
+                    result.ErrorMessage,
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 
+        // ===================== NAVIGATION ===================== //
         private void btnClose_Click(object sender, EventArgs e)
         {
-            DashboardForm dashboard = new DashboardForm();
-            dashboard.Show();
-            this.Close();
+            new DashboardForm().Show();
+            Close();
         }
 
-        private void ArchivedForm_Load(object sender, EventArgs e)
-        {
-            lblUsername.Text = $"{Session.CurrentPosition} | {Session.CurrentFullName}";
-        }
-
+        // ===================== WINDOW SETTINGS ===================== //
         protected override CreateParams CreateParams
         {
             get
             {
                 const int CS_NOCLOSE = 0x200;
                 CreateParams cp = base.CreateParams;
-                cp.ClassStyle |= CS_NOCLOSE; // ✅ Disables X button
+                cp.ClassStyle |= CS_NOCLOSE;
                 return cp;
             }
         }
-
     }
 }

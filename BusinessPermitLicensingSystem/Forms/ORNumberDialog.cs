@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 
 namespace BusinessPermitLicensingSystem.Forms
@@ -21,18 +23,16 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== UI SETUP ===================== //
         private void SetupUI()
         {
-            // Form settings
-            this.Text = "OR Number Required";
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
-            this.StartPosition = FormStartPosition.CenterParent;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Size = new Size(380, 200);
-            this.BackColor = Color.White;
-            this.Icon = new Icon(Path.Combine(
+            Text = "OR Number Required";
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            StartPosition = FormStartPosition.CenterParent;
+            MaximizeBox = false;
+            MinimizeBox = false;
+            Size = new Size(380, 200);
+            BackColor = Color.White;
+            Icon = new Icon(Path.Combine(
                 Application.StartupPath, "Resources", "Masinloc-Logo-HD.ico"));
 
-            // Label
             var lbl = new Label
             {
                 Text = "Enter Official Receipt (OR) Number:",
@@ -40,9 +40,8 @@ namespace BusinessPermitLicensingSystem.Forms
                 AutoSize = true,
                 Font = new Font("Segoe UI", 10)
             };
-            this.Controls.Add(lbl);
+            Controls.Add(lbl);
 
-            // TextBox
             txtORNumber = new TextBox
             {
                 Location = new Point(15, 50),
@@ -50,9 +49,8 @@ namespace BusinessPermitLicensingSystem.Forms
                 Font = new Font("Segoe UI", 10),
                 MaxLength = 50
             };
-            this.Controls.Add(txtORNumber);
+            Controls.Add(txtORNumber);
 
-            // Confirm Button
             var btnConfirm = new Button
             {
                 Text = "Confirm",
@@ -64,9 +62,8 @@ namespace BusinessPermitLicensingSystem.Forms
                 Font = new Font("Segoe UI", 9)
             };
             btnConfirm.Click += BtnConfirm_Click;
-            this.Controls.Add(btnConfirm);
+            Controls.Add(btnConfirm);
 
-            // Cancel Button
             var btnCancel = new Button
             {
                 Text = "Cancel",
@@ -78,11 +75,10 @@ namespace BusinessPermitLicensingSystem.Forms
                 Font = new Font("Segoe UI", 9)
             };
             btnCancel.Click += BtnCancel_Click;
-            this.Controls.Add(btnCancel);
+            Controls.Add(btnCancel);
 
-            // Keyboard shortcuts
-            this.AcceptButton = btnConfirm;
-            this.CancelButton = btnCancel;
+            AcceptButton = btnConfirm;
+            CancelButton = btnCancel;
         }
 
         // ===================== EVENTS ===================== //
@@ -99,12 +95,13 @@ namespace BusinessPermitLicensingSystem.Forms
                 return;
             }
 
-            // ✅ Check for duplicate OR Number
-            if (Database.ORNumberExists(txtORNumber.Text.Trim()))
+            string orNumber = txtORNumber.Text.Trim();
+
+            if (Database.ORNumberExists(orNumber))
             {
                 MessageBox.Show(
-                    $"OR Number '{txtORNumber.Text.Trim()}' already exists.\n\n" +
-                    $"Please check the physical receipt and enter the correct OR Number.",
+                    $"OR Number '{orNumber}' already exists.\n\n" +
+                    "Please check the physical receipt and enter the correct OR Number.",
                     "Duplicate OR Number",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
@@ -113,15 +110,15 @@ namespace BusinessPermitLicensingSystem.Forms
                 return;
             }
 
-            ORNumber = txtORNumber.Text.Trim();
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            ORNumber = orNumber;
+            DialogResult = DialogResult.OK;
+            Close();
         }
 
         private void BtnCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
+            DialogResult = DialogResult.Cancel;
+            Close();
         }
     }
 }

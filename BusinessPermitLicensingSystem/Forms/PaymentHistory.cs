@@ -2,16 +2,20 @@
 using System.Data;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace BusinessPermitLicensingSystem.Forms
 {
     public partial class PaymentHistoryForm : Form
     {
-        // ===================== CONTROLS ===================== //
+        // ===================== FIELDS ===================== //
         private DataGridView dgvHistory;
         private Label lblTitle;
         private Label lblSummary;
+
+        private static readonly CultureInfo PhCulture = new CultureInfo("en-PH");
 
         // ===================== CONSTRUCTOR ===================== //
         public PaymentHistoryForm(string sin, string businessName, DataTable history)
@@ -31,15 +35,15 @@ namespace BusinessPermitLicensingSystem.Forms
 
         private void SetupForm()
         {
-            this.Text = "Masinloc - BPLS";
-            this.Size = new Size(1619, 610);
-            this.StartPosition = FormStartPosition.CenterParent;
-            this.BackColor = Color.White;
-            this.MinimizeBox = false;
-            this.MaximizeBox = false;
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
-            this.Font = new Font("Segoe UI", 10);
-            this.Icon = new Icon(Path.Combine(
+            Text = "Masinloc - BPLS";
+            Size = new Size(1619, 610);
+            StartPosition = FormStartPosition.CenterParent;
+            BackColor = Color.White;
+            MinimizeBox = false;
+            MaximizeBox = false;
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            Font = new Font("Segoe UI", 10);
+            Icon = new Icon(Path.Combine(
                 Application.StartupPath, "Resources", "Masinloc-Logo-HD.ico"));
         }
 
@@ -52,24 +56,23 @@ namespace BusinessPermitLicensingSystem.Forms
                 Location = new Point(15, 15),
                 AutoSize = true
             };
-            this.Controls.Add(lblTitle);
+            Controls.Add(lblTitle);
 
             var lblSIN = new Label
             {
-                Text = $"{sin}",
+                Text = sin,
                 Font = new Font("Segoe UI", 9),
                 ForeColor = Color.Gray,
                 Location = new Point(15, 45),
                 AutoSize = true
             };
-            this.Controls.Add(lblSIN);
+            Controls.Add(lblSIN);
         }
 
         private void SetupGrid(DataTable history)
         {
             dgvHistory = new DataGridView
             {
-                // ✅ Stretch to fill form width
                 Location = new Point(15, 75),
                 Size = new Size(1580, 430),
                 Anchor = AnchorStyles.Top | AnchorStyles.Left |
@@ -86,40 +89,28 @@ namespace BusinessPermitLicensingSystem.Forms
                 Font = new Font("Segoe UI", 9)
             };
 
-            // ✅ Double buffering
             typeof(DataGridView)
-                .GetProperty("DoubleBuffered",
-                    System.Reflection.BindingFlags.Instance |
-                    System.Reflection.BindingFlags.NonPublic)!
+                .GetProperty("DoubleBuffered", BindingFlags.Instance | BindingFlags.NonPublic)!
                 .SetValue(dgvHistory, true);
 
-            dgvHistory.ColumnHeadersDefaultCellStyle.Font =
-                new Font("Segoe UI", 9, FontStyle.Bold);
-
-            // ✅ Alternating row colors
+            dgvHistory.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9, FontStyle.Bold);
             dgvHistory.RowsDefaultCellStyle.BackColor = Color.White;
             dgvHistory.AlternatingRowsDefaultCellStyle.BackColor = Color.AliceBlue;
 
-            // ✅ Format currency + hide # column
             dgvHistory.DataBindingComplete += (s, e) =>
             {
-                // Hide # (ID) column
                 if (dgvHistory.Columns["#"] != null)
                     dgvHistory.Columns["#"].Visible = false;
 
-                // Format currency columns
                 foreach (string col in new[] { "Amount Paid", "Penalty", "Total Paid" })
                 {
-                    if (dgvHistory.Columns[col] != null)
-                    {
-                        dgvHistory.Columns[col].DefaultCellStyle.Format = "C2";
-                        dgvHistory.Columns[col].DefaultCellStyle.FormatProvider =
-                            new CultureInfo("en-PH");
-                    }
+                    if (dgvHistory.Columns[col] == null) continue;
+                    dgvHistory.Columns[col].DefaultCellStyle.Format = "C2";
+                    dgvHistory.Columns[col].DefaultCellStyle.FormatProvider = PhCulture;
                 }
             };
 
-            this.Controls.Add(dgvHistory);
+            Controls.Add(dgvHistory);
         }
 
         private void SetupSummary(DataTable history)
@@ -136,13 +127,13 @@ namespace BusinessPermitLicensingSystem.Forms
             lblSummary = new Label
             {
                 Text = $"Total Payments: {history.Rows.Count}     " +
-                           $"Total Amount Paid: {totalPaid.ToString("C2", new CultureInfo("en-PH"))}     " +
-                           $"Total Penalty: {totalPenalty.ToString("C2", new CultureInfo("en-PH"))}",
+                       $"Total Amount Paid: {totalPaid.ToString("C2", PhCulture)}     " +
+                       $"Total Penalty: {totalPenalty.ToString("C2", PhCulture)}",
                 Font = new Font("Segoe UI", 9, FontStyle.Bold),
                 Location = new Point(15, 520),
                 AutoSize = true
             };
-            this.Controls.Add(lblSummary);
+            Controls.Add(lblSummary);
         }
 
         private void SetupButtons()
@@ -159,13 +150,10 @@ namespace BusinessPermitLicensingSystem.Forms
                 Cursor = Cursors.Hand
             };
             btnClose.FlatAppearance.BorderSize = 0;
-            btnClose.Click += (s, e) => this.Close();
-            this.Controls.Add(btnClose);
+            btnClose.Click += (s, e) => Close();
+            Controls.Add(btnClose);
         }
 
-        private void InitializeComponent()
-        {
-
-        }
+        private void InitializeComponent() { }
     }
 }

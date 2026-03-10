@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+﻿using System;
 using System.Windows.Forms;
 
 namespace BusinessPermitLicensingSystem.Forms
@@ -20,15 +20,12 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== CREATE ACCOUNT ===================== //
         private void btnCreate_Click(object sender, EventArgs e)
         {
-
-            // Get input values
             string fullname = txtFullName.Text.Trim();
             string username = txtuname.Text.Trim();
             string position = txtPosition.Text.Trim();
             string password = txtpass.Text;
             string confirmPassword = txtconpass.Text;
 
-            // Validate confirm password
             if (password != confirmPassword)
             {
                 MessageBox.Show(
@@ -39,7 +36,6 @@ namespace BusinessPermitLicensingSystem.Forms
                 return;
             }
 
-            // Attempt account creation
             var result = Database.CreateAccount(fullname, username, position, password);
 
             if (result.Success)
@@ -52,14 +48,16 @@ namespace BusinessPermitLicensingSystem.Forms
 
                 ClearFields();
 
-                // Return to login
-                LogInForm loginForm = new LogInForm();
-                loginForm.Show();
-                this.Close();
+                new LogInForm().Show();
+                Close();
             }
             else
             {
-                MessageBox.Show(result.ErrorMessage);
+                MessageBox.Show(
+                    result.ErrorMessage,
+                    "Masinloc BPLS - Account Creation",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 
@@ -73,33 +71,33 @@ namespace BusinessPermitLicensingSystem.Forms
             txtconpass.Clear();
         }
 
+        // ===================== NAVIGATION ===================== //
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            LogInForm loginForm = new LogInForm();
-
-            loginForm.Show();
-            this.Hide();
+            new LogInForm().Show();
+            Hide();
         }
 
+        // ===================== WINDOW SETTINGS ===================== //
         protected override CreateParams CreateParams
         {
             get
             {
                 const int CS_NOCLOSE = 0x200;
                 CreateParams cp = base.CreateParams;
-                cp.ClassStyle |= CS_NOCLOSE; // ✅ Disables X button
+                cp.ClassStyle |= CS_NOCLOSE;
                 return cp;
             }
         }
 
-        // ===================== PREVENT MOVING ===================== //
         protected override void WndProc(ref Message m)
         {
-            if (m.Msg == 0x0112)
-            {
-                if (m.WParam == new IntPtr(0xF010))
-                    return;
-            }
+            const int WM_SYSCOMMAND = 0x0112;
+            const int SC_MOVE = 0xF010;
+
+            if (m.Msg == WM_SYSCOMMAND && m.WParam == new IntPtr(SC_MOVE))
+                return;
+
             base.WndProc(ref m);
         }
     }

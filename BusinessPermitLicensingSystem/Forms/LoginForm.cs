@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 
 namespace BusinessPermitLicensingSystem.Forms
 {
@@ -10,13 +11,20 @@ namespace BusinessPermitLicensingSystem.Forms
             InitializeComponent();
         }
 
+        // ===================== FORM LOAD ===================== //
+        private void LogInForm_Load(object sender, EventArgs e)
+        {
+            MaximizeBox = false;
+            txtUser.Focus();
+            SetupSecurity();
+        }
+
         // ===================== LOGIN ===================== //
         private void btnLogIn_Click(object sender, EventArgs e)
         {
             string username = txtUser.Text.Trim();
             string password = txtPass.Text;
 
-            // Validate input
             if (string.IsNullOrWhiteSpace(username) ||
                 string.IsNullOrWhiteSpace(password))
             {
@@ -28,27 +36,23 @@ namespace BusinessPermitLicensingSystem.Forms
                 return;
             }
 
-            // Verify credentials
             var (isValid, messageOrUserId) = Database.VerifyLogin(username, password);
 
             if (isValid)
             {
-                // Store session
                 Session.CurrentUserId = long.Parse(messageOrUserId!);
                 Session.CurrentUsername = username;
                 Session.CurrentFullName = Database.GetFullName(Session.CurrentUserId.Value);
                 Session.CurrentPosition = Database.GetPosition(Session.CurrentUserId.Value);
 
-                // Log login
                 Database.LogAudit(
                     "Login",
                     null,
                     Session.CurrentUserId ?? 0,
                     $"User '{username}' logged in.");
 
-                DashboardForm dash = new DashboardForm();
-                dash.Show();
-                this.Hide();
+                new DashboardForm().Show();
+                Hide();
             }
             else
             {
@@ -64,10 +68,10 @@ namespace BusinessPermitLicensingSystem.Forms
         }
 
         // ===================== NAVIGATION ===================== //
-        private void btnCreate_Click(object sender, EventArgs e)
+        private void btnCreate_Click_1(object sender, EventArgs e)
         {
-            AccountCreationForm form = new AccountCreationForm();
-            form.ShowDialog();
+            new AccountCreationForm().Show();
+            Hide();
         }
 
         // ===================== EXIT ===================== //
@@ -76,23 +80,17 @@ namespace BusinessPermitLicensingSystem.Forms
             Application.Exit();
         }
 
-        private void btnCreate_Click_1(object sender, EventArgs e)
+        // ===================== SECURITY ===================== //
+        private void SetupSecurity()
         {
-            AccountCreationForm form = new AccountCreationForm();
-            form.Show();
-            this.Hide();
+            txtUser.KeyDown += (s, e) => { if (e.Control && e.KeyCode == Keys.V) e.SuppressKeyPress = true; };
+            txtPass.KeyDown += (s, e) => { if (e.Control && e.KeyCode == Keys.V) e.SuppressKeyPress = true; };
+
+            txtUser.ContextMenuStrip = new ContextMenuStrip();
+            txtPass.ContextMenuStrip = new ContextMenuStrip();
         }
 
-        private void LogInForm_Load(object sender, EventArgs e)
-        {
-            {
-                this.MaximizeBox = false;  // Hide maximize
-                txtUser.Focus();
-                SetupSecurity();
-            }
-        }
-
-        // ===================== HIDE CLOSE BUTTON ===================== //
+        // ===================== WINDOW SETTINGS ===================== //
         protected override CreateParams CreateParams
         {
             get
@@ -103,23 +101,5 @@ namespace BusinessPermitLicensingSystem.Forms
                 return cp;
             }
         }
-
-        private void SetupSecurity()
-        {
-            txtUser.KeyDown += (s, e) =>
-            {
-                if (e.Control && e.KeyCode == Keys.V)
-                    e.SuppressKeyPress = true;
-            };
-
-            txtPass.KeyDown += (s, e) =>
-            {
-                if (e.Control && e.KeyCode == Keys.V)
-                    e.SuppressKeyPress = true;
-            };
-            txtUser.ContextMenuStrip = new ContextMenuStrip();
-            txtPass.ContextMenuStrip = new ContextMenuStrip();
-        }
     }
-
 }
