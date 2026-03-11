@@ -56,7 +56,7 @@
             button1.Location = new Point(12, 471);
             button1.Name = "button1";
             button1.Size = new Size(168, 65);
-            button1.TabIndex = 1;
+            button1.TabIndex = 3;
             button1.Text = "Main Menu";
             button1.TextAlign = ContentAlignment.MiddleRight;
             button1.UseVisualStyleBackColor = false;
@@ -69,7 +69,7 @@
             radioUsers.Location = new Point(12, 12);
             radioUsers.Name = "radioUsers";
             radioUsers.Size = new Size(134, 29);
-            radioUsers.TabIndex = 2;
+            radioUsers.TabIndex = 1;
             radioUsers.TabStop = true;
             radioUsers.Text = "Users Audit";
             radioUsers.UseVisualStyleBackColor = true;
@@ -82,7 +82,7 @@
             radioProfiling.Location = new Point(152, 12);
             radioProfiling.Name = "radioProfiling";
             radioProfiling.Size = new Size(160, 29);
-            radioProfiling.TabIndex = 3;
+            radioProfiling.TabIndex = 2;
             radioProfiling.TabStop = true;
             radioProfiling.Text = "Profiling Audit";
             radioProfiling.UseVisualStyleBackColor = true;

@@ -21,6 +21,7 @@ namespace BusinessPermitLicensingSystem.Forms
         private void AuditTrail_Load(object sender, EventArgs e)
         {
             lblUsername.Text = $"{Session.CurrentPosition} | {Session.CurrentFullName}";
+            radioProfiling.Focus();
         }
 
         // ===================== SETUP ===================== //

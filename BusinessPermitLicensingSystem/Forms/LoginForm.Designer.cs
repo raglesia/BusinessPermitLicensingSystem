@@ -91,7 +91,7 @@
             // 
             // btnLogIn
             // 
-            btnLogIn.BackColor = SystemColors.GradientInactiveCaption;
+            btnLogIn.BackColor = SystemColors.GradientActiveCaption;
             btnLogIn.BackgroundImageLayout = ImageLayout.Center;
             btnLogIn.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnLogIn.Image = Properties.Resources.icons8_log_in_64;

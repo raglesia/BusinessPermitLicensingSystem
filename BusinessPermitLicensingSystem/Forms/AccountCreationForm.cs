@@ -15,6 +15,7 @@ namespace BusinessPermitLicensingSystem.Forms
         private void AccountCreationForm_Load(object sender, EventArgs e)
         {
             Database.Initialize();
+            txtFullName.Focus();
         }
 
         // ===================== CREATE ACCOUNT ===================== //

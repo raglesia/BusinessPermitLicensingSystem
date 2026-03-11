@@ -45,7 +45,7 @@
             // button1
             // 
             button1.BackColor = SystemColors.GradientActiveCaption;
-            button1.BackgroundImageLayout = ImageLayout.Center;
+            button1.BackgroundImageLayout = ImageLayout.None;
             button1.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             button1.Image = Properties.Resources.icons8_list_64;
             button1.ImageAlign = ContentAlignment.MiddleLeft;
@@ -53,7 +53,7 @@
             button1.Name = "button1";
             button1.Size = new Size(379, 80);
             button1.TabIndex = 0;
-            button1.Text = "Stall Owners List";
+            button1.Text = "Stall Owners";
             button1.UseVisualStyleBackColor = false;
             button1.Click += button1_Click;
             // 
@@ -68,7 +68,7 @@
             button2.Name = "button2";
             button2.Size = new Size(378, 80);
             button2.TabIndex = 3;
-            button2.Text = "      View Archived Records";
+            button2.Text = "    Archived Records";
             button2.UseVisualStyleBackColor = false;
             button2.Click += button2_Click;
             // 
@@ -78,11 +78,11 @@
             button3.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             button3.Image = Properties.Resources.icons8_settings_64__1_;
             button3.ImageAlign = ContentAlignment.MiddleLeft;
-            button3.Location = new Point(12, 187);
+            button3.Location = new Point(12, 101);
             button3.Name = "button3";
             button3.Size = new Size(379, 80);
             button3.TabIndex = 2;
-            button3.Text = "Settings";
+            button3.Text = "Stall Rates";
             button3.UseVisualStyleBackColor = false;
             button3.Click += button3_Click;
             // 
@@ -107,7 +107,7 @@
             button5.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             button5.Image = Properties.Resources.icons8_audit_64;
             button5.ImageAlign = ContentAlignment.MiddleLeft;
-            button5.Location = new Point(12, 101);
+            button5.Location = new Point(12, 187);
             button5.Name = "button5";
             button5.Size = new Size(379, 80);
             button5.TabIndex = 4;
@@ -125,7 +125,7 @@
             button6.Name = "button6";
             button6.Size = new Size(378, 80);
             button6.TabIndex = 5;
-            button6.Text = "Log Out / Exit";
+            button6.Text = "Log Out";
             button6.UseVisualStyleBackColor = false;
             button6.Click += button6_Click;
             // 
@@ -146,9 +146,9 @@
             lblPenaltyNotice.ForeColor = Color.Red;
             lblPenaltyNotice.Location = new Point(12, 289);
             lblPenaltyNotice.Name = "lblPenaltyNotice";
-            lblPenaltyNotice.Size = new Size(63, 28);
+            lblPenaltyNotice.Size = new Size(144, 28);
             lblPenaltyNotice.TabIndex = 7;
-            lblPenaltyNotice.Text = "label1";
+            lblPenaltyNotice.Text = "lblpenaltynotif";
             lblPenaltyNotice.Visible = false;
             // 
             // timer1
@@ -163,9 +163,9 @@
             lblDateTime.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblDateTime.Location = new Point(440, 409);
             lblDateTime.Name = "lblDateTime";
-            lblDateTime.Size = new Size(51, 25);
+            lblDateTime.Size = new Size(108, 25);
             lblDateTime.TabIndex = 9;
-            lblDateTime.Text = "Date";
+            lblDateTime.Text = "lbldatetime";
             // 
             // DashboardForm
             // 

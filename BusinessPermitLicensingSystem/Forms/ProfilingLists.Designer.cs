@@ -116,7 +116,7 @@
             btnMonthlyReport.Location = new Point(1288, 1);
             btnMonthlyReport.Name = "btnMonthlyReport";
             btnMonthlyReport.Size = new Size(192, 68);
-            btnMonthlyReport.TabIndex = 42;
+            btnMonthlyReport.TabIndex = 5;
             btnMonthlyReport.Text = "           Collection\r            Report\r\n";
             btnMonthlyReport.UseVisualStyleBackColor = false;
             btnMonthlyReport.Click += btnMonthlyReport_Click_1;
@@ -185,7 +185,7 @@
             btnPaymentHistory.Location = new Point(3, 1);
             btnPaymentHistory.Name = "btnPaymentHistory";
             btnPaymentHistory.Size = new Size(219, 68);
-            btnPaymentHistory.TabIndex = 1;
+            btnPaymentHistory.TabIndex = 8;
             btnPaymentHistory.Text = "Payment History";
             btnPaymentHistory.TextAlign = ContentAlignment.MiddleRight;
             btnPaymentHistory.UseVisualStyleBackColor = false;

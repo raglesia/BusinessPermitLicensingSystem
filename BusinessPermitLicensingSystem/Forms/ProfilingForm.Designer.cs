@@ -100,7 +100,7 @@
             txtMRental.Location = new Point(238, 74);
             txtMRental.Name = "txtMRental";
             txtMRental.Size = new Size(410, 34);
-            txtMRental.TabIndex = 6;
+            txtMRental.TabIndex = 8;
             txtMRental.Leave += txtMRental_Leave;
             // 
             // label1
@@ -169,7 +169,7 @@
             txtBIN.Location = new Point(238, 38);
             txtBIN.Name = "txtBIN";
             txtBIN.Size = new Size(410, 34);
-            txtBIN.TabIndex = 13;
+            txtBIN.TabIndex = 0;
             // 
             // label7
             // 
@@ -190,7 +190,7 @@
             btnSave.Location = new Point(101, 535);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(202, 64);
-            btnSave.TabIndex = 15;
+            btnSave.TabIndex = 10;
             btnSave.Text = "          Save Record";
             btnSave.UseVisualStyleBackColor = false;
             btnSave.Click += btnSave_Click;
@@ -204,7 +204,7 @@
             button1.Location = new Point(370, 535);
             button1.Name = "button1";
             button1.Size = new Size(202, 64);
-            button1.TabIndex = 16;
+            button1.TabIndex = 11;
             button1.Text = "      BACK";
             button1.UseVisualStyleBackColor = false;
             button1.Click += button1_Click;
@@ -237,7 +237,7 @@
             cmbPaymentStatus.Location = new Point(238, 111);
             cmbPaymentStatus.Name = "cmbPaymentStatus";
             cmbPaymentStatus.Size = new Size(410, 36);
-            cmbPaymentStatus.TabIndex = 20;
+            cmbPaymentStatus.TabIndex = 9;
             // 
             // dtpStartDate
             // 
@@ -245,7 +245,7 @@
             dtpStartDate.Location = new Point(238, 147);
             dtpStartDate.Name = "dtpStartDate";
             dtpStartDate.Size = new Size(410, 34);
-            dtpStartDate.TabIndex = 21;
+            dtpStartDate.TabIndex = 6;
             // 
             // label9
             // 
@@ -264,7 +264,7 @@
             cmbBSection.Location = new Point(238, 28);
             cmbBSection.Name = "cmbBSection";
             cmbBSection.Size = new Size(410, 36);
-            cmbBSection.TabIndex = 23;
+            cmbBSection.TabIndex = 3;
             // 
             // chkAdditional
             // 
@@ -285,7 +285,7 @@
             txtAdditionalCharge.Location = new Point(238, 37);
             txtAdditionalCharge.Name = "txtAdditionalCharge";
             txtAdditionalCharge.Size = new Size(410, 34);
-            txtAdditionalCharge.TabIndex = 26;
+            txtAdditionalCharge.TabIndex = 7;
             // 
             // groupBox1
             // 

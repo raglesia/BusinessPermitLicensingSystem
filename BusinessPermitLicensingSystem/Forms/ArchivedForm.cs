@@ -17,6 +17,7 @@ namespace BusinessPermitLicensingSystem.Forms
         private void ArchivedForm_Load(object sender, EventArgs e)
         {
             lblUsername.Text = $"{Session.CurrentPosition} | {Session.CurrentFullName}";
+            btnRestore.Focus();
         }
 
         // ===================== SETUP ===================== //
@@ -40,53 +41,7 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== RESTORE ===================== //
         private void btnRestore_Click(object sender, EventArgs e)
         {
-            if (dataGridView1.SelectedRows.Count == 0)
-            {
-                MessageBox.Show(
-                    "Please select a record first.",
-                    "No Selection",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-                return;
-            }
-
-            var row = dataGridView1.SelectedRows[0];
-            string sin = row.Cells["SIN"].Value?.ToString() ?? "";
-            string name = row.Cells["Full Name"].Value?.ToString() ?? "";
-
-            var confirm = MessageBox.Show(
-                $"Restore record for {name}?",
-                "Confirm Restore",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
-
-            if (confirm != DialogResult.Yes) return;
-
-            var result = Database.RestoreProfiling(sin);
-
-            if (result.Success)
-            {
-                Database.LogAudit(
-                    "Restore", sin,
-                    Session.CurrentUserId ?? 0,
-                    $"Restored profile for {name}.");
-
-                MessageBox.Show(
-                    "Record restored successfully.",
-                    "Restored",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-
-                LoadArchived();
-            }
-            else
-            {
-                MessageBox.Show(
-                    result.ErrorMessage,
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-            }
+            
         }
 
         // ===================== NAVIGATION ===================== //
@@ -94,6 +49,59 @@ namespace BusinessPermitLicensingSystem.Forms
         {
             new DashboardForm().Show();
             Close();
+        }
+
+        private void btnRestore_Click_1(object sender, EventArgs e)
+        {
+            {
+                if (dataGridView1.SelectedRows.Count == 0)
+                {
+                    MessageBox.Show(
+                        "Please select a record first.",
+                        "No Selection",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return;
+                }
+
+                var row = dataGridView1.SelectedRows[0];
+                string sin = row.Cells["SIN"].Value?.ToString() ?? "";
+                string name = row.Cells["Full Name"].Value?.ToString() ?? "";
+
+                var confirm = MessageBox.Show(
+                    $"Restore record for {name}?",
+                    "Confirm Restore",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (confirm != DialogResult.Yes) return;
+
+                var result = Database.RestoreProfiling(sin);
+
+                if (result.Success)
+                {
+                    Database.LogAudit(
+                        "Restore", sin,
+                        Session.CurrentUserId ?? 0,
+                        $"Restored profile for {name}.");
+
+                    MessageBox.Show(
+                        "Record restored successfully.",
+                        "Restored",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+
+                    LoadArchived();
+                }
+                else
+                {
+                    MessageBox.Show(
+                        result.ErrorMessage,
+                        "Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                }
+            }
         }
 
         // ===================== WINDOW SETTINGS ===================== //

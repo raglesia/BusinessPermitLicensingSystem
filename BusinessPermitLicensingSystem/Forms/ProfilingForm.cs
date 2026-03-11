@@ -38,6 +38,8 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== FORM LOAD ===================== //
         private void ProfilingForm_Load(object sender, EventArgs e)
         {
+            txtFName.Focus();
+
             isLoading = true;
 
             lblUsername.Text = $"{Session.CurrentPosition} | {Session.CurrentFullName}";
@@ -59,8 +61,8 @@ namespace BusinessPermitLicensingSystem.Forms
         {
             txtFName.KeyPress += (s, e) => InputValidator.AllowOnlyLetters(e, allowDot: true);
             txtBName.KeyPress += (s, e) => InputValidator.AllowLettersDigitsDotCommaSpace(e);
-            txtSNumber.KeyPress += (s, e) => InputValidator.AllowOnlyDigits(e);
             txtSSize.KeyPress += (s, e) => InputValidator.AllowDecimalNumbers(e, txtSSize);
+            txtSNumber.KeyPress += (s, e) => InputValidator.AllowDigitsAndComma(e);
             txtAdditionalCharge.KeyPress += (s, e) => InputValidator.AllowDecimalNumbers(e, txtAdditionalCharge);
 
             // Auto-compute when section or stall size changes

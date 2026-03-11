@@ -61,6 +61,7 @@
             btnRestore.TabIndex = 1;
             btnRestore.Text = "          Restore";
             btnRestore.UseVisualStyleBackColor = false;
+            btnRestore.Click += btnRestore_Click_1;
             // 
             // btnClose
             // 

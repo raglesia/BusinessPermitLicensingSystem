@@ -47,6 +47,12 @@ using System.Text;
 
             e.Handled = true;
         }
+        public static void AllowDigitsAndComma(KeyPressEventArgs e)
+        {
+            // ✅ Allow digits, comma, and backspace
+            if (!char.IsDigit(e.KeyChar) && e.KeyChar != ',' && e.KeyChar != '\b')
+                e.Handled = true;
+        }
     }
 
 }
