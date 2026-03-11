@@ -104,12 +104,18 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== DATE & TIME ===================== //
         private void UpdateDateTime()
         {
-            lblDateTime.Text = $"{DateTime.Now:dddd, MMMM dd, yyyy}  {DateTime.Now:hh:mm:ss} {DateTime.Now:tt}";
+            var now = DateTime.Now;
+            lblDateTime.Text = $"{now:dddd MMMM dd, yyyy}  {now:hh:mm:ss} {now.ToString("tt").ToUpper()}";
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
             UpdateDateTime();
+        }
+
+        private void lblDateTime_Click(object sender, EventArgs e)
+        {
+
         }
 
         // ===================== WINDOW SETTINGS ===================== //

@@ -161,11 +161,12 @@
             // 
             lblDateTime.AutoSize = true;
             lblDateTime.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblDateTime.Location = new Point(440, 409);
+            lblDateTime.Location = new Point(435, 409);
             lblDateTime.Name = "lblDateTime";
             lblDateTime.Size = new Size(108, 25);
             lblDateTime.TabIndex = 9;
             lblDateTime.Text = "lbldatetime";
+            lblDateTime.Click += lblDateTime_Click;
             // 
             // DashboardForm
             // 
