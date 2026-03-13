@@ -34,21 +34,23 @@
             txtSearch = new TextBox();
             dataGridView1 = new DataGridView();
             panelButtons = new Panel();
+            btnImport = new Button();
             btnMonthlyReport = new Button();
             btnArchive = new Button();
             btnDelete = new Button();
-            lblTotalRecords = new Label();
             button2 = new Button();
             btnPaymentHistory = new Button();
             button1 = new Button();
             btnExport = new Button();
+            lblTotalRecords = new Label();
             lblUsername = new Label();
             tableLayoutPanel1 = new TableLayoutPanel();
-            btnImport = new Button();
+            panel1 = new Panel();
             panelFilters.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             panelButtons.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // panelFilters
@@ -66,6 +68,7 @@
             txtSearch.BackColor = SystemColors.GradientActiveCaption;
             txtSearch.Location = new Point(3, 3);
             txtSearch.Name = "txtSearch";
+            txtSearch.PlaceholderText = "Search Record: ";
             txtSearch.Size = new Size(1873, 31);
             txtSearch.TabIndex = 0;
             // 
@@ -97,7 +100,6 @@
             panelButtons.Controls.Add(btnMonthlyReport);
             panelButtons.Controls.Add(btnArchive);
             panelButtons.Controls.Add(btnDelete);
-            panelButtons.Controls.Add(lblTotalRecords);
             panelButtons.Controls.Add(button2);
             panelButtons.Controls.Add(btnPaymentHistory);
             panelButtons.Controls.Add(button1);
@@ -107,6 +109,20 @@
             panelButtons.Name = "panelButtons";
             panelButtons.Size = new Size(1879, 69);
             panelButtons.TabIndex = 38;
+            // 
+            // btnImport
+            // 
+            btnImport.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnImport.BackColor = SystemColors.GradientActiveCaption;
+            btnImport.Image = Properties.Resources.icons8_import_csv_64;
+            btnImport.ImageAlign = ContentAlignment.MiddleLeft;
+            btnImport.Location = new Point(1090, 1);
+            btnImport.Name = "btnImport";
+            btnImport.Size = new Size(192, 68);
+            btnImport.TabIndex = 42;
+            btnImport.Text = "      Import\r\n      Records\r\n";
+            btnImport.UseVisualStyleBackColor = false;
+            btnImport.Click += btnImport_Click;
             // 
             // btnMonthlyReport
             // 
@@ -152,16 +168,6 @@
             btnDelete.Text = "           Delete Record";
             btnDelete.UseVisualStyleBackColor = false;
             btnDelete.Click += btnDelete_Click;
-            // 
-            // lblTotalRecords
-            // 
-            lblTotalRecords.AutoSize = true;
-            lblTotalRecords.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblTotalRecords.Location = new Point(903, 19);
-            lblTotalRecords.Name = "lblTotalRecords";
-            lblTotalRecords.Size = new Size(198, 28);
-            lblTotalRecords.TabIndex = 41;
-            lblTotalRecords.Text = "Total Records: 00000";
             // 
             // button2
             // 
@@ -223,27 +229,41 @@
             btnExport.UseVisualStyleBackColor = false;
             btnExport.Click += btnExport_Click;
             // 
+            // lblTotalRecords
+            // 
+            lblTotalRecords.AutoSize = true;
+            lblTotalRecords.Dock = DockStyle.Right;
+            lblTotalRecords.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTotalRecords.Location = new Point(1681, 0);
+            lblTotalRecords.Name = "lblTotalRecords";
+            lblTotalRecords.Size = new Size(198, 28);
+            lblTotalRecords.TabIndex = 41;
+            lblTotalRecords.Text = "Total Records: 00000";
+            lblTotalRecords.Click += lblTotalRecords_Click;
+            // 
             // lblUsername
             // 
             lblUsername.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             lblUsername.AutoSize = true;
             lblUsername.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblUsername.Location = new Point(3, 594);
+            lblUsername.Location = new Point(-3, 4);
             lblUsername.Name = "lblUsername";
             lblUsername.Size = new Size(101, 25);
             lblUsername.TabIndex = 34;
             lblUsername.Text = "Username ";
             lblUsername.TextAlign = ContentAlignment.MiddleCenter;
+            lblUsername.Click += lblUsername_Click;
             // 
             // tableLayoutPanel1
             // 
             tableLayoutPanel1.ColumnCount = 1;
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
             tableLayoutPanel1.Controls.Add(panelButtons, 0, 0);
             tableLayoutPanel1.Controls.Add(dataGridView1, 0, 2);
-            tableLayoutPanel1.Controls.Add(lblUsername, 0, 3);
             tableLayoutPanel1.Controls.Add(panelFilters, 0, 1);
+            tableLayoutPanel1.Controls.Add(panel1, 0, 3);
             tableLayoutPanel1.Dock = DockStyle.Fill;
             tableLayoutPanel1.Location = new Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -255,16 +275,17 @@
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tableLayoutPanel1.Size = new Size(1885, 619);
             tableLayoutPanel1.TabIndex = 40;
+            tableLayoutPanel1.Paint += tableLayoutPanel1_Paint;
             // 
-            // btnImport
+            // panel1
             // 
-            btnImport.Location = new Point(1123, 18);
-            btnImport.Name = "btnImport";
-            btnImport.Size = new Size(159, 51);
-            btnImport.TabIndex = 42;
-            btnImport.Text = "Import Records";
-            btnImport.UseVisualStyleBackColor = true;
-            btnImport.Click += btnImport_Click;
+            panel1.Controls.Add(lblTotalRecords);
+            panel1.Controls.Add(lblUsername);
+            panel1.Dock = DockStyle.Fill;
+            panel1.Location = new Point(3, 587);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(1879, 29);
+            panel1.TabIndex = 40;
             // 
             // ProfilingLists
             // 
@@ -287,9 +308,9 @@
             panelFilters.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             panelButtons.ResumeLayout(false);
-            panelButtons.PerformLayout();
             tableLayoutPanel1.ResumeLayout(false);
-            tableLayoutPanel1.PerformLayout();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -310,5 +331,6 @@
         private Label lblTotalRecords;
         private Button btnMonthlyReport;
         private Button btnImport;
+        private Panel panel1;
     }
 }

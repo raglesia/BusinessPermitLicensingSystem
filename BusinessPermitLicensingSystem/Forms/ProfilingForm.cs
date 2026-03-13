@@ -373,6 +373,7 @@ namespace BusinessPermitLicensingSystem.Forms
                     $"Updated profile for {fullName}, Status: {paymentStatus}" +
                     (paymentStatus == "Paid" ? $", OR#: {orNumber}" : ""));
 
+                RecordSaved = true;
                 MessageBox.Show("Record updated successfully!");
                 this.Close();
             }
@@ -405,6 +406,7 @@ namespace BusinessPermitLicensingSystem.Forms
                     "Add", txtBIN.Text, currentUserId,
                     $"Added profile for {fullName}, Status: {paymentStatus}");
 
+                RecordSaved = true;
                 MessageBox.Show("Record added successfully!");
                 ClearFields();
                 AssignNewBIN();
@@ -495,5 +497,6 @@ namespace BusinessPermitLicensingSystem.Forms
             txtSSize.ContextMenuStrip = new ContextMenuStrip();
             txtAdditionalCharge.ContextMenuStrip = new ContextMenuStrip();
         }
+        public bool RecordSaved { get; private set; } = false;
     }
 }

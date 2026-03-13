@@ -231,8 +231,19 @@ namespace BusinessPermitLicensingSystem
                 startDate, additionalCharge);
             form.ShowDialog();
 
-            LoadProfiles();
-            HighlightRecord(sin);
+            if (form.RecordSaved)
+            {
+                // ✅ Save current scroll position
+                int firstRowIndex = dataGridView1.FirstDisplayedScrollingRowIndex;
+
+                LoadProfiles();
+
+                // ✅ Restore scroll position
+                if (firstRowIndex >= 0 && firstRowIndex < dataGridView1.RowCount)
+                    dataGridView1.FirstDisplayedScrollingRowIndex = firstRowIndex;
+
+                HighlightRecord(sin);
+            }
         }
 
         // ===================== DELETE RECORD ===================== //
@@ -879,67 +890,67 @@ namespace BusinessPermitLicensingSystem
         }
 
         private async void btnImport_Click(object sender, EventArgs e)
+        {
+            using var ofd = new OpenFileDialog();
+            ofd.Title = "Select Import File";
+            ofd.Filter = "Supported Files|*.csv;*.xlsx|CSV Files|*.csv|Excel Files|*.xlsx";
+
+            if (ofd.ShowDialog() != DialogResult.OK) return;
+
+            string filePath = ofd.FileName;
+            string ext = Path.GetExtension(filePath).ToLower();
+
+            btnImport.Enabled = false;
+            Cursor = Cursors.WaitCursor;
+            lblTotalRecords.Text = "Importing... please wait.";
+
+            try
             {
-                using var ofd = new OpenFileDialog();
-                ofd.Title = "Select Import File";
-                ofd.Filter = "Supported Files|*.csv;*.xlsx|CSV Files|*.csv|Excel Files|*.xlsx";
-
-                if (ofd.ShowDialog() != DialogResult.OK) return;
-
-                string filePath = ofd.FileName;
-                string ext = Path.GetExtension(filePath).ToLower();
-
-                btnImport.Enabled = false;
-                Cursor = Cursors.WaitCursor;
-                lblTotalRecords.Text = "Importing... please wait.";
-
-                try
+                var (imported, skipped) = await Task.Run(() =>
                 {
-                    var (imported, skipped) = await Task.Run(() =>
-                    {
-                        // ✅ Load existing data into memory first
-                        var existingSINs = Database.GetAllSINs();
-                        var existingStallNumbers = Database.GetAllStallNumbers();
+                    // ✅ Load existing data into memory first
+                    var existingSINs = Database.GetAllSINs();
+                    var existingStallNumbers = Database.GetAllStallNumbers();
 
-                        // ✅ Read file
-                        List<ImportRow> rows = ext == ".csv"
-                            ? ReadCsv(filePath)
-                            : ReadExcel(filePath);
+                    // ✅ Read file
+                    List<ImportRow> rows = ext == ".csv"
+                        ? ReadCsv(filePath)
+                        : ReadExcel(filePath);
 
-                        return ImportToDatabase(rows, existingSINs, existingStallNumbers);
-                    });
+                    return ImportToDatabase(rows, existingSINs, existingStallNumbers);
+                });
 
-                    LoadProfiles();
+                LoadProfiles();
 
-                    string summary = $"Import Complete!\n\n" +
-                                     $"✅ Imported : {imported} records\n" +
-                                     $"⚠️ Skipped  : {skipped.Count} records";
+                string summary = $"Import Complete!\n\n" +
+                                 $"✅ Imported : {imported} records\n" +
+                                 $"⚠️ Skipped  : {skipped.Count} records";
 
-                    if (skipped.Count > 0)
-                    {
-                        summary += "\n\nSkipped Records:\n";
-                        foreach (var s in skipped)
-                            summary += $"  - {s}\n";
-                    }
-
-                    MessageBox.Show(summary, "Import Result",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                catch (Exception ex)
+                if (skipped.Count > 0)
                 {
-                    MessageBox.Show(
-                        $"Import failed: {ex.Message}",
-                        "Error",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
+                    summary += "\n\nSkipped Records:\n";
+                    foreach (var s in skipped)
+                        summary += $"  - {s}\n";
                 }
-                finally
-                {
-                    btnImport.Enabled = true;
-                    Cursor = Cursors.Default;
-                    lblTotalRecords.Text = $"Total Records: {dtProfiles.Rows.Count}";
-                }
+
+                MessageBox.Show(summary, "Import Result",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Import failed: {ex.Message}",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+            finally
+            {
+                btnImport.Enabled = true;
+                Cursor = Cursors.Default;
+                lblTotalRecords.Text = $"Total Records: {dtProfiles.Rows.Count}";
+            }
+        }
 
         private List<ImportRow> ReadCsv(string filePath)
         {
@@ -1010,84 +1021,99 @@ namespace BusinessPermitLicensingSystem
         List<ImportRow> rows,
         HashSet<string> existingSINs,
         HashSet<string> existingStallNumbers)
+        {
+            int imported = 0;
+            var skipped = new List<string>();
+
+            // ✅ Define DataTable columns
+            var validRows = new DataTable();
+            validRows.Columns.Add("SIN");
+            validRows.Columns.Add("FullName");
+            validRows.Columns.Add("BusinessName");
+            validRows.Columns.Add("BusinessSection");
+            validRows.Columns.Add("StallNumber");
+            validRows.Columns.Add("StallSize");
+            validRows.Columns.Add("MonthlyRental");
+            validRows.Columns.Add("PaymentStatus");
+            validRows.Columns.Add("StartDate");
+            validRows.Columns.Add("Penalty");
+            validRows.Columns.Add("AdditionalCharge");
+            validRows.Columns.Add("IsArchived");
+
+            foreach (var row in rows)
             {
-                int imported = 0;
-                var skipped = new List<string>();
-
-                // ✅ Define DataTable columns
-                var validRows = new DataTable();
-                validRows.Columns.Add("SIN");
-                validRows.Columns.Add("FullName");
-                validRows.Columns.Add("BusinessName");
-                validRows.Columns.Add("BusinessSection");
-                validRows.Columns.Add("StallNumber");
-                validRows.Columns.Add("StallSize");
-                validRows.Columns.Add("MonthlyRental");
-                validRows.Columns.Add("PaymentStatus");
-                validRows.Columns.Add("StartDate");
-                validRows.Columns.Add("Penalty");
-                validRows.Columns.Add("AdditionalCharge");
-                validRows.Columns.Add("IsArchived");
-
-                foreach (var row in rows)
+                // ✅ Skip empty rows
+                if (string.IsNullOrWhiteSpace(row.SIN) ||
+                    string.IsNullOrWhiteSpace(row.FullName))
                 {
-                    // ✅ Skip empty rows
-                    if (string.IsNullOrWhiteSpace(row.SIN) ||
-                        string.IsNullOrWhiteSpace(row.FullName))
-                    {
-                        skipped.Add("Empty row skipped");
-                        continue;
-                    }
-
-                    // ✅ Check duplicate SIN in memory
-                    if (existingSINs.Contains(row.SIN))
-                    {
-                        skipped.Add($"SIN {row.SIN} — duplicate SIN");
-                        continue;
-                    }
-
-                    // ✅ Check duplicate Stall Number in memory
-                    if (existingStallNumbers.Contains(row.StallNumber))
-                    {
-                        skipped.Add($"SIN {row.SIN} — duplicate Stall Number {row.StallNumber}");
-                        continue;
-                    }
-
-                    // ✅ Parse values
-                    double.TryParse(row.MonthlyRental, out double monthlyRental);
-                    double.TryParse(row.Penalty, out double penalty);
-                    double.TryParse(row.AdditionalCharge, out double additionalCharge);
-
-                    validRows.Rows.Add(
-                        row.SIN,
-                        row.FullName,
-                        row.BusinessName,
-                        row.BusinessSection,
-                        row.StallNumber,
-                        row.StallSize,
-                        monthlyRental,
-                        row.PaymentStatus,
-                        row.StartDate,
-                        penalty,
-                        additionalCharge,
-                        0); // ✅ IsArchived always 0
-
-                    // ✅ Track newly added records in memory
-                    existingSINs.Add(row.SIN);
-                    existingStallNumbers.Add(row.StallNumber);
-                    imported++;
+                    skipped.Add("Empty row skipped");
+                    continue;
                 }
 
-                // ✅ Bulk insert all valid rows at once
-                if (validRows.Rows.Count > 0)
+                // ✅ Check duplicate SIN in memory
+                if (existingSINs.Contains(row.SIN))
                 {
-                    var result = Database.ImportProfiling(validRows);
-                    if (!result.Success)
-                        throw new Exception(result.ErrorMessage);
+                    skipped.Add($"SIN {row.SIN} — duplicate SIN");
+                    continue;
                 }
 
-                return (imported, skipped);
+                // ✅ Check duplicate Stall Number in memory
+                if (existingStallNumbers.Contains(row.StallNumber))
+                {
+                    skipped.Add($"SIN {row.SIN} — duplicate Stall Number {row.StallNumber}");
+                    continue;
+                }
+
+                // ✅ Parse values
+                double.TryParse(row.MonthlyRental, out double monthlyRental);
+                double.TryParse(row.Penalty, out double penalty);
+                double.TryParse(row.AdditionalCharge, out double additionalCharge);
+
+                validRows.Rows.Add(
+                    row.SIN,
+                    row.FullName,
+                    row.BusinessName,
+                    row.BusinessSection,
+                    row.StallNumber,
+                    row.StallSize,
+                    monthlyRental,
+                    row.PaymentStatus,
+                    row.StartDate,
+                    penalty,
+                    additionalCharge,
+                    0); // ✅ IsArchived always 0
+
+                // ✅ Track newly added records in memory
+                existingSINs.Add(row.SIN);
+                existingStallNumbers.Add(row.StallNumber);
+                imported++;
             }
+
+            // ✅ Bulk insert all valid rows at once
+            if (validRows.Rows.Count > 0)
+            {
+                var result = Database.ImportProfiling(validRows);
+                if (!result.Success)
+                    throw new Exception(result.ErrorMessage);
+            }
+
+            return (imported, skipped);
+        }
+
+        private void lblUsername_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblTotalRecords_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 
 }
