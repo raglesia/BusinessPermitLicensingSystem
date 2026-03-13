@@ -162,3 +162,4 @@ C:\Users\brian\source\repos\BusinessPermitLicensingSystem\BusinessPermitLicensin
 C:\Users\brian\source\repos\BusinessPermitLicensingSystem\BusinessPermitLicensingSystem\bin\Debug\net10.0-windows\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
 C:\Users\brian\source\repos\BusinessPermitLicensingSystem\BusinessPermitLicensingSystem\bin\Debug\net10.0-windows\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
 C:\Users\brian\source\repos\BusinessPermitLicensingSystem\BusinessPermitLicensingSystem\bin\Debug\net10.0-windows\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\brian\source\repos\BusinessPermitLicensingSystem\BusinessPermitLicensingSystem\bin\Debug\net10.0-windows\CsvHelper.dll

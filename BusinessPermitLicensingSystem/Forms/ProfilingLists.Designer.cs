@@ -44,6 +44,7 @@
             btnExport = new Button();
             lblUsername = new Label();
             tableLayoutPanel1 = new TableLayoutPanel();
+            btnImport = new Button();
             panelFilters.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             panelButtons.SuspendLayout();
@@ -92,6 +93,7 @@
             // 
             // panelButtons
             // 
+            panelButtons.Controls.Add(btnImport);
             panelButtons.Controls.Add(btnMonthlyReport);
             panelButtons.Controls.Add(btnArchive);
             panelButtons.Controls.Add(btnDelete);
@@ -155,7 +157,7 @@
             // 
             lblTotalRecords.AutoSize = true;
             lblTotalRecords.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblTotalRecords.Location = new Point(1000, 19);
+            lblTotalRecords.Location = new Point(903, 19);
             lblTotalRecords.Name = "lblTotalRecords";
             lblTotalRecords.Size = new Size(198, 28);
             lblTotalRecords.TabIndex = 41;
@@ -254,6 +256,16 @@
             tableLayoutPanel1.Size = new Size(1885, 619);
             tableLayoutPanel1.TabIndex = 40;
             // 
+            // btnImport
+            // 
+            btnImport.Location = new Point(1123, 18);
+            btnImport.Name = "btnImport";
+            btnImport.Size = new Size(159, 51);
+            btnImport.TabIndex = 42;
+            btnImport.Text = "Import Records";
+            btnImport.UseVisualStyleBackColor = true;
+            btnImport.Click += btnImport_Click;
+            // 
             // ProfilingLists
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
@@ -297,5 +309,6 @@
         private TableLayoutPanel tableLayoutPanel1;
         private Label lblTotalRecords;
         private Button btnMonthlyReport;
+        private Button btnImport;
     }
 }

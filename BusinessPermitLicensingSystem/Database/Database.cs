@@ -1003,6 +1003,70 @@ namespace BusinessPermitLicensingSystem
             return dt;
         }
 
+        // IMPORTING //
+
+        // ===================== GET ALL SINS ===================== //
+        public static HashSet<string> GetAllSINs()
+        {
+            using var con = new SqlConnection(ConnectionString);
+            con.Open();
+            using var cmd = new SqlCommand("SELECT SIN FROM Profiling", con);
+            using var reader = cmd.ExecuteReader();
+            var sins = new HashSet<string>();
+            while (reader.Read())
+                sins.Add(reader.GetString(0));
+            return sins;
+        }
+
+        // ===================== GET ALL STALL NUMBERS ===================== //
+        public static HashSet<string> GetAllStallNumbers()
+        {
+            using var con = new SqlConnection(ConnectionString);
+            con.Open();
+            using var cmd = new SqlCommand(
+                "SELECT StallNumber FROM Profiling WHERE IsArchived = 0", con);
+            using var reader = cmd.ExecuteReader();
+            var stallNumbers = new HashSet<string>();
+            while (reader.Read())
+                stallNumbers.Add(reader.GetString(0));
+            return stallNumbers;
+        }
+
+        // ===================== IMPORT PROFILING ===================== //
+        public static (bool Success, string? ErrorMessage) ImportProfiling(DataTable dt)
+        {
+            try
+            {
+                using var con = new SqlConnection(ConnectionString);
+                con.Open();
+
+                using var bulk = new SqlBulkCopy(con);
+                bulk.DestinationTableName = "Profiling";
+                bulk.BulkCopyTimeout = 600;
+
+                // ✅ Explicit column mappings
+                bulk.ColumnMappings.Add("SIN", "SIN");
+                bulk.ColumnMappings.Add("FullName", "FullName");
+                bulk.ColumnMappings.Add("BusinessName", "BusinessName");
+                bulk.ColumnMappings.Add("BusinessSection", "BusinessSection");
+                bulk.ColumnMappings.Add("StallNumber", "StallNumber");
+                bulk.ColumnMappings.Add("StallSize", "StallSize");
+                bulk.ColumnMappings.Add("MonthlyRental", "MonthlyRental");
+                bulk.ColumnMappings.Add("PaymentStatus", "PaymentStatus");
+                bulk.ColumnMappings.Add("StartDate", "StartDate");
+                bulk.ColumnMappings.Add("Penalty", "Penalty");
+                bulk.ColumnMappings.Add("AdditionalCharge", "AdditionalCharge");
+                bulk.ColumnMappings.Add("IsArchived", "IsArchived");
+
+                bulk.WriteToServer(dt);
+                return (true, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
+            }
+        }
+
         // ===================== PASSWORD HASHING — DO NOT MODIFY ===================== //
         private static string HashPassword(string password)
         {

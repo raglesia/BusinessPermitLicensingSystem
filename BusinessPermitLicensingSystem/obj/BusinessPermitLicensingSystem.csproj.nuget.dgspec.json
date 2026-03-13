@@ -56,6 +56,10 @@
               "target": "Package",
               "version": "[0.105.0, )"
             },
+            "CsvHelper": {
+              "target": "Package",
+              "version": "[33.1.0, )"
+            },
             "Microsoft.Data.SqlClient": {
               "target": "Package",
               "version": "[6.1.4, )"

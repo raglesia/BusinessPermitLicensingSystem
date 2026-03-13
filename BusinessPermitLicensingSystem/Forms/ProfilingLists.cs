@@ -877,5 +877,217 @@ namespace BusinessPermitLicensingSystem
                 Cursor = Cursors.Default;
             }
         }
+
+        private async void btnImport_Click(object sender, EventArgs e)
+            {
+                using var ofd = new OpenFileDialog();
+                ofd.Title = "Select Import File";
+                ofd.Filter = "Supported Files|*.csv;*.xlsx|CSV Files|*.csv|Excel Files|*.xlsx";
+
+                if (ofd.ShowDialog() != DialogResult.OK) return;
+
+                string filePath = ofd.FileName;
+                string ext = Path.GetExtension(filePath).ToLower();
+
+                btnImport.Enabled = false;
+                Cursor = Cursors.WaitCursor;
+                lblTotalRecords.Text = "Importing... please wait.";
+
+                try
+                {
+                    var (imported, skipped) = await Task.Run(() =>
+                    {
+                        // ✅ Load existing data into memory first
+                        var existingSINs = Database.GetAllSINs();
+                        var existingStallNumbers = Database.GetAllStallNumbers();
+
+                        // ✅ Read file
+                        List<ImportRow> rows = ext == ".csv"
+                            ? ReadCsv(filePath)
+                            : ReadExcel(filePath);
+
+                        return ImportToDatabase(rows, existingSINs, existingStallNumbers);
+                    });
+
+                    LoadProfiles();
+
+                    string summary = $"Import Complete!\n\n" +
+                                     $"✅ Imported : {imported} records\n" +
+                                     $"⚠️ Skipped  : {skipped.Count} records";
+
+                    if (skipped.Count > 0)
+                    {
+                        summary += "\n\nSkipped Records:\n";
+                        foreach (var s in skipped)
+                            summary += $"  - {s}\n";
+                    }
+
+                    MessageBox.Show(summary, "Import Result",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(
+                        $"Import failed: {ex.Message}",
+                        "Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                }
+                finally
+                {
+                    btnImport.Enabled = true;
+                    Cursor = Cursors.Default;
+                    lblTotalRecords.Text = $"Total Records: {dtProfiles.Rows.Count}";
+                }
+            }
+
+        private List<ImportRow> ReadCsv(string filePath)
+        {
+            var rows = new List<ImportRow>();
+            var config = new CsvHelper.Configuration.CsvConfiguration(
+                System.Globalization.CultureInfo.InvariantCulture)
+            {
+                MissingFieldFound = null // ✅ ignore missing fields
+            };
+
+            using var reader = new StreamReader(filePath);
+            using var csv = new CsvHelper.CsvReader(reader, config);
+
+            csv.Read();
+            csv.ReadHeader();
+
+            while (csv.Read())
+            {
+                rows.Add(new ImportRow
+                {
+                    SIN = csv.GetField("SIN") ?? "",
+                    FullName = csv.GetField("FullName") ?? "",
+                    BusinessName = csv.GetField("BusinessName") ?? "",
+                    BusinessSection = csv.GetField("BusinessSection") ?? "",
+                    StallNumber = csv.GetField("StallNumber") ?? "",
+                    StallSize = csv.GetField("StallSize") ?? "",
+                    MonthlyRental = csv.GetField("MonthlyRental") ?? "",
+                    PaymentStatus = csv.GetField("PaymentStatus") ?? "",
+                    StartDate = csv.GetField("StartDate") ?? "",
+                    Penalty = csv.GetField("Penalty") ?? "",
+                    AdditionalCharge = csv.GetField("AdditionalCharge") ?? "",
+                });
+            }
+
+            return rows;
+        }
+
+        private List<ImportRow> ReadExcel(string filePath)
+        {
+            var rows = new List<ImportRow>();
+
+            using var workbook = new XLWorkbook(filePath);
+            var ws = workbook.Worksheet(1);
+            var dataRows = ws.RowsUsed().Skip(1); // ✅ Skip header
+
+            foreach (var row in dataRows)
+            {
+                rows.Add(new ImportRow
+                {
+                    SIN = row.Cell(1).GetString(),
+                    FullName = row.Cell(2).GetString(),
+                    BusinessName = row.Cell(3).GetString(),
+                    BusinessSection = row.Cell(4).GetString(),
+                    StallNumber = row.Cell(5).GetString(),
+                    StallSize = row.Cell(6).GetString(),
+                    MonthlyRental = row.Cell(7).GetString(),
+                    PaymentStatus = row.Cell(8).GetString(),
+                    StartDate = row.Cell(9).GetString(),
+                    Penalty = row.Cell(10).GetString(),
+                    AdditionalCharge = row.Cell(11).GetString(),
+                });
+            }
+
+            return rows;
+        }
+
+        private (int Imported, List<string> Skipped) ImportToDatabase(
+        List<ImportRow> rows,
+        HashSet<string> existingSINs,
+        HashSet<string> existingStallNumbers)
+            {
+                int imported = 0;
+                var skipped = new List<string>();
+
+                // ✅ Define DataTable columns
+                var validRows = new DataTable();
+                validRows.Columns.Add("SIN");
+                validRows.Columns.Add("FullName");
+                validRows.Columns.Add("BusinessName");
+                validRows.Columns.Add("BusinessSection");
+                validRows.Columns.Add("StallNumber");
+                validRows.Columns.Add("StallSize");
+                validRows.Columns.Add("MonthlyRental");
+                validRows.Columns.Add("PaymentStatus");
+                validRows.Columns.Add("StartDate");
+                validRows.Columns.Add("Penalty");
+                validRows.Columns.Add("AdditionalCharge");
+                validRows.Columns.Add("IsArchived");
+
+                foreach (var row in rows)
+                {
+                    // ✅ Skip empty rows
+                    if (string.IsNullOrWhiteSpace(row.SIN) ||
+                        string.IsNullOrWhiteSpace(row.FullName))
+                    {
+                        skipped.Add("Empty row skipped");
+                        continue;
+                    }
+
+                    // ✅ Check duplicate SIN in memory
+                    if (existingSINs.Contains(row.SIN))
+                    {
+                        skipped.Add($"SIN {row.SIN} — duplicate SIN");
+                        continue;
+                    }
+
+                    // ✅ Check duplicate Stall Number in memory
+                    if (existingStallNumbers.Contains(row.StallNumber))
+                    {
+                        skipped.Add($"SIN {row.SIN} — duplicate Stall Number {row.StallNumber}");
+                        continue;
+                    }
+
+                    // ✅ Parse values
+                    double.TryParse(row.MonthlyRental, out double monthlyRental);
+                    double.TryParse(row.Penalty, out double penalty);
+                    double.TryParse(row.AdditionalCharge, out double additionalCharge);
+
+                    validRows.Rows.Add(
+                        row.SIN,
+                        row.FullName,
+                        row.BusinessName,
+                        row.BusinessSection,
+                        row.StallNumber,
+                        row.StallSize,
+                        monthlyRental,
+                        row.PaymentStatus,
+                        row.StartDate,
+                        penalty,
+                        additionalCharge,
+                        0); // ✅ IsArchived always 0
+
+                    // ✅ Track newly added records in memory
+                    existingSINs.Add(row.SIN);
+                    existingStallNumbers.Add(row.StallNumber);
+                    imported++;
+                }
+
+                // ✅ Bulk insert all valid rows at once
+                if (validRows.Rows.Count > 0)
+                {
+                    var result = Database.ImportProfiling(validRows);
+                    if (!result.Success)
+                        throw new Exception(result.ErrorMessage);
+                }
+
+                return (imported, skipped);
+            }
     }
+
 }
