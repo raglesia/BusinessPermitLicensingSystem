@@ -15,6 +15,8 @@ namespace BusinessPermitLicensingSystem
         private const string ConnectionString =
             "Server=localhost;Database=Masinloc_BPLS;User Id=sa;Password=Strongpassword1;TrustServerCertificate=True;";
 
+        public static string GetConnectionString() => ConnectionString;
+
         // ===================== INITIALIZE ===================== //
         public static void Initialize()
         {
@@ -111,7 +113,6 @@ namespace BusinessPermitLicensingSystem
                 "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('Profiling') AND name = 'AdditionalCharge') ALTER TABLE Profiling ADD AdditionalCharge FLOAT DEFAULT 0",
                 "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('Users') AND name = 'Position') ALTER TABLE Users ADD Position NVARCHAR(255) NOT NULL DEFAULT ''",
                 "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('Profiling') AND name = 'IsArchived') ALTER TABLE Profiling ADD IsArchived INT DEFAULT 0",
-                "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('Profiling') AND name = 'DatePaid') ALTER TABLE Profiling ADD DatePaid NVARCHAR(50) DEFAULT ''"
             };
 
             foreach (string sql in migrations)

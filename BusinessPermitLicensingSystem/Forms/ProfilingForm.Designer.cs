@@ -55,6 +55,8 @@
             groupBox1 = new GroupBox();
             groupBox2 = new GroupBox();
             groupBox3 = new GroupBox();
+            lblTotalDue = new Label();
+            label10 = new Label();
             panel1 = new Panel();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
@@ -187,7 +189,7 @@
             btnSave.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnSave.Image = Properties.Resources.icons8_save_64;
             btnSave.ImageAlign = ContentAlignment.MiddleLeft;
-            btnSave.Location = new Point(101, 535);
+            btnSave.Location = new Point(97, 574);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(202, 64);
             btnSave.TabIndex = 10;
@@ -201,11 +203,11 @@
             button1.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             button1.Image = Properties.Resources.icons8_back_64;
             button1.ImageAlign = ContentAlignment.MiddleLeft;
-            button1.Location = new Point(370, 535);
+            button1.Location = new Point(372, 574);
             button1.Name = "button1";
             button1.Size = new Size(202, 64);
             button1.TabIndex = 11;
-            button1.Text = "      BACK";
+            button1.Text = "     Back";
             button1.UseVisualStyleBackColor = false;
             button1.Click += button1_Click;
             // 
@@ -323,6 +325,8 @@
             // 
             // groupBox3
             // 
+            groupBox3.Controls.Add(lblTotalDue);
+            groupBox3.Controls.Add(label10);
             groupBox3.Controls.Add(txtAdditionalCharge);
             groupBox3.Controls.Add(chkAdditional);
             groupBox3.Controls.Add(txtMRental);
@@ -332,16 +336,36 @@
             groupBox3.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             groupBox3.Location = new Point(12, 358);
             groupBox3.Name = "groupBox3";
-            groupBox3.Size = new Size(654, 157);
+            groupBox3.Size = new Size(654, 207);
             groupBox3.TabIndex = 29;
             groupBox3.TabStop = false;
             groupBox3.Text = "RENTAL INFORMATION";
+            // 
+            // lblTotalDue
+            // 
+            lblTotalDue.AutoSize = true;
+            lblTotalDue.ForeColor = Color.DarkRed;
+            lblTotalDue.Location = new Point(238, 158);
+            lblTotalDue.Name = "lblTotalDue";
+            lblTotalDue.Size = new Size(66, 28);
+            lblTotalDue.TabIndex = 26;
+            lblTotalDue.Text = "₱0.00";
+            // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label10.Location = new Point(6, 158);
+            label10.Name = "label10";
+            label10.Size = new Size(183, 28);
+            label10.TabIndex = 25;
+            label10.Text = "Total Amount Due:";
             // 
             // panel1
             // 
             panel1.Controls.Add(lblUsername);
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 603);
+            panel1.Location = new Point(0, 644);
             panel1.Name = "panel1";
             panel1.Size = new Size(670, 35);
             panel1.TabIndex = 30;
@@ -351,7 +375,7 @@
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.GradientActiveCaption;
-            ClientSize = new Size(670, 638);
+            ClientSize = new Size(670, 679);
             Controls.Add(panel1);
             Controls.Add(groupBox3);
             Controls.Add(groupBox2);
@@ -405,5 +429,7 @@
         private GroupBox groupBox2;
         private GroupBox groupBox3;
         private Panel panel1;
+        private Label lblTotalDue;
+        private Label label10;
     }
 }

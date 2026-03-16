@@ -31,7 +31,7 @@ namespace BusinessPermitLicensingSystem.Forms
         {
             InitializeComponent();
 
-            this.Size = new Size(700, 696);
+            this.Size = new Size(692, 735);
             this.StartPosition = FormStartPosition.CenterScreen;
         }
 
@@ -59,6 +59,13 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== SETUP ===================== //
         private void SetupInputValidators()
         {
+
+            txtMRental.TextChanged += (s, e) => UpdateTotalAmountDue();
+            txtAdditionalCharge.TextChanged += (s, e) => UpdateTotalAmountDue();
+            cmbPaymentStatus.SelectedIndexChanged += (s, e) => UpdateTotalAmountDue();
+            chkAdditional.CheckedChanged += (s, e) => UpdateTotalAmountDue();
+
+
             txtFName.KeyPress += (s, e) => InputValidator.AllowOnlyLetters(e, allowDot: true);
             txtBName.KeyPress += (s, e) => InputValidator.AllowLettersDigitsDotCommaSpace(e);
             txtSSize.KeyPress += (s, e) => InputValidator.AllowDecimalNumbers(e, txtSSize);
@@ -193,6 +200,8 @@ namespace BusinessPermitLicensingSystem.Forms
                 dtpStartDate.Value = parsedDate;
             else
                 dtpStartDate.Value = DateTime.Today;
+
+            UpdateTotalAmountDue();
         }
 
         // ===================== COMPUTE ===================== //
@@ -422,7 +431,7 @@ namespace BusinessPermitLicensingSystem.Forms
         {
             try
             {
-                using var con = new SqlConnection("Server=localhost;Database=Masinloc_BPLS;User Id=sa;Password=Strongpassword1;TrustServerCertificate=True;");
+                using var con = new SqlConnection(Database.GetConnectionString());
                 con.Open();
                 txtBIN.Text = Database.GenerateUniqueBIN(con);
             }
@@ -498,5 +507,21 @@ namespace BusinessPermitLicensingSystem.Forms
             txtAdditionalCharge.ContextMenuStrip = new ContextMenuStrip();
         }
         public bool RecordSaved { get; private set; } = false;
+
+        private void UpdateTotalAmountDue()
+        {
+            double.TryParse(txtMRental.Text.Replace(",", ""), out double rental);
+            double.TryParse(txtAdditionalCharge.Text.Replace(",", ""), out double additional);
+
+            double penalty = isEditMode
+                ? Database.CalculatePenalty(
+                    rental,
+                    cmbPaymentStatus.SelectedItem?.ToString() ?? "Unpaid",
+                    dtpStartDate.Value.ToString("yyyy-MM-dd"))
+                : 0; // ✅ No penalty for new records
+
+            double total = rental + penalty + (chkAdditional.Checked ? additional : 0);
+            lblTotalDue.Text = total.ToString("C2", new System.Globalization.CultureInfo("en-PH"));
+        }
     }
 }
