@@ -31,7 +31,7 @@ namespace BusinessPermitLicensingSystem.Forms
             Size = new Size(380, 200);
             BackColor = Color.White;
             Icon = new Icon(Path.Combine(
-                Application.StartupPath, "Resources", "Masinloc-Logo-HD.ico"));
+                Application.StartupPath, "Resources", "MasinlocLogoIcon.ico"));
 
             var lbl = new Label
             {

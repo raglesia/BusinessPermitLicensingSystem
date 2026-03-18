@@ -44,7 +44,7 @@ namespace BusinessPermitLicensingSystem.Forms
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Font = new Font("Segoe UI", 10);
             Icon = new Icon(Path.Combine(
-                Application.StartupPath, "Resources", "Masinloc-Logo-HD.ico"));
+                Application.StartupPath, "Resources", "MasinlocLogoIcon.ico"));
         }
 
         private void SetupLabels(string sin, string businessName)

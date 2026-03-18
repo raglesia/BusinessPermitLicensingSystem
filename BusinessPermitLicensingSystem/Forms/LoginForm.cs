@@ -17,6 +17,9 @@ namespace BusinessPermitLicensingSystem.Forms
             MaximizeBox = false;
             txtUser.Focus();
             SetupSecurity();
+
+            this.Icon = new Icon(Path.Combine(
+                Application.StartupPath, "Resources", "MasinlocLogoIcon.ico"));
         }
 
         // ===================== LOGIN ===================== //

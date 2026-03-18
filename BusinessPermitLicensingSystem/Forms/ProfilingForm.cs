@@ -38,6 +38,9 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== FORM LOAD ===================== //
         private void ProfilingForm_Load(object sender, EventArgs e)
         {
+            this.Icon = new Icon(Path.Combine(
+               Application.StartupPath, "Resources", "MasinlocLogoIcon.ico"));
+
             txtFName.Focus();
 
             isLoading = true;

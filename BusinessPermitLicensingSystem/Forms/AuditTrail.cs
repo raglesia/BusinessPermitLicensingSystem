@@ -22,6 +22,9 @@ namespace BusinessPermitLicensingSystem.Forms
         {
             lblUsername.Text = $"{Session.CurrentPosition} | {Session.CurrentFullName}";
             radioProfiling.Focus();
+
+            this.Icon = new Icon(Path.Combine(
+                Application.StartupPath, "Resources", "MasinlocLogoIcon.ico"));
         }
 
         // ===================== SETUP ===================== //

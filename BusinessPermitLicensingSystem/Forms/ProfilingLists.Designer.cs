@@ -338,7 +338,7 @@
             // 
             lblTotalPenalty.AutoSize = true;
             lblTotalPenalty.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
-            lblTotalPenalty.ForeColor = Color.DarkOrange;
+            lblTotalPenalty.ForeColor = Color.DarkBlue;
             lblTotalPenalty.Location = new Point(1193, 3);
             lblTotalPenalty.Name = "lblTotalPenalty";
             lblTotalPenalty.Size = new Size(125, 25);
@@ -361,7 +361,7 @@
             // 
             lblTotalUncollected.AutoSize = true;
             lblTotalUncollected.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
-            lblTotalUncollected.ForeColor = Color.Crimson;
+            lblTotalUncollected.ForeColor = Color.Red;
             lblTotalUncollected.Location = new Point(911, 4);
             lblTotalUncollected.Name = "lblTotalUncollected";
             lblTotalUncollected.Size = new Size(125, 25);
@@ -395,7 +395,7 @@
             // 
             lblTotalCollected.AutoSize = true;
             lblTotalCollected.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
-            lblTotalCollected.ForeColor = Color.SeaGreen;
+            lblTotalCollected.ForeColor = Color.DarkGreen;
             lblTotalCollected.Location = new Point(591, 4);
             lblTotalCollected.Name = "lblTotalCollected";
             lblTotalCollected.Size = new Size(125, 25);
@@ -429,7 +429,7 @@
             // 
             lblTotalUnpaid.AutoSize = true;
             lblTotalUnpaid.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
-            lblTotalUnpaid.ForeColor = Color.Crimson;
+            lblTotalUnpaid.ForeColor = Color.Red;
             lblTotalUnpaid.Location = new Point(365, 3);
             lblTotalUnpaid.Name = "lblTotalUnpaid";
             lblTotalUnpaid.Size = new Size(52, 25);
@@ -463,7 +463,7 @@
             // 
             lblTotalPaid.AutoSize = true;
             lblTotalPaid.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
-            lblTotalPaid.ForeColor = Color.SeaGreen;
+            lblTotalPaid.ForeColor = Color.DarkGreen;
             lblTotalPaid.Location = new Point(157, 4);
             lblTotalPaid.Name = "lblTotalPaid";
             lblTotalPaid.Size = new Size(52, 25);

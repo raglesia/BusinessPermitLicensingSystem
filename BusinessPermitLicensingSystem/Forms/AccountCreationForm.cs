@@ -16,6 +16,9 @@ namespace BusinessPermitLicensingSystem.Forms
         {
             Database.Initialize();
             txtFullName.Focus();
+
+            this.Icon = new Icon(Path.Combine(
+                Application.StartupPath, "Resources", "MasinlocLogoIcon.ico"));
         }
 
         // ===================== CREATE ACCOUNT ===================== //

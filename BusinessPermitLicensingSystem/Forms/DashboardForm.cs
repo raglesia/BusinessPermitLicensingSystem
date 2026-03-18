@@ -20,6 +20,9 @@ namespace BusinessPermitLicensingSystem.Forms
             UpdateDateTime();
             timer1.Start();
             CheckPenalties();
+
+            this.Icon = new Icon(Path.Combine(
+                Application.StartupPath, "Resources", "MasinlocLogoIcon.ico"));
         }
 
         // ===================== NAVIGATION ===================== //

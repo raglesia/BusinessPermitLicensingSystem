@@ -688,8 +688,8 @@ namespace BusinessPermitLicensingSystem
             using var cmd = new SqlCommand(@"
         SELECT
             COUNT(*)                                                   AS Total,
-            SUM(CASE WHEN PaymentStatus = 'Paid'   THEN 1 ELSE 0 END) AS Paid,
-            SUM(CASE WHEN PaymentStatus = 'Unpaid' THEN 1 ELSE 0 END) AS Unpaid
+            ISNULL(SUM(CASE WHEN PaymentStatus = 'Paid'   THEN 1 ELSE 0 END), 0) AS Paid,
+            ISNULL(SUM(CASE WHEN PaymentStatus = 'Unpaid' THEN 1 ELSE 0 END), 0) AS Unpaid
         FROM Profiling
         WHERE IsArchived = 0", con);
 
@@ -712,9 +712,9 @@ namespace BusinessPermitLicensingSystem
 
             using var cmd = new SqlCommand(@"
         SELECT
-            SUM(CASE WHEN PaymentStatus = 'Paid'   THEN MonthlyRental ELSE 0 END) AS TotalCollected,
-            SUM(CASE WHEN PaymentStatus = 'Unpaid' THEN MonthlyRental ELSE 0 END) AS TotalUncollected,
-            SUM(CASE WHEN PaymentStatus = 'Unpaid' THEN Penalty       ELSE 0 END) AS TotalPenalty
+            ISNULL(SUM(CASE WHEN PaymentStatus = 'Paid'   THEN MonthlyRental ELSE 0 END), 0) AS TotalCollected,
+            ISNULL(SUM(CASE WHEN PaymentStatus = 'Unpaid' THEN MonthlyRental ELSE 0 END), 0) AS TotalUncollected,
+            ISNULL(SUM(CASE WHEN PaymentStatus = 'Unpaid' THEN Penalty       ELSE 0 END), 0) AS TotalPenalty
         FROM Profiling
         WHERE IsArchived = 0", con);
 

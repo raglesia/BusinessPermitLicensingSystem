@@ -135,10 +135,10 @@
             // 
             // lblUsername
             // 
-            lblUsername.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             lblUsername.AutoSize = true;
+            lblUsername.Dock = DockStyle.Left;
             lblUsername.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblUsername.Location = new Point(3, 11);
+            lblUsername.Location = new Point(0, 0);
             lblUsername.Name = "lblUsername";
             lblUsername.Size = new Size(69, 25);
             lblUsername.TabIndex = 6;
@@ -165,8 +165,9 @@
             // lblDateTime
             // 
             lblDateTime.AutoSize = true;
+            lblDateTime.Dock = DockStyle.Right;
             lblDateTime.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblDateTime.Location = new Point(474, 11);
+            lblDateTime.Location = new Point(700, 0);
             lblDateTime.Name = "lblDateTime";
             lblDateTime.Size = new Size(108, 25);
             lblDateTime.TabIndex = 9;
