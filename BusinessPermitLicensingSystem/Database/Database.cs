@@ -679,6 +679,57 @@ namespace BusinessPermitLicensingSystem
             return dt;
         }
 
+        // ===================== DASHBOARD STATISTICS ===================== //
+        public static (int Total, int Paid, int Unpaid) GetPaymentSummary()
+        {
+            using var con = new SqlConnection(ConnectionString);
+            con.Open();
+
+            using var cmd = new SqlCommand(@"
+        SELECT
+            COUNT(*)                                                   AS Total,
+            SUM(CASE WHEN PaymentStatus = 'Paid'   THEN 1 ELSE 0 END) AS Paid,
+            SUM(CASE WHEN PaymentStatus = 'Unpaid' THEN 1 ELSE 0 END) AS Unpaid
+        FROM Profiling
+        WHERE IsArchived = 0", con);
+
+            using var reader = cmd.ExecuteReader();
+            if (reader.Read())
+            {
+                return (
+                    Convert.ToInt32(reader["Total"]),
+                    Convert.ToInt32(reader["Paid"]),
+                    Convert.ToInt32(reader["Unpaid"])
+                );
+            }
+            return (0, 0, 0);
+        }
+
+        public static (double TotalCollected, double TotalUncollected, double TotalPenalty) GetCollectionSummary()
+        {
+            using var con = new SqlConnection(ConnectionString);
+            con.Open();
+
+            using var cmd = new SqlCommand(@"
+        SELECT
+            SUM(CASE WHEN PaymentStatus = 'Paid'   THEN MonthlyRental ELSE 0 END) AS TotalCollected,
+            SUM(CASE WHEN PaymentStatus = 'Unpaid' THEN MonthlyRental ELSE 0 END) AS TotalUncollected,
+            SUM(CASE WHEN PaymentStatus = 'Unpaid' THEN Penalty       ELSE 0 END) AS TotalPenalty
+        FROM Profiling
+        WHERE IsArchived = 0", con);
+
+            using var reader = cmd.ExecuteReader();
+            if (reader.Read())
+            {
+                return (
+                    Convert.ToDouble(reader["TotalCollected"]),
+                    Convert.ToDouble(reader["TotalUncollected"]),
+                    Convert.ToDouble(reader["TotalPenalty"])
+                );
+            }
+            return (0, 0, 0);
+        }
+
         // ===================== ARCHIVE ===================== //
         public static (bool Success, string? ErrorMessage) ArchiveProfiling(string sin)
         {

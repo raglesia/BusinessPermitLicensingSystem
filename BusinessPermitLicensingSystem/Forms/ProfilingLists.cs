@@ -108,6 +108,7 @@ namespace BusinessPermitLicensingSystem
             _lastSortedCol = -1;
 
             dataGridView1.ResumeLayout();
+            LoadStatistics();
         }
 
         private void FormatCurrencyColumn(string columnName)
@@ -1099,21 +1100,16 @@ namespace BusinessPermitLicensingSystem
 
             return (imported, skipped);
         }
-
-        private void lblUsername_Click(object sender, EventArgs e)
+        private void LoadStatistics()
         {
+            var (total, paid, unpaid) = Database.GetPaymentSummary();
+            var (totalCollected, totalUncollected, totalPenalty) = Database.GetCollectionSummary();
 
-        }
-
-        private void lblTotalRecords_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
-        {
-
+            lblTotalPaid.Text = $"{paid.ToString("N0")}";
+            lblTotalUnpaid.Text = $"{unpaid.ToString("N0")}";
+            lblTotalCollected.Text = $"{totalCollected.ToString("C2", new CultureInfo("en-PH"))}";
+            lblTotalUncollected.Text = $"{totalUncollected.ToString("C2", new CultureInfo("en-PH"))}";
+            lblTotalPenalty.Text = $"{totalPenalty.ToString("C2", new CultureInfo("en-PH"))}";
         }
     }
-
-}
+    }
