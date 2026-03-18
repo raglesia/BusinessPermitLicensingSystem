@@ -46,11 +46,27 @@
             lblUsername = new Label();
             tableLayoutPanel1 = new TableLayoutPanel();
             panel1 = new Panel();
+            panel2 = new Panel();
+            label6 = new Label();
+            lblTotalPenalty = new Label();
+            label5 = new Label();
+            lblTotalUncollected = new Label();
+            label4 = new Label();
+            label8 = new Label();
+            lblTotalCollected = new Label();
+            label3 = new Label();
+            label9 = new Label();
+            lblTotalUnpaid = new Label();
+            label2 = new Label();
+            label10 = new Label();
+            lblTotalPaid = new Label();
+            label11 = new Label();
             panelFilters.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             panelButtons.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             panel1.SuspendLayout();
+            panel2.SuspendLayout();
             SuspendLayout();
             // 
             // panelFilters
@@ -233,20 +249,20 @@
             // 
             lblTotalRecords.AutoSize = true;
             lblTotalRecords.Dock = DockStyle.Right;
-            lblTotalRecords.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblTotalRecords.Location = new Point(1681, 0);
+            lblTotalRecords.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTotalRecords.Location = new Point(1697, 0);
             lblTotalRecords.Name = "lblTotalRecords";
-            lblTotalRecords.Size = new Size(198, 28);
+            lblTotalRecords.Size = new Size(182, 25);
             lblTotalRecords.TabIndex = 41;
             lblTotalRecords.Text = "Total Records: 00000";
             lblTotalRecords.Click += lblTotalRecords_Click;
             // 
             // lblUsername
             // 
-            lblUsername.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             lblUsername.AutoSize = true;
+            lblUsername.Dock = DockStyle.Left;
             lblUsername.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblUsername.Location = new Point(-3, 4);
+            lblUsername.Location = new Point(0, 0);
             lblUsername.Name = "lblUsername";
             lblUsername.Size = new Size(101, 25);
             lblUsername.TabIndex = 34;
@@ -279,6 +295,7 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(panel2);
             panel1.Controls.Add(lblTotalRecords);
             panel1.Controls.Add(lblUsername);
             panel1.Dock = DockStyle.Fill;
@@ -286,6 +303,187 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(1879, 29);
             panel1.TabIndex = 40;
+            // 
+            // panel2
+            // 
+            panel2.AutoSize = true;
+            panel2.Controls.Add(label6);
+            panel2.Controls.Add(lblTotalPenalty);
+            panel2.Controls.Add(label5);
+            panel2.Controls.Add(lblTotalUncollected);
+            panel2.Controls.Add(label4);
+            panel2.Controls.Add(label8);
+            panel2.Controls.Add(lblTotalCollected);
+            panel2.Controls.Add(label3);
+            panel2.Controls.Add(label9);
+            panel2.Controls.Add(lblTotalUnpaid);
+            panel2.Controls.Add(label2);
+            panel2.Controls.Add(label10);
+            panel2.Controls.Add(lblTotalPaid);
+            panel2.Controls.Add(label11);
+            panel2.Location = new Point(283, -3);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(1424, 37);
+            panel2.TabIndex = 41;
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+            label6.Location = new Point(1159, 4);
+            label6.Name = "label6";
+            label6.Size = new Size(122, 25);
+            label6.TabIndex = 47;
+            label6.Text = "Total Penalty:";
+            label6.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // lblTotalPenalty
+            // 
+            lblTotalPenalty.AutoSize = true;
+            lblTotalPenalty.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+            lblTotalPenalty.ForeColor = Color.DarkOrange;
+            lblTotalPenalty.Location = new Point(1287, 4);
+            lblTotalPenalty.Name = "lblTotalPenalty";
+            lblTotalPenalty.Size = new Size(125, 25);
+            lblTotalPenalty.TabIndex = 53;
+            lblTotalPenalty.Text = "P0,000,000.00";
+            lblTotalPenalty.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+            label5.Location = new Point(839, 4);
+            label5.Name = "label5";
+            label5.Size = new Size(160, 25);
+            label5.TabIndex = 46;
+            label5.Text = "Total Uncollected:";
+            label5.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // lblTotalUncollected
+            // 
+            lblTotalUncollected.AutoSize = true;
+            lblTotalUncollected.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+            lblTotalUncollected.ForeColor = Color.Crimson;
+            lblTotalUncollected.Location = new Point(1005, 4);
+            lblTotalUncollected.Name = "lblTotalUncollected";
+            lblTotalUncollected.Size = new Size(125, 25);
+            lblTotalUncollected.TabIndex = 52;
+            lblTotalUncollected.Text = "P0,000,000.00";
+            lblTotalUncollected.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+            label4.Location = new Point(540, 4);
+            label4.Name = "label4";
+            label4.Size = new Size(139, 25);
+            label4.TabIndex = 45;
+            label4.Text = "Total Collected:";
+            label4.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+            label8.Location = new Point(1136, 4);
+            label8.Name = "label8";
+            label8.Size = new Size(17, 25);
+            label8.TabIndex = 44;
+            label8.Text = "|";
+            label8.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // lblTotalCollected
+            // 
+            lblTotalCollected.AutoSize = true;
+            lblTotalCollected.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+            lblTotalCollected.ForeColor = Color.SeaGreen;
+            lblTotalCollected.Location = new Point(685, 4);
+            lblTotalCollected.Name = "lblTotalCollected";
+            lblTotalCollected.Size = new Size(125, 25);
+            lblTotalCollected.TabIndex = 51;
+            lblTotalCollected.Text = "P0,000,000.00";
+            lblTotalCollected.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+            label3.Location = new Point(259, 4);
+            label3.Name = "label3";
+            label3.Size = new Size(121, 25);
+            label3.TabIndex = 44;
+            label3.Text = "Total Unpaid:";
+            label3.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // label9
+            // 
+            label9.AutoSize = true;
+            label9.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+            label9.Location = new Point(816, 4);
+            label9.Name = "label9";
+            label9.Size = new Size(17, 25);
+            label9.TabIndex = 54;
+            label9.Text = "|";
+            label9.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // lblTotalUnpaid
+            // 
+            lblTotalUnpaid.AutoSize = true;
+            lblTotalUnpaid.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+            lblTotalUnpaid.ForeColor = Color.Crimson;
+            lblTotalUnpaid.Location = new Point(386, 4);
+            lblTotalUnpaid.Name = "lblTotalUnpaid";
+            lblTotalUnpaid.Size = new Size(125, 25);
+            lblTotalUnpaid.TabIndex = 50;
+            lblTotalUnpaid.Text = "P0,000,000.00";
+            lblTotalUnpaid.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+            label2.Location = new Point(3, 4);
+            label2.Name = "label2";
+            label2.Size = new Size(96, 25);
+            label2.TabIndex = 43;
+            label2.Text = "Total Paid:";
+            label2.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+            label10.Location = new Point(517, 4);
+            label10.Name = "label10";
+            label10.Size = new Size(17, 25);
+            label10.TabIndex = 55;
+            label10.Text = "|";
+            label10.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // lblTotalPaid
+            // 
+            lblTotalPaid.AutoSize = true;
+            lblTotalPaid.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+            lblTotalPaid.ForeColor = Color.SeaGreen;
+            lblTotalPaid.Location = new Point(105, 4);
+            lblTotalPaid.Name = "lblTotalPaid";
+            lblTotalPaid.Size = new Size(125, 25);
+            lblTotalPaid.TabIndex = 49;
+            lblTotalPaid.Text = "P0,000,000.00";
+            lblTotalPaid.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // label11
+            // 
+            label11.AutoSize = true;
+            label11.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+            label11.Location = new Point(236, 4);
+            label11.Name = "label11";
+            label11.Size = new Size(17, 25);
+            label11.TabIndex = 56;
+            label11.Text = "|";
+            label11.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // ProfilingLists
             // 
@@ -311,6 +509,8 @@
             tableLayoutPanel1.ResumeLayout(false);
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            panel2.ResumeLayout(false);
+            panel2.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -332,5 +532,20 @@
         private Button btnMonthlyReport;
         private Button btnImport;
         private Panel panel1;
+        private Label lblTotalPenalty;
+        private Label lblTotalUncollected;
+        private Label lblTotalCollected;
+        private Label lblTotalUnpaid;
+        private Label label6;
+        private Label label5;
+        private Label label4;
+        private Label label2;
+        private Label lblTotalPaid;
+        private Label label3;
+        private Label label8;
+        private Label label9;
+        private Label label11;
+        private Label label10;
+        private Panel panel2;
     }
 }

@@ -336,7 +336,7 @@
             groupBox3.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             groupBox3.Location = new Point(12, 358);
             groupBox3.Name = "groupBox3";
-            groupBox3.Size = new Size(654, 207);
+            groupBox3.Size = new Size(654, 194);
             groupBox3.TabIndex = 29;
             groupBox3.TabStop = false;
             groupBox3.Text = "RENTAL INFORMATION";

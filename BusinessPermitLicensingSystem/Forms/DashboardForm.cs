@@ -113,11 +113,6 @@ namespace BusinessPermitLicensingSystem.Forms
             UpdateDateTime();
         }
 
-        private void lblDateTime_Click(object sender, EventArgs e)
-        {
-
-        }
-
         // ===================== WINDOW SETTINGS ===================== //
         protected override CreateParams CreateParams
         {

@@ -40,6 +40,10 @@
             lblPenaltyNotice = new Label();
             timer1 = new System.Windows.Forms.Timer(components);
             lblDateTime = new Label();
+            panel1 = new Panel();
+            panel2 = new Panel();
+            panel1.SuspendLayout();
+            panel2.SuspendLayout();
             SuspendLayout();
             // 
             // button1
@@ -49,7 +53,7 @@
             button1.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             button1.Image = Properties.Resources.icons8_list_64;
             button1.ImageAlign = ContentAlignment.MiddleLeft;
-            button1.Location = new Point(12, 15);
+            button1.Location = new Point(13, 16);
             button1.Name = "button1";
             button1.Size = new Size(379, 80);
             button1.TabIndex = 0;
@@ -64,7 +68,7 @@
             button2.ForeColor = Color.Black;
             button2.Image = Properties.Resources.icons8_archive_64;
             button2.ImageAlign = ContentAlignment.MiddleLeft;
-            button2.Location = new Point(397, 101);
+            button2.Location = new Point(408, 102);
             button2.Name = "button2";
             button2.Size = new Size(378, 80);
             button2.TabIndex = 3;
@@ -78,7 +82,7 @@
             button3.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             button3.Image = Properties.Resources.icons8_settings_64__1_;
             button3.ImageAlign = ContentAlignment.MiddleLeft;
-            button3.Location = new Point(12, 101);
+            button3.Location = new Point(13, 102);
             button3.Name = "button3";
             button3.Size = new Size(379, 80);
             button3.TabIndex = 2;
@@ -93,7 +97,7 @@
             button4.ForeColor = Color.Black;
             button4.Image = Properties.Resources.icons8_conference_64;
             button4.ImageAlign = ContentAlignment.MiddleLeft;
-            button4.Location = new Point(397, 15);
+            button4.Location = new Point(408, 16);
             button4.Name = "button4";
             button4.Size = new Size(379, 80);
             button4.TabIndex = 1;
@@ -107,7 +111,7 @@
             button5.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             button5.Image = Properties.Resources.icons8_audit_64;
             button5.ImageAlign = ContentAlignment.MiddleLeft;
-            button5.Location = new Point(12, 187);
+            button5.Location = new Point(13, 188);
             button5.Name = "button5";
             button5.Size = new Size(379, 80);
             button5.TabIndex = 4;
@@ -121,7 +125,7 @@
             button6.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             button6.Image = Properties.Resources.icons8_exit_64__1_;
             button6.ImageAlign = ContentAlignment.MiddleLeft;
-            button6.Location = new Point(397, 187);
+            button6.Location = new Point(409, 188);
             button6.Name = "button6";
             button6.Size = new Size(378, 80);
             button6.TabIndex = 5;
@@ -131,9 +135,10 @@
             // 
             // lblUsername
             // 
+            lblUsername.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             lblUsername.AutoSize = true;
             lblUsername.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblUsername.Location = new Point(12, 409);
+            lblUsername.Location = new Point(3, 11);
             lblUsername.Name = "lblUsername";
             lblUsername.Size = new Size(69, 25);
             lblUsername.TabIndex = 6;
@@ -144,7 +149,7 @@
             lblPenaltyNotice.AutoSize = true;
             lblPenaltyNotice.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblPenaltyNotice.ForeColor = Color.Red;
-            lblPenaltyNotice.Location = new Point(12, 289);
+            lblPenaltyNotice.Location = new Point(0, 293);
             lblPenaltyNotice.Name = "lblPenaltyNotice";
             lblPenaltyNotice.Size = new Size(144, 28);
             lblPenaltyNotice.TabIndex = 7;
@@ -161,28 +166,44 @@
             // 
             lblDateTime.AutoSize = true;
             lblDateTime.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblDateTime.Location = new Point(458, 409);
+            lblDateTime.Location = new Point(474, 11);
             lblDateTime.Name = "lblDateTime";
             lblDateTime.Size = new Size(108, 25);
             lblDateTime.TabIndex = 9;
             lblDateTime.Text = "lbldatetime";
-            lblDateTime.Click += lblDateTime_Click;
+            // 
+            // panel1
+            // 
+            panel1.Controls.Add(lblDateTime);
+            panel1.Controls.Add(lblUsername);
+            panel1.Dock = DockStyle.Bottom;
+            panel1.Location = new Point(0, 407);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(808, 36);
+            panel1.TabIndex = 10;
+            // 
+            // panel2
+            // 
+            panel2.Controls.Add(button1);
+            panel2.Controls.Add(button2);
+            panel2.Controls.Add(button3);
+            panel2.Controls.Add(button6);
+            panel2.Controls.Add(button4);
+            panel2.Controls.Add(button5);
+            panel2.Location = new Point(3, 12);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(796, 278);
+            panel2.TabIndex = 11;
             // 
             // DashboardForm
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.GradientActiveCaption;
-            ClientSize = new Size(779, 443);
-            Controls.Add(lblDateTime);
+            ClientSize = new Size(808, 443);
+            Controls.Add(panel2);
+            Controls.Add(panel1);
             Controls.Add(lblPenaltyNotice);
-            Controls.Add(lblUsername);
-            Controls.Add(button6);
-            Controls.Add(button5);
-            Controls.Add(button4);
-            Controls.Add(button3);
-            Controls.Add(button2);
-            Controls.Add(button1);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
@@ -190,6 +211,9 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Masinloc BPLS - Dashboard";
             Load += DashboardForm_Load;
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
+            panel2.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -206,5 +230,7 @@
         private Label lblPenaltyNotice;
         private System.Windows.Forms.Timer timer1;
         private Label lblDateTime;
+        private Panel panel1;
+        private Panel panel2;
     }
 }
