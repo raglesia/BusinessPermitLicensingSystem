@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj": {}
+    "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem - RDLC Designing\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj": {}
   },
   "projects": {
-    "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj": {
+    "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem - RDLC Designing\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj",
+        "projectUniqueName": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem - RDLC Designing\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj",
         "projectName": "BusinessPermitLicensingSystem",
-        "projectPath": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj",
+        "projectPath": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem - RDLC Designing\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj",
         "packagesPath": "C:\\Users\\brian\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\obj\\",
+        "outputPath": "C:\\Users\\brian\\source\\repos\\BusinessPermitLicensingSystem - RDLC Designing\\BusinessPermitLicensingSystem\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -62,7 +62,7 @@
             },
             "Microsoft.Data.SqlClient": {
               "target": "Package",
-              "version": "[6.1.4, )"
+              "version": "[7.0.0, )"
             },
             "ReportViewerCore.NETCore": {
               "target": "Package",
@@ -71,6 +71,10 @@
             "ReportViewerCore.WinForms": {
               "target": "Package",
               "version": "[15.1.33, )"
+            },
+            "System.Configuration.ConfigurationManager": {
+              "target": "Package",
+              "version": "[10.0.5, )"
             }
           },
           "imports": [

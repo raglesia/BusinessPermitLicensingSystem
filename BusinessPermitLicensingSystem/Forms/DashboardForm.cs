@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 
 namespace BusinessPermitLicensingSystem.Forms
@@ -17,25 +18,26 @@ namespace BusinessPermitLicensingSystem.Forms
         {
             button1.Focus();
             lblUsername.Text = $"{Session.CurrentPosition} | {Session.CurrentFullName}";
-            UpdateDateTime();
-            timer1.Start();
-            CheckPenalties();
 
             this.Icon = new Icon(Path.Combine(
                 Application.StartupPath, "Resources", "MasinlocLogoIcon.ico"));
+
+            UpdateDateTime();
+            timer1.Start();
+            CheckPenalties();
         }
 
         // ===================== NAVIGATION ===================== //
         private void button1_Click(object sender, EventArgs e)
         {
             new ProfilingLists().Show();
-            Hide();
+            this.Hide();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             new ArchivedForm().Show();
-            Hide();
+            this.Hide();
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -61,13 +63,13 @@ namespace BusinessPermitLicensingSystem.Forms
             };
 
             profilingForm.Show();
-            Hide();
+            this.Hide();
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
             new AuditTrail().Show();
-            Hide();
+            this.Hide();
         }
 
         // ===================== LOGOUT ===================== //
@@ -76,8 +78,7 @@ namespace BusinessPermitLicensingSystem.Forms
             if (Session.CurrentUserId != null)
             {
                 Database.LogAudit(
-                    "Logout",
-                    null,
+                    "Logout", null,
                     Session.CurrentUserId ?? 0,
                     $"User '{Session.CurrentUsername}' logged out.");
             }
@@ -88,20 +89,29 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== PENALTIES ===================== //
         private void CheckPenalties()
         {
-            var (updated, _) = Database.ApplyPenaltiesToAll();
+            try
+            {
+                var (updated, _) = Database.ApplyPenaltiesToAll();
 
-            if (updated > 0)
+                if (updated > 0)
+                {
+                    lblPenaltyNotice.ForeColor = Color.DarkRed;
+                    lblPenaltyNotice.Text = $"⚠️ {updated} unpaid record(s) have been charged a 25% penalty.";
+                }
+                else
+                {
+                    lblPenaltyNotice.ForeColor = Color.SeaGreen;
+                    lblPenaltyNotice.Text = "✅ No penalty charges at this time.";
+                }
+
+                lblPenaltyNotice.Visible = true;
+            }
+            catch (Exception ex)
             {
                 lblPenaltyNotice.ForeColor = Color.DarkRed;
-                lblPenaltyNotice.Text = $"⚠️ {updated} unpaid record(s) have been charged a 25% penalty.";
+                lblPenaltyNotice.Text = $"⚠️ Penalty check failed: {ex.Message}";
+                lblPenaltyNotice.Visible = true;
             }
-            else
-            {
-                lblPenaltyNotice.ForeColor = Color.SeaGreen;
-                lblPenaltyNotice.Text = "✅ No penalty charges at this time.";
-            }
-
-            lblPenaltyNotice.Visible = true;
         }
 
         // ===================== DATE & TIME ===================== //

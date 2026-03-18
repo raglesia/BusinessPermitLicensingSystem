@@ -11,14 +11,24 @@ namespace BusinessPermitLicensingSystem
     {
         // ===================== FIELDS ===================== //
         private readonly ReportViewer _reportViewer;
-        private readonly BillingReportModel _profile;
+        private readonly List<BillingReportModel> _profiles;
 
-        // ===================== CONSTRUCTOR ===================== //
+        // ===================== CONSTRUCTORS ===================== //
+
+        // Single receipt — keeps all existing call sites working unchanged
         public ReportViewerForm(BillingReportModel profile)
+            : this(new List<BillingReportModel> { profile }) { }
+
+        // Multiple receipts — called when user selects 2-3 records
+        public ReportViewerForm(List<BillingReportModel> profiles)
         {
             InitializeComponent();
 
-            _profile = profile;
+            // Assign RowNumber so the RDLC List control can reference each receipt
+            for (int i = 0; i < profiles.Count; i++)
+                profiles[i].RowNumber = i + 1;
+
+            _profiles = profiles;
 
             _reportViewer = new ReportViewer { Dock = DockStyle.Fill };
             Controls.Add(_reportViewer);
@@ -66,27 +76,36 @@ namespace BusinessPermitLicensingSystem
 
         private void LoadReport(string reportPath)
         {
-            var data = new List<BillingReportModel> { _profile };
-
-            _reportViewer.LocalReport.ReportPath = reportPath;
-            _reportViewer.LocalReport.DataSources.Clear();
-            _reportViewer.LocalReport.DataSources.Add(
-                new ReportDataSource("BillingReportDataSet", data));
-
-            _reportViewer.LocalReport.SetParameters(new[]
+            try
             {
-                new ReportParameter("ProcessedBy",      Session.CurrentFullName          ?? ""),
-                new ReportParameter("Position",         Session.CurrentPosition          ?? ""),
-                new ReportParameter("PaymentStatus",    _profile.PaymentStatus           ?? "Unpaid"),
-                new ReportParameter("Penalty",          _profile.Penalty.ToString("F2")),
-                new ReportParameter("AdditionalCharge", _profile.AdditionalCharge.ToString("F2")),
-                new ReportParameter("TotalDue",         _profile.TotalDue.ToString("F2")),
-            });
+                _reportViewer.LocalReport.ReportPath = reportPath;
+                _reportViewer.LocalReport.DataSources.Clear();
+                _reportViewer.LocalReport.DataSources.Add(
+                    new ReportDataSource("BillingReportDataSet", _profiles));
 
-            _reportViewer.RefreshReport();
-            _reportViewer.SetDisplayMode(DisplayMode.PrintLayout);
-            _reportViewer.ZoomMode = ZoomMode.Percent;
-            _reportViewer.ZoomPercent = 100;
+                _reportViewer.LocalReport.SetParameters(new[]
+                {
+            new ReportParameter("ProcessedBy", Session.CurrentFullName ?? ""),
+            new ReportParameter("Position",    Session.CurrentPosition ?? ""),
+        });
+
+                _reportViewer.RefreshReport();
+                _reportViewer.SetDisplayMode(DisplayMode.PrintLayout);
+                _reportViewer.ZoomMode = ZoomMode.Percent;
+                _reportViewer.ZoomPercent = 100;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Message: {ex.Message}\n\n" +
+                    $"Inner 1: {ex.InnerException?.Message}\n\n" +
+                    $"Inner 2: {ex.InnerException?.InnerException?.Message}\n\n" +
+                    $"Inner 3: {ex.InnerException?.InnerException?.InnerException?.Message}",
+                    "Report Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
         }
+
     }
 }

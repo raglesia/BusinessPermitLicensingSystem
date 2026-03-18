@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -62,31 +63,22 @@ namespace BusinessPermitLicensingSystem.Forms
 
                 dtAudit.DataSource = dt;
 
+                // ✅ Hide internal ID columns
                 if (dtAudit.Columns["Id"] != null) dtAudit.Columns["Id"].Visible = false;
                 if (dtAudit.Columns["UserId"] != null) dtAudit.Columns["UserId"].Visible = false;
 
-                dtAudit.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-
+                // ✅ Disable sorting on all visible columns
                 foreach (DataGridViewColumn col in dtAudit.Columns)
                 {
-                    if (col.Visible) col.FillWeight = 1;
+                    col.SortMode = DataGridViewColumnSortMode.NotSortable;
+                    col.FillWeight = 1;
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    $"Failed to load audit records: {ex.Message}",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                MessageBox.Show($"Failed to load audit records: {ex.Message}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-
-        // ===================== NAVIGATION ===================== //
-        private void button1_Click(object sender, EventArgs e)
-        {
-            new DashboardForm().Show();
-            Hide();
         }
 
         // ===================== RADIO BUTTONS ===================== //
@@ -98,6 +90,13 @@ namespace BusinessPermitLicensingSystem.Forms
         private void radioProfiling_CheckedChanged(object sender, EventArgs e)
         {
             if (radioProfiling.Checked) LoadAuditRecords();
+        }
+
+        // ===================== NAVIGATION ===================== //
+        private void button1_Click(object sender, EventArgs e)
+        {
+            new DashboardForm().Show();
+            this.Hide();
         }
 
         // ===================== WINDOW SETTINGS ===================== //

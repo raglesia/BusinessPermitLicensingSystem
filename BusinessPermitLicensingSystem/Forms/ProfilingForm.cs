@@ -1,10 +1,10 @@
 ﻿using BusinessPermitLicensingSystem.Helpers;
-using Microsoft.Data.SqlClient;
 using System;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
+using System.IO;
 using System.Windows.Forms;
-using static BusinessPermitLicensingSystem.Helpers.InputValidator;
 
 namespace BusinessPermitLicensingSystem.Forms
 {
@@ -15,7 +15,6 @@ namespace BusinessPermitLicensingSystem.Forms
         private string currentSIN = "";
         private bool isLoading = true;
 
-        // ✅ Store edit data temporarily
         private string _editFullName = "";
         private string _editBusinessName = "";
         private string _editBusinessSection = "";
@@ -24,7 +23,7 @@ namespace BusinessPermitLicensingSystem.Forms
         private string _editMonthlyRental = "";
         private string _editPaymentStatus = "";
         private string _editStartDate = "";
-        private double _editAdditionalCharge = 0;
+        private decimal _editAdditionalCharge = 0;
 
         // ===================== CONSTRUCTOR ===================== //
         public ProfilingForm()
@@ -39,10 +38,9 @@ namespace BusinessPermitLicensingSystem.Forms
         private void ProfilingForm_Load(object sender, EventArgs e)
         {
             this.Icon = new Icon(Path.Combine(
-               Application.StartupPath, "Resources", "MasinlocLogoIcon.ico"));
+                Application.StartupPath, "Resources", "MasinlocLogoIcon.ico"));
 
             txtFName.Focus();
-
             isLoading = true;
 
             lblUsername.Text = $"{Session.CurrentPosition} | {Session.CurrentFullName}";
@@ -54,7 +52,7 @@ namespace BusinessPermitLicensingSystem.Forms
             if (isEditMode)
                 PopulateEditFields();
             else
-                AssignNewBIN();
+                AssignNewSIN();
 
             isLoading = false;
         }
@@ -62,12 +60,10 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== SETUP ===================== //
         private void SetupInputValidators()
         {
-
             txtMRental.TextChanged += (s, e) => UpdateTotalAmountDue();
             txtAdditionalCharge.TextChanged += (s, e) => UpdateTotalAmountDue();
             cmbPaymentStatus.SelectedIndexChanged += (s, e) => UpdateTotalAmountDue();
             chkAdditional.CheckedChanged += (s, e) => UpdateTotalAmountDue();
-
 
             txtFName.KeyPress += (s, e) => InputValidator.AllowOnlyLetters(e, allowDot: true);
             txtBName.KeyPress += (s, e) => InputValidator.AllowLettersDigitsDotCommaSpace(e);
@@ -75,12 +71,10 @@ namespace BusinessPermitLicensingSystem.Forms
             txtSNumber.KeyPress += (s, e) => InputValidator.AllowDigitsAndComma(e);
             txtAdditionalCharge.KeyPress += (s, e) => InputValidator.AllowDecimalNumbers(e, txtAdditionalCharge);
 
-            // Auto-compute when section or stall size changes
             cmbBSection.SelectedIndexChanged += (s, e) => ComputeMonthlyRental();
             txtSSize.TextChanged += (s, e) => ComputeMonthlyRental();
             txtAdditionalCharge.TextChanged += (s, e) => ComputeMonthlyRental();
 
-            // Toggle additional charges
             chkAdditional.CheckedChanged += (s, e) =>
             {
                 txtAdditionalCharge.Enabled = chkAdditional.Checked;
@@ -97,7 +91,6 @@ namespace BusinessPermitLicensingSystem.Forms
             txtBIN.Enabled = false;
             txtMRental.Enabled = false;
 
-            // ✅ Load sections from RentalRates table
             cmbBSection.Items.Clear();
             DataTable rates = Database.GetRentalRates();
             foreach (DataRow row in rates.Rows)
@@ -110,13 +103,12 @@ namespace BusinessPermitLicensingSystem.Forms
             dtpStartDate.Value = DateTime.Today;
             dtpStartDate.Format = DateTimePickerFormat.Short;
 
-            // Additional charges — disabled by default
             txtAdditionalCharge.Enabled = false;
             txtAdditionalCharge.Text = "0.00";
 
             txtAdditionalCharge.Leave += (s, e) =>
             {
-                if (double.TryParse(txtAdditionalCharge.Text, out double value))
+                if (decimal.TryParse(txtAdditionalCharge.Text, out decimal value))
                     txtAdditionalCharge.Text = value.ToString("N2");
             };
         }
@@ -132,7 +124,7 @@ namespace BusinessPermitLicensingSystem.Forms
             string monthlyRental,
             string paymentStatus,
             string startDate,
-            double additionalCharge = 0)
+            decimal additionalCharge = 0)
         {
             isEditMode = true;
             currentSIN = sin;
@@ -155,7 +147,6 @@ namespace BusinessPermitLicensingSystem.Forms
             txtFName.Text = _editFullName;
             txtBName.Text = _editBusinessName;
 
-            // ✅ Match combobox item by text
             cmbBSection.SelectedIndex = -1;
             foreach (var item in cmbBSection.Items)
             {
@@ -170,7 +161,6 @@ namespace BusinessPermitLicensingSystem.Forms
             txtSSize.Text = _editStallSize;
             txtMRental.Text = _editMonthlyRental;
 
-            // ✅ Match payment status
             cmbPaymentStatus.SelectedIndex = -1;
             foreach (var item in cmbPaymentStatus.Items)
             {
@@ -183,7 +173,6 @@ namespace BusinessPermitLicensingSystem.Forms
 
             btnSave.Text = "           Update Record";
 
-            // ✅ Additional Charge
             if (_editAdditionalCharge > 0)
             {
                 chkAdditional.Checked = true;
@@ -197,7 +186,6 @@ namespace BusinessPermitLicensingSystem.Forms
                 txtAdditionalCharge.Text = "0.00";
             }
 
-            // ✅ Start Date
             if (!string.IsNullOrWhiteSpace(_editStartDate) &&
                 DateTime.TryParse(_editStartDate, out DateTime parsedDate))
                 dtpStartDate.Value = parsedDate;
@@ -217,7 +205,7 @@ namespace BusinessPermitLicensingSystem.Forms
 
             var (ratePerSqm, flatRate, rateType) = Database.GetRateBySection(section);
 
-            double baseRental = 0;
+            decimal baseRental = 0;
 
             if (rateType == "Flat")
             {
@@ -229,21 +217,20 @@ namespace BusinessPermitLicensingSystem.Forms
             {
                 txtSSize.Enabled = true;
 
-                // ✅ Only clear when switching FROM Flat — not on every keystroke
                 if (!txtSSize.Enabled || txtSSize.Text == "0")
                 {
                     txtSSize.Text = "";
                     txtMRental.Text = "0.00";
                 }
 
-                if (!double.TryParse(txtSSize.Text, out double stallSize)) return;
+                if (!decimal.TryParse(txtSSize.Text, out decimal stallSize)) return;
                 if (stallSize <= 0) return;
 
                 baseRental = stallSize * ratePerSqm;
             }
 
-            double.TryParse(txtAdditionalCharge.Text, out double additional);
-            double total = baseRental + (chkAdditional.Checked ? additional : 0);
+            decimal.TryParse(txtAdditionalCharge.Text, out decimal additional);
+            decimal total = baseRental + (chkAdditional.Checked ? additional : 0);
 
             txtMRental.Text = total.ToString("N2");
         }
@@ -259,7 +246,6 @@ namespace BusinessPermitLicensingSystem.Forms
             string paymentStatus = cmbPaymentStatus.SelectedItem?.ToString() ?? "Unpaid";
             string startDate = dtpStartDate.Value.ToString("yyyy-MM-dd");
 
-            // ✅ Validate required fields
             if (string.IsNullOrWhiteSpace(fullName))
             {
                 MessageBox.Show("Full Name is required.", "Required Field",
@@ -298,13 +284,12 @@ namespace BusinessPermitLicensingSystem.Forms
                 if (rateType != "Flat")
                 {
                     MessageBox.Show("Stall Size is required.", "Required Field",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     txtSSize.Focus();
                     return;
                 }
             }
 
-            // ✅ Check duplicate stall number
             string excludeSIN = isEditMode ? currentSIN : "";
             if (Database.StallNumberExists(stallNumber, excludeSIN))
             {
@@ -318,19 +303,18 @@ namespace BusinessPermitLicensingSystem.Forms
                 return;
             }
 
-            if (!double.TryParse(txtMRental.Text, out double monthlyRental))
+            if (!decimal.TryParse(txtMRental.Text, out decimal monthlyRental))
             {
                 MessageBox.Show("Monthly Rental must be a valid number.");
                 return;
             }
 
-            double.TryParse(txtAdditionalCharge.Text, out double additionalCharge);
+            decimal.TryParse(txtAdditionalCharge.Text, out decimal additionalCharge);
 
             long currentUserId = Session.CurrentUserId ?? 0;
             string orNumber = "";
-            double penalty = 0;
+            decimal penalty = 0;
 
-            // Only ask for OR Number in EDIT mode when marking as Paid
             if (isEditMode && paymentStatus == "Paid")
             {
                 penalty = Database.CalculatePenalty(monthlyRental, paymentStatus, startDate);
@@ -363,9 +347,9 @@ namespace BusinessPermitLicensingSystem.Forms
 
         private void SaveEdit(
             string fullName, string businessName, string businessSection,
-            string stallNumber, string stallSize, double monthlyRental,
+            string stallNumber, string stallSize, decimal monthlyRental,
             string startDate, string paymentStatus, string orNumber,
-            double penalty, double additionalCharge, long currentUserId)
+            decimal penalty, decimal additionalCharge, long currentUserId)
         {
             var result = Database.UpdateProfiling(
                 currentSIN, fullName, businessName,
@@ -397,9 +381,9 @@ namespace BusinessPermitLicensingSystem.Forms
 
         private void SaveNew(
             string fullName, string businessName, string businessSection,
-            string stallNumber, string stallSize, double monthlyRental,
+            string stallNumber, string stallSize, decimal monthlyRental,
             string startDate, string paymentStatus, string orNumber,
-            double penalty, double additionalCharge, long currentUserId)
+            decimal penalty, decimal additionalCharge, long currentUserId)
         {
             var result = Database.AddProfiling(
                 txtBIN.Text, fullName, businessName,
@@ -421,7 +405,7 @@ namespace BusinessPermitLicensingSystem.Forms
                 RecordSaved = true;
                 MessageBox.Show("Record added successfully!");
                 ClearFields();
-                AssignNewBIN();
+                AssignNewSIN();
             }
             else
             {
@@ -430,22 +414,9 @@ namespace BusinessPermitLicensingSystem.Forms
         }
 
         // ===================== HELPERS ===================== //
-        private void AssignNewBIN()
+        private void AssignNewSIN()
         {
-            try
-            {
-                using var con = new SqlConnection(Database.GetConnectionString());
-                con.Open();
-                txtBIN.Text = Database.GenerateUniqueBIN(con);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                    $"Failed to generate SIN: {ex.Message}",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-            }
+            txtBIN.Text = Database.GenerateUniqueSIN();
         }
 
         private void ClearFields()
@@ -478,7 +449,7 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== EVENTS ===================== //
         private void txtMRental_Leave(object sender, EventArgs e)
         {
-            if (double.TryParse(txtMRental.Text, out double value))
+            if (decimal.TryParse(txtMRental.Text, out decimal value))
                 txtMRental.Text = value.ToString("N2");
         }
 
@@ -495,36 +466,35 @@ namespace BusinessPermitLicensingSystem.Forms
 
         private void SetupSecurity()
         {
-            txtBIN.KeyDown += (s, e) => { if (e.Control && e.KeyCode == Keys.V) e.SuppressKeyPress = true; };
-            txtFName.KeyDown += (s, e) => { if (e.Control && e.KeyCode == Keys.V) e.SuppressKeyPress = true; };
-            txtBName.KeyDown += (s, e) => { if (e.Control && e.KeyCode == Keys.V) e.SuppressKeyPress = true; };
-            txtSNumber.KeyDown += (s, e) => { if (e.Control && e.KeyCode == Keys.V) e.SuppressKeyPress = true; };
-            txtSSize.KeyDown += (s, e) => { if (e.Control && e.KeyCode == Keys.V) e.SuppressKeyPress = true; };
-            txtAdditionalCharge.KeyDown += (s, e) => { if (e.Control && e.KeyCode == Keys.V) e.SuppressKeyPress = true; };
+            TextBox[] protectedFields =
+            {
+                txtBIN, txtFName, txtBName,
+                txtSNumber, txtSSize, txtAdditionalCharge
+            };
 
-            txtBIN.ContextMenuStrip = new ContextMenuStrip();
-            txtFName.ContextMenuStrip = new ContextMenuStrip();
-            txtBName.ContextMenuStrip = new ContextMenuStrip();
-            txtSNumber.ContextMenuStrip = new ContextMenuStrip();
-            txtSSize.ContextMenuStrip = new ContextMenuStrip();
-            txtAdditionalCharge.ContextMenuStrip = new ContextMenuStrip();
+            foreach (var field in protectedFields)
+            {
+                field.KeyDown += (s, e) => { if (e.Control && e.KeyCode == Keys.V) e.SuppressKeyPress = true; };
+                field.ContextMenuStrip = new ContextMenuStrip();
+            }
         }
+
         public bool RecordSaved { get; private set; } = false;
 
         private void UpdateTotalAmountDue()
         {
-            double.TryParse(txtMRental.Text.Replace(",", ""), out double rental);
-            double.TryParse(txtAdditionalCharge.Text.Replace(",", ""), out double additional);
+            decimal.TryParse(txtMRental.Text.Replace(",", ""), out decimal rental);
+            decimal.TryParse(txtAdditionalCharge.Text.Replace(",", ""), out decimal additional);
 
-            double penalty = isEditMode
+            decimal penalty = isEditMode
                 ? Database.CalculatePenalty(
                     rental,
                     cmbPaymentStatus.SelectedItem?.ToString() ?? "Unpaid",
                     dtpStartDate.Value.ToString("yyyy-MM-dd"))
-                : 0; // ✅ No penalty for new records
+                : 0;
 
-            double total = rental + penalty + (chkAdditional.Checked ? additional : 0);
-            lblTotalDue.Text = total.ToString("C2", new System.Globalization.CultureInfo("en-PH"));
+            decimal total = rental + penalty + (chkAdditional.Checked ? additional : 0);
+            lblTotalDue.Text = total.ToString("C2", new CultureInfo("en-PH"));
         }
     }
 }

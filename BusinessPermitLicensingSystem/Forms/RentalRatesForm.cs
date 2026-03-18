@@ -2,6 +2,8 @@
 using System;
 using System.Data;
 using System.Drawing;
+using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace BusinessPermitLicensingSystem.Forms
@@ -58,25 +60,23 @@ namespace BusinessPermitLicensingSystem.Forms
             };
             this.Controls.Add(pnlHeader);
 
-            var lblTitle = new Label
+            pnlHeader.Controls.Add(new Label
             {
                 Text = "Manage Rental Rates",
                 Font = new Font("Segoe UI", 12, FontStyle.Bold),
                 ForeColor = Color.White,
                 Location = new Point(15, 8),
                 AutoSize = true
-            };
-            pnlHeader.Controls.Add(lblTitle);
+            });
 
-            var lblSubtitle = new Label
+            pnlHeader.Controls.Add(new Label
             {
                 Text = "Click a section to edit its rate",
                 Font = new Font("Segoe UI", 9),
                 ForeColor = Color.LightSteelBlue,
                 Location = new Point(15, 35),
                 AutoSize = true
-            };
-            pnlHeader.Controls.Add(lblSubtitle);
+            });
         }
 
         private void SetupGrid()
@@ -98,19 +98,16 @@ namespace BusinessPermitLicensingSystem.Forms
                 MultiSelect = false
             };
 
-            // ✅ Double buffering
             typeof(DataGridView)
                 .GetProperty("DoubleBuffered",
                     System.Reflection.BindingFlags.Instance |
                     System.Reflection.BindingFlags.NonPublic)!
                 .SetValue(dgvRates, true);
 
-            dgvRates.ColumnHeadersDefaultCellStyle.Font =
-                new Font("Segoe UI", 9, FontStyle.Bold);
+            dgvRates.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9, FontStyle.Bold);
             dgvRates.RowsDefaultCellStyle.BackColor = Color.White;
             dgvRates.AlternatingRowsDefaultCellStyle.BackColor = Color.AliceBlue;
 
-            // ✅ Load selected row into edit panel
             dgvRates.SelectionChanged += (s, e) => LoadSelectedRate();
 
             this.Controls.Add(dgvRates);
@@ -121,7 +118,7 @@ namespace BusinessPermitLicensingSystem.Forms
             var pnlEdit = new Panel
             {
                 Location = new Point(615, 75),
-                Size = new Size(410, 520), // ✅ Matches visible area
+                Size = new Size(410, 520),
                 BackColor = Color.FromArgb(245, 245, 245)
             };
             this.Controls.Add(pnlEdit);
@@ -137,22 +134,20 @@ namespace BusinessPermitLicensingSystem.Forms
             };
             pnlEdit.Controls.Add(lblSection);
 
-            var divider = new Label
+            pnlEdit.Controls.Add(new Label
             {
                 Size = new Size(380, 2),
                 Location = new Point(15, 47),
                 BackColor = Color.FromArgb(30, 60, 90)
-            };
-            pnlEdit.Controls.Add(divider);
+            });
 
             // Rate Type
-            var lblRateType = new Label
+            pnlEdit.Controls.Add(new Label
             {
                 Text = "Rate Type:",
                 Location = new Point(15, 58),
                 AutoSize = true
-            };
-            pnlEdit.Controls.Add(lblRateType);
+            });
 
             cmbRateType = new ComboBox
             {
@@ -166,13 +161,12 @@ namespace BusinessPermitLicensingSystem.Forms
             pnlEdit.Controls.Add(cmbRateType);
 
             // Rate Per Sqm
-            var lblRatePerSqm = new Label
+            pnlEdit.Controls.Add(new Label
             {
                 Text = "Rate Per Sqm (₱):",
                 Location = new Point(15, 115),
                 AutoSize = true
-            };
-            pnlEdit.Controls.Add(lblRatePerSqm);
+            });
 
             txtRatePerSqm = new TextBox
             {
@@ -180,18 +174,16 @@ namespace BusinessPermitLicensingSystem.Forms
                 Size = new Size(380, 30),
                 Font = new Font("Segoe UI", 10)
             };
-            txtRatePerSqm.KeyPress += (s, e) =>
-                InputValidator.AllowDecimalNumbers(e, txtRatePerSqm);
+            txtRatePerSqm.KeyPress += (s, e) => InputValidator.AllowDecimalNumbers(e, txtRatePerSqm);
             pnlEdit.Controls.Add(txtRatePerSqm);
 
             // Flat Rate
-            var lblFlatRate = new Label
+            pnlEdit.Controls.Add(new Label
             {
                 Text = "Flat Rate (₱):",
                 Location = new Point(15, 173),
                 AutoSize = true
-            };
-            pnlEdit.Controls.Add(lblFlatRate);
+            });
 
             txtFlatRate = new TextBox
             {
@@ -199,19 +191,17 @@ namespace BusinessPermitLicensingSystem.Forms
                 Size = new Size(380, 30),
                 Font = new Font("Segoe UI", 10)
             };
-            txtFlatRate.KeyPress += (s, e) =>
-                InputValidator.AllowDecimalNumbers(e, txtFlatRate);
+            txtFlatRate.KeyPress += (s, e) => InputValidator.AllowDecimalNumbers(e, txtFlatRate);
             pnlEdit.Controls.Add(txtFlatRate);
 
-            var divider2 = new Label
+            pnlEdit.Controls.Add(new Label
             {
                 Size = new Size(380, 2),
                 Location = new Point(15, 235),
                 BackColor = Color.Silver
-            };
-            pnlEdit.Controls.Add(divider2);
+            });
 
-            // ✅ Section Name label — hidden by default
+            // New section controls — hidden by default
             var lblNewSection = new Label
             {
                 Text = "Section Name:",
@@ -221,7 +211,6 @@ namespace BusinessPermitLicensingSystem.Forms
             };
             pnlEdit.Controls.Add(lblNewSection);
 
-            // ✅ Section Name textbox — hidden by default
             var txtNewSection = new TextBox
             {
                 Name = "txtNewSection",
@@ -270,9 +259,7 @@ namespace BusinessPermitLicensingSystem.Forms
                 txtNewSection.Visible = isAdding;
                 lblNewSection.Visible = isAdding;
                 btnAddNew.Text = isAdding ? "✕ Cancel" : "+ Add New Section";
-                btnAddNew.BackColor = isAdding
-                    ? Color.IndianRed
-                    : Color.FromArgb(40, 130, 90);
+                btnAddNew.BackColor = isAdding ? Color.IndianRed : Color.FromArgb(40, 130, 90);
 
                 if (isAdding)
                 {
@@ -282,11 +269,11 @@ namespace BusinessPermitLicensingSystem.Forms
                     btnAddNew.Location = new Point(15, 365);
 
                     lblSection.Text = "New Section";
-                    txtNewSection.Clear();
-                    txtNewSection.Focus();
                     btnSave.Enabled = true;
                     btnSave.Text = "Save New Section";
                     selectedSection = "";
+                    txtNewSection.Clear();
+                    txtNewSection.Focus();
                 }
                 else
                 {
@@ -332,7 +319,6 @@ namespace BusinessPermitLicensingSystem.Forms
         {
             dgvRates.DataSource = Database.GetRentalRates();
 
-            // ✅ Hide unnecessary columns
             dgvRates.DataBindingComplete += (s, e) =>
             {
                 if (dgvRates.Columns["RatePerSqm"] != null)
@@ -352,8 +338,8 @@ namespace BusinessPermitLicensingSystem.Forms
 
             selectedSection = row.Cells["Section"].Value?.ToString() ?? "";
             string rateType = row.Cells["RateType"].Value?.ToString() ?? "PerSqm";
-            double ratePerSqm = Convert.ToDouble(row.Cells["RatePerSqm"].Value ?? 0);
-            double flatRate = Convert.ToDouble(row.Cells["FlatRate"].Value ?? 0);
+            decimal ratePerSqm = Convert.ToDecimal(row.Cells["RatePerSqm"].Value ?? 0);
+            decimal flatRate = Convert.ToDecimal(row.Cells["FlatRate"].Value ?? 0);
 
             lblSection.Text = selectedSection;
             cmbRateType.SelectedItem = rateType;
@@ -365,54 +351,42 @@ namespace BusinessPermitLicensingSystem.Forms
         private void ToggleRateFields()
         {
             bool isFlat = cmbRateType.SelectedItem?.ToString() == "Flat";
+
             txtRatePerSqm.Enabled = !isFlat;
             txtFlatRate.Enabled = isFlat;
             txtRatePerSqm.BackColor = isFlat ? Color.LightGray : Color.White;
             txtFlatRate.BackColor = isFlat ? Color.White : Color.LightGray;
 
-            if (isFlat)
-                txtRatePerSqm.Text = "0.00";
-            else
-                txtFlatRate.Text = "0.00";
+            if (isFlat) txtRatePerSqm.Text = "0.00";
+            else txtFlatRate.Text = "0.00";
         }
 
         // ===================== SAVE ===================== //
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (!double.TryParse(txtRatePerSqm.Text, out double ratePerSqm))
-                ratePerSqm = 0;
-            if (!double.TryParse(txtFlatRate.Text, out double flatRate))
-                flatRate = 0;
+            if (!decimal.TryParse(txtRatePerSqm.Text, out decimal ratePerSqm)) ratePerSqm = 0;
+            if (!decimal.TryParse(txtFlatRate.Text, out decimal flatRate)) flatRate = 0;
 
             string rateType = cmbRateType.SelectedItem?.ToString() ?? "PerSqm";
 
-            // ✅ Validate rate values
             if (rateType == "PerSqm" && ratePerSqm <= 0)
             {
-                MessageBox.Show(
-                    "Rate per sqm must be greater than 0.",
-                    "Invalid Rate",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
+                MessageBox.Show("Rate per sqm must be greater than 0.",
+                    "Invalid Rate", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             if (rateType == "Flat" && flatRate <= 0)
             {
-                MessageBox.Show(
-                    "Flat rate must be greater than 0.",
-                    "Invalid Rate",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
+                MessageBox.Show("Flat rate must be greater than 0.",
+                    "Invalid Rate", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            // ✅ Check if adding new or editing existing
             bool isAddingNew = string.IsNullOrWhiteSpace(selectedSection);
 
             if (isAddingNew)
             {
-                // Find txtNewSection inside pnlEdit
                 var txtNewSection = this.Controls
                     .OfType<Panel>()
                     .SelectMany(p => p.Controls.OfType<TextBox>())
@@ -422,11 +396,8 @@ namespace BusinessPermitLicensingSystem.Forms
 
                 if (string.IsNullOrWhiteSpace(newSection))
                 {
-                    MessageBox.Show(
-                        "Please enter a section name.",
-                        "Required",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning);
+                    MessageBox.Show("Please enter a section name.",
+                        "Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
@@ -435,93 +406,60 @@ namespace BusinessPermitLicensingSystem.Forms
                     $"Rate Type : {rateType}\n" +
                     $"Rate/Sqm  : ₱{ratePerSqm:N2}\n" +
                     $"Flat Rate : ₱{flatRate:N2}",
-                    "Confirm Add",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question);
+                    "Confirm Add", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
                 if (confirm != DialogResult.Yes) return;
 
-                var result = Database.AddRentalRate(
-                    newSection, ratePerSqm, flatRate, rateType);
+                var result = Database.AddRentalRate(newSection, ratePerSqm, flatRate, rateType);
 
                 if (result.Success)
                 {
-                    Database.LogAudit(
-                        "AddRate", null,
-                        Session.CurrentUserId ?? 0,
+                    Database.LogAudit("AddRate", null, Session.CurrentUserId ?? 0,
                         $"Added new section: {newSection}, {rateType}, " +
                         $"PerSqm=₱{ratePerSqm:N2}, Flat=₱{flatRate:N2}");
 
-                    MessageBox.Show(
-                        $"Section '{newSection}' added successfully!",
-                        "Success",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
+                    MessageBox.Show($"Section '{newSection}' added successfully!",
+                        "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     dgvRates.DataSource = null;
                     LoadRates();
                 }
                 else
                 {
-                    MessageBox.Show(
-                        result.ErrorMessage ?? "Unknown error.",
-                        "Error",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
+                    MessageBox.Show(result.ErrorMessage ?? "Unknown error.",
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             else
             {
-                // ✅ Editing existing section
                 var confirm = MessageBox.Show(
                     $"Update rate for {selectedSection}?\n\n" +
                     $"Rate Type : {rateType}\n" +
                     $"Rate/Sqm  : ₱{ratePerSqm:N2}\n" +
                     $"Flat Rate : ₱{flatRate:N2}",
-                    "Confirm Update",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question);
+                    "Confirm Update", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
                 if (confirm != DialogResult.Yes) return;
 
-                var result = Database.UpdateRentalRate(
-                    selectedSection, ratePerSqm, flatRate, rateType);
+                var result = Database.UpdateRentalRate(selectedSection, ratePerSqm, flatRate, rateType);
 
                 if (result.Success)
                 {
-                    Database.LogAudit(
-                        "UpdateRate", null,
-                        Session.CurrentUserId ?? 0,
+                    Database.LogAudit("UpdateRate", null, Session.CurrentUserId ?? 0,
                         $"Updated rate for {selectedSection}: " +
                         $"{rateType}, PerSqm=₱{ratePerSqm:N2}, Flat=₱{flatRate:N2}");
 
-                    MessageBox.Show(
-                        "Rental rate updated successfully!",
-                        "Success",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
+                    MessageBox.Show("Rental rate updated successfully!",
+                        "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     dgvRates.DataSource = null;
                     LoadRates();
                 }
                 else
                 {
-                    MessageBox.Show(
-                        result.ErrorMessage ?? "Unknown error.",
-                        "Error",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
+                    MessageBox.Show(result.ErrorMessage ?? "Unknown error.",
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-            }
-        }
-        protected override CreateParams CreateParams
-        {
-            get
-            {
-                const int CS_NOCLOSE = 0x200;
-                CreateParams cp = base.CreateParams;
-                cp.ClassStyle |= CS_NOCLOSE;
-                return cp;
             }
         }
     }

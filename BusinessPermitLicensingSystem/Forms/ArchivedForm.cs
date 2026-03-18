@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 
 namespace BusinessPermitLicensingSystem.Forms
@@ -26,6 +28,13 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== SETUP ===================== //
         private void SetupGrid()
         {
+            // ✅ Enable double buffering
+            typeof(DataGridView)
+                .GetProperty("DoubleBuffered",
+                    System.Reflection.BindingFlags.Instance |
+                    System.Reflection.BindingFlags.NonPublic)!
+                .SetValue(dataGridView1, true);
+
             dataGridView1.ReadOnly = true;
             dataGridView1.AllowUserToAddRows = false;
             dataGridView1.AllowUserToDeleteRows = false;
@@ -33,78 +42,97 @@ namespace BusinessPermitLicensingSystem.Forms
             dataGridView1.MultiSelect = false;
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridView1.RowHeadersVisible = false;
+
+            dataGridView1.DataBindingComplete += (s, e) =>
+            {
+                foreach (DataGridViewColumn col in dataGridView1.Columns)
+                    col.SortMode = DataGridViewColumnSortMode.NotSortable;
+
+                ColorPaymentStatusColumn();
+            };
         }
 
         // ===================== LOAD ===================== //
         private void LoadArchived()
         {
             dataGridView1.DataSource = Database.GetArchivedProfiles();
+            ColorPaymentStatusColumn();
         }
 
         // ===================== RESTORE ===================== //
-        private void btnRestore_Click(object sender, EventArgs e)
+        private void btnRestore_Click_1(object sender, EventArgs e)
         {
-            
+            if (dataGridView1.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Please select a record first.", "No Selection",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var row = dataGridView1.SelectedRows[0];
+            string sin = row.Cells["SIN"].Value?.ToString() ?? "";
+            string name = row.Cells["Full Name"].Value?.ToString() ?? "";
+
+            var confirm = MessageBox.Show(
+                $"Restore record for {name}?",
+                "Confirm Restore",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (confirm != DialogResult.Yes) return;
+
+            var result = Database.RestoreProfiling(sin);
+
+            if (result.Success)
+            {
+                Database.LogAudit("Restore", sin, Session.CurrentUserId ?? 0,
+                    $"Restored profile for {name}.");
+
+                MessageBox.Show("Record restored successfully.", "Restored",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                LoadArchived();
+            }
+            else
+            {
+                MessageBox.Show(result.ErrorMessage, "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // ===================== COLOR CODING ===================== //
+        private void ColorPaymentStatusColumn()
+        {
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                if (row.IsNewRow) continue;
+
+                row.DefaultCellStyle.BackColor = row.Index % 2 == 0
+                    ? Color.White
+                    : Color.AliceBlue;
+
+                var cell = row.Cells["Payment Status"];
+                if (cell?.Value == null) continue;
+
+                switch (cell.Value.ToString())
+                {
+                    case "Paid":
+                        cell.Style.BackColor = Color.LightGreen;
+                        cell.Style.ForeColor = Color.DarkGreen;
+                        break;
+                    case "Unpaid":
+                        cell.Style.BackColor = Color.LightCoral;
+                        cell.Style.ForeColor = Color.DarkRed;
+                        break;
+                }
+            }
         }
 
         // ===================== NAVIGATION ===================== //
         private void btnClose_Click(object sender, EventArgs e)
         {
             new DashboardForm().Show();
-            Close();
-        }
-
-        private void btnRestore_Click_1(object sender, EventArgs e)
-        {
-            {
-                if (dataGridView1.SelectedRows.Count == 0)
-                {
-                    MessageBox.Show(
-                        "Please select a record first.",
-                        "No Selection",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning);
-                    return;
-                }
-
-                var row = dataGridView1.SelectedRows[0];
-                string sin = row.Cells["SIN"].Value?.ToString() ?? "";
-                string name = row.Cells["Full Name"].Value?.ToString() ?? "";
-
-                var confirm = MessageBox.Show(
-                    $"Restore record for {name}?",
-                    "Confirm Restore",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question);
-
-                if (confirm != DialogResult.Yes) return;
-
-                var result = Database.RestoreProfiling(sin);
-
-                if (result.Success)
-                {
-                    Database.LogAudit(
-                        "Restore", sin,
-                        Session.CurrentUserId ?? 0,
-                        $"Restored profile for {name}.");
-
-                    MessageBox.Show(
-                        "Record restored successfully.",
-                        "Restored",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
-
-                    LoadArchived();
-                }
-                else
-                {
-                    MessageBox.Show(
-                        result.ErrorMessage,
-                        "Error",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
-                }
-            }
+            this.Close();
         }
 
         // ===================== WINDOW SETTINGS ===================== //

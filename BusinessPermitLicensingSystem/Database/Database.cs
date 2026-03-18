@@ -5,23 +5,47 @@ using System.Collections.Generic;
 using System.Data;
 using System.Security.Cryptography;
 using System.Text;
-using System.Windows.Forms;
+using System.Configuration;
 
 namespace BusinessPermitLicensingSystem
 {
     internal static class Database
     {
         // ===================== CONNECTION ===================== //
-        private const string ConnectionString =
-            "Server=localhost;Database=Masinloc_BPLS;User Id=sa;Password=Strongpassword1;TrustServerCertificate=True;";
+
+        private static readonly string ConnectionString =
+            ConfigurationManager.ConnectionStrings["BPLS"]?.ConnectionString
+            ?? throw new InvalidOperationException("Connection string 'BPLS' not found in App.config.");
 
         public static string GetConnectionString() => ConnectionString;
 
+        /// <summary>Opens and returns a new SqlConnection. Caller is responsible for disposing.</summary>
+        private static SqlConnection OpenConnection()
+        {
+            var con = new SqlConnection(ConnectionString);
+            con.Open();
+            return con;
+        }
+
+        private static void ExecuteNonQuery(SqlConnection con, string sql)
+        {
+            using var cmd = new SqlCommand(sql, con);
+            cmd.ExecuteNonQuery();
+        }
+
+        private static DataTable FillDataTable(SqlCommand cmd)
+        {
+            using var adapter = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            adapter.Fill(dt);
+            return dt;
+        }
+
         // ===================== INITIALIZE ===================== //
+
         public static void Initialize()
         {
-            using var con = new SqlConnection(ConnectionString);
-            con.Open();
+            using var con = OpenConnection();
 
             ExecuteNonQuery(con, @"
                 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Users' AND xtype='U')
@@ -43,11 +67,11 @@ namespace BusinessPermitLicensingSystem
                     BusinessSection  NVARCHAR(255) NOT NULL,
                     StallNumber      NVARCHAR(100) NOT NULL,
                     StallSize        NVARCHAR(100) NOT NULL,
-                    MonthlyRental    FLOAT         NOT NULL,
+                    MonthlyRental    DECIMAL(18,2) NOT NULL,
                     PaymentStatus    NVARCHAR(50)  NOT NULL DEFAULT 'Unpaid',
                     StartDate        NVARCHAR(50)           DEFAULT '',
-                    Penalty          FLOAT                  DEFAULT 0,
-                    AdditionalCharge FLOAT                  DEFAULT 0,
+                    Penalty          DECIMAL(18,2)          DEFAULT 0,
+                    AdditionalCharge DECIMAL(18,2)          DEFAULT 0,
                     IsArchived       INT                    DEFAULT 0,
                     DatePaid         NVARCHAR(50)           DEFAULT '',
                     UNIQUE(FullName, BusinessName, StallNumber)
@@ -70,8 +94,8 @@ namespace BusinessPermitLicensingSystem
                     Id         INT           IDENTITY(1,1) PRIMARY KEY,
                     SIN        NVARCHAR(100) NOT NULL,
                     ORNumber   NVARCHAR(100) NOT NULL UNIQUE,
-                    AmountPaid FLOAT         NOT NULL,
-                    Penalty    FLOAT         NOT NULL DEFAULT 0,
+                    AmountPaid DECIMAL(18,2) NOT NULL,
+                    Penalty    DECIMAL(18,2) NOT NULL DEFAULT 0,
                     DatePaid   DATETIME      NOT NULL DEFAULT GETDATE(),
                     RecordedBy INT           NOT NULL,
                     FOREIGN KEY (SIN) REFERENCES Profiling(SIN)
@@ -81,8 +105,8 @@ namespace BusinessPermitLicensingSystem
                 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='RentalRates' AND xtype='U')
                 CREATE TABLE RentalRates (
                     Section    NVARCHAR(255) PRIMARY KEY,
-                    RatePerSqm FLOAT         NOT NULL DEFAULT 0,
-                    FlatRate   FLOAT         NOT NULL DEFAULT 0,
+                    RatePerSqm DECIMAL(18,2) NOT NULL DEFAULT 0,
+                    FlatRate   DECIMAL(18,2) NOT NULL DEFAULT 0,
                     RateType   NVARCHAR(50)  NOT NULL DEFAULT 'PerSqm'
                 );");
 
@@ -90,66 +114,53 @@ namespace BusinessPermitLicensingSystem
                 IF NOT EXISTS (SELECT 1 FROM RentalRates)
                 BEGIN
                     INSERT INTO RentalRates (Section, RatePerSqm, FlatRate, RateType) VALUES
-                        ('Pharmacy (Below 100k)',    150,    0, 'PerSqm'),
-                        ('Pharmacy (100k-250k)',     250,    0, 'PerSqm'),
-                        ('Pharmacy (Above 250k)',    350,    0, 'PerSqm'),
-                        ('Masinloc Mall Stalls',     150,    0, 'PerSqm'),
-                        ('Masinloc Mall Food Court',   0, 1200, 'Flat'),
-                        ('Corridor',                  0, 1200, 'Flat'),
-                        ('Public Market Stalls',     210,    0, 'PerSqm'),
-                        ('Carinderia',               210,    0, 'PerSqm'),
-                        ('Fruits and Vegetable',     600,    0, 'PerSqm'),
-                        ('Fish',                     600,    0, 'PerSqm'),
-                        ('Meat',                     600,    0, 'PerSqm'),
-                        ('Burger Area',                0, 1000, 'Flat'),
-                        ('Kakanin Area',               0,  300, 'Flat'),
+                        ('Pharmacy (Below 100k)',     150,    0, 'PerSqm'),
+                        ('Pharmacy (100k-250k)',      250,    0, 'PerSqm'),
+                        ('Pharmacy (Above 250k)',     350,    0, 'PerSqm'),
+                        ('Masinloc Mall Stalls',      150,    0, 'PerSqm'),
+                        ('Masinloc Mall Food Court',    0, 1200, 'Flat'),
+                        ('Corridor',                   0, 1200, 'Flat'),
+                        ('Public Market Stalls',      210,    0, 'PerSqm'),
+                        ('Carinderia',                210,    0, 'PerSqm'),
+                        ('Fruits and Vegetable',      600,    0, 'PerSqm'),
+                        ('Fish',                      600,    0, 'PerSqm'),
+                        ('Meat',                      600,    0, 'PerSqm'),
+                        ('Burger Area',                 0, 1000, 'Flat'),
+                        ('Kakanin Area',                0,  300, 'Flat'),
                         ('Pasalubong Center',           0, 5500, 'Flat')
                 END");
 
             string[] migrations =
             {
-                "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('Profiling') AND name = 'StartDate') ALTER TABLE Profiling ADD StartDate NVARCHAR(50) DEFAULT ''",
-                "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('Profiling') AND name = 'Penalty') ALTER TABLE Profiling ADD Penalty FLOAT DEFAULT 0",
-                "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('Profiling') AND name = 'AdditionalCharge') ALTER TABLE Profiling ADD AdditionalCharge FLOAT DEFAULT 0",
-                "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('Users') AND name = 'Position') ALTER TABLE Users ADD Position NVARCHAR(255) NOT NULL DEFAULT ''",
-                "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('Profiling') AND name = 'IsArchived') ALTER TABLE Profiling ADD IsArchived INT DEFAULT 0",
+                "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('Profiling') AND name = 'StartDate')       ALTER TABLE Profiling ADD StartDate       NVARCHAR(50)  DEFAULT ''",
+                "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('Profiling') AND name = 'Penalty')         ALTER TABLE Profiling ADD Penalty         DECIMAL(18,2) DEFAULT 0",
+                "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('Profiling') AND name = 'AdditionalCharge')ALTER TABLE Profiling ADD AdditionalCharge DECIMAL(18,2) DEFAULT 0",
+                "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('Users')     AND name = 'Position')        ALTER TABLE Users     ADD Position         NVARCHAR(255) NOT NULL DEFAULT ''",
+                "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('Profiling') AND name = 'IsArchived')      ALTER TABLE Profiling ADD IsArchived       INT           DEFAULT 0",
             };
 
             foreach (string sql in migrations)
             {
                 try { ExecuteNonQuery(con, sql); }
-                catch { } // Column already exists — ignore
+                catch (SqlException) { /* Column already exists — safe to ignore */ }
             }
         }
 
-        private static void ExecuteNonQuery(SqlConnection con, string sql)
-        {
-            using var cmd = new SqlCommand(sql, con);
-            cmd.ExecuteNonQuery();
-        }
-
         // ===================== USERS ===================== //
+
         public static string GetFullName(long userId)
         {
-            using var con = new SqlConnection(ConnectionString);
-            con.Open();
-
-            using var cmd = new SqlCommand(
-                "SELECT FullName FROM Users WHERE Id = @id", con);
+            using var con = OpenConnection();
+            using var cmd = new SqlCommand("SELECT FullName FROM Users WHERE Id = @id", con);
             cmd.Parameters.AddWithValue("@id", userId);
-
             return cmd.ExecuteScalar()?.ToString() ?? "Unknown";
         }
 
         public static string GetPosition(long userId)
         {
-            using var con = new SqlConnection(ConnectionString);
-            con.Open();
-
-            using var cmd = new SqlCommand(
-                "SELECT Position FROM Users WHERE Id = @id", con);
+            using var con = OpenConnection();
+            using var cmd = new SqlCommand("SELECT Position FROM Users WHERE Id = @id", con);
             cmd.Parameters.AddWithValue("@id", userId);
-
             return cmd.ExecuteScalar()?.ToString() ?? "";
         }
 
@@ -168,13 +179,10 @@ namespace BusinessPermitLicensingSystem
 
             try
             {
-                using var con = new SqlConnection(ConnectionString);
-                con.Open();
+                using var con = OpenConnection();
 
-                using var cmdCheck = new SqlCommand(
-                    "SELECT 1 FROM Users WHERE Username = @u", con);
+                using var cmdCheck = new SqlCommand("SELECT 1 FROM Users WHERE Username = @u", con);
                 cmdCheck.Parameters.AddWithValue("@u", username);
-
                 if (cmdCheck.ExecuteScalar() != null)
                     return (false, "Username already exists.");
 
@@ -182,9 +190,9 @@ namespace BusinessPermitLicensingSystem
                     INSERT INTO Users (FullName, Username, Position, Password)
                     VALUES (@f, @u, @pos, @p)", con);
 
-                cmd.Parameters.AddWithValue("@f", fullname);
+                cmd.Parameters.AddWithValue("@f", fullname.Trim());
                 cmd.Parameters.AddWithValue("@u", username);
-                cmd.Parameters.AddWithValue("@pos", position);
+                cmd.Parameters.AddWithValue("@pos", position.Trim());
                 cmd.Parameters.AddWithValue("@p", HashPassword(plainPassword));
 
                 cmd.ExecuteNonQuery();
@@ -204,15 +212,12 @@ namespace BusinessPermitLicensingSystem
             string username,
             string plainPassword)
         {
-            if (string.IsNullOrWhiteSpace(username) ||
-                string.IsNullOrWhiteSpace(plainPassword))
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(plainPassword))
                 return (false, "Missing username or password.");
 
             try
             {
-                using var con = new SqlConnection(ConnectionString);
-                con.Open();
-
+                using var con = OpenConnection();
                 using var cmd = new SqlCommand(
                     "SELECT Id, Password FROM Users WHERE Username = @u", con);
                 cmd.Parameters.AddWithValue("@u", username.Trim());
@@ -235,86 +240,53 @@ namespace BusinessPermitLicensingSystem
         }
 
         // ===================== PROFILING ===================== //
+
+        private const string ProfilingSelectColumns = @"
+            SIN                                                 AS [SIN],
+            FullName                                            AS [Full Name],
+            BusinessName                                        AS [Business Name],
+            BusinessSection                                     AS [Business Section],
+            StallNumber                                         AS [Stall Number],
+            StallSize                                           AS [Stall Size],
+            MonthlyRental                                       AS [Monthly Rental],
+            PaymentStatus                                       AS [Payment Status],
+            Penalty                                             AS [Penalty],
+            AdditionalCharge                                    AS [Additional Charge],
+            CASE
+                WHEN ISDATE(StartDate) = 1
+                THEN FORMAT(CONVERT(DATE, StartDate), 'MM/dd/yyyy')
+                ELSE ''
+            END                                                 AS [Date of Occupancy]";
+
         public static DataTable GetAllProfiles()
         {
-            using var con = new SqlConnection(ConnectionString);
-            con.Open();
-
-            using var cmd = new SqlCommand(@"
-                SELECT
-                    SIN                                                 AS [SIN],
-                    FullName                                            AS [Full Name],
-                    BusinessName                                        AS [Business Name],
-                    BusinessSection                                     AS [Business Section],
-                    StallNumber                                         AS [Stall Number],
-                    StallSize                                           AS [Stall Size],
-                    MonthlyRental                                       AS [Monthly Rental],
-                    PaymentStatus                                       AS [Payment Status],
-                    Penalty                                             AS [Penalty],
-                    AdditionalCharge                                    AS [Additional Charge],
-                    CASE
-                        WHEN ISDATE(StartDate) = 1
-                        THEN FORMAT(CONVERT(DATE, StartDate), 'MM/dd/yyyy')
-                        ELSE ''
-                    END                                                 AS [Date of Occupancy]
-                FROM Profiling
-                WHERE IsArchived = 0
+            using var con = OpenConnection();
+            using var cmd = new SqlCommand($@"
+                SELECT {ProfilingSelectColumns}
+                FROM   Profiling
+                WHERE  IsArchived = 0
                 ORDER BY SIN ASC", con);
 
-            using var adapter = new SqlDataAdapter(cmd);
-            var dt = new DataTable();
-            adapter.Fill(dt);
-            return dt;
+            return FillDataTable(cmd);
         }
 
-        // ===================== MONTHLY REPORT ===================== //
-        public static DataTable GetMonthlyReport(
-            int fromMonth, int fromYear,
-            int toMonth, int toYear)
+        public static DataTable GetArchivedProfiles()
         {
-            using var con = new SqlConnection(ConnectionString);
-            con.Open();
+            using var con = OpenConnection();
+            using var cmd = new SqlCommand($@"
+                SELECT {ProfilingSelectColumns}
+                FROM   Profiling
+                WHERE  IsArchived = 1
+                ORDER BY SIN DESC", con);
 
-            const string query = @"
-        SELECT
-            SIN                  AS [SIN],
-            FullName             AS [Full Name],
-            BusinessName         AS [Business Name],
-            BusinessSection      AS [Business Section],
-            MonthlyRental        AS [Monthly Rental],
-            Penalty              AS [Penalty],
-            AdditionalCharge     AS [Additional Charge],
-            PaymentStatus        AS [Payment Status]
-        FROM Profiling
-        WHERE IsArchived = 0
-        AND (
-            (YEAR (StartDate) * 12 + MONTH(StartDate))
-            BETWEEN
-            (@fromYear * 12 + @fromMonth)
-            AND
-            (@toYear * 12 + @toMonth)
-        )
-        ORDER BY PaymentStatus ASC, FullName ASC";
-
-            using var cmd = new SqlCommand(query, con);
-            cmd.Parameters.AddWithValue("@fromMonth", fromMonth);
-            cmd.Parameters.AddWithValue("@fromYear", fromYear);
-            cmd.Parameters.AddWithValue("@toMonth", toMonth);
-            cmd.Parameters.AddWithValue("@toYear", toYear);
-
-            using var adapter = new SqlDataAdapter(cmd);
-            var dt = new DataTable();
-            adapter.Fill(dt);
-            return dt;
+            return FillDataTable(cmd);
         }
 
         public static bool StallNumberExists(string stallNumber, string excludeSIN = "")
         {
             try
             {
-                using var con = new SqlConnection(ConnectionString);
-                con.Open();
-
+                using var con = OpenConnection();
                 using var cmd = new SqlCommand(@"
                     SELECT 1 FROM Profiling
                     WHERE StallNumber = @stall
@@ -336,9 +308,9 @@ namespace BusinessPermitLicensingSystem
             string businessSection,
             string stallNumber,
             string stallSize,
-            double monthlyRental,
+            decimal monthlyRental,
             string startDate,
-            double additionalCharge = 0)
+            decimal additionalCharge = 0)
         {
             if (string.IsNullOrWhiteSpace(fullName) ||
                 string.IsNullOrWhiteSpace(businessName) ||
@@ -349,9 +321,7 @@ namespace BusinessPermitLicensingSystem
 
             try
             {
-                using var con = new SqlConnection(ConnectionString);
-                con.Open();
-
+                using var con = OpenConnection();
                 using var cmd = new SqlCommand(@"
                     INSERT INTO Profiling
                         (SIN, FullName, BusinessName, BusinessSection,
@@ -389,15 +359,13 @@ namespace BusinessPermitLicensingSystem
             string businessSection,
             string stallNumber,
             string stallSize,
-            double monthlyRental,
+            decimal monthlyRental,
             string startDate,
-            double additionalCharge = 0)
+            decimal additionalCharge = 0)
         {
             try
             {
-                using var con = new SqlConnection(ConnectionString);
-                con.Open();
-
+                using var con = OpenConnection();
                 using var cmd = new SqlCommand(@"
                     UPDATE Profiling
                     SET
@@ -434,15 +402,11 @@ namespace BusinessPermitLicensingSystem
         {
             try
             {
-                using var con = new SqlConnection(ConnectionString);
-                con.Open();
-
-                using var cmd = new SqlCommand(
-                    "DELETE FROM Profiling WHERE SIN = @SIN", con);
+                using var con = OpenConnection();
+                using var cmd = new SqlCommand("DELETE FROM Profiling WHERE SIN = @SIN", con);
                 cmd.Parameters.AddWithValue("@SIN", sin);
 
                 int rowsAffected = cmd.ExecuteNonQuery();
-
                 return rowsAffected == 0
                     ? (false, "Record not found.")
                     : (true, null);
@@ -453,11 +417,13 @@ namespace BusinessPermitLicensingSystem
             }
         }
 
-        public static string GenerateUniqueBIN(SqlConnection con)
+        /// <summary>Generates a unique SIN in the format SIN-YYYY-NNNN.</summary>
+        public static string GenerateUniqueSIN()
         {
             var rnd = new Random();
             string sin;
 
+            using var con = OpenConnection();
             do
             {
                 sin = $"SIN-{DateTime.Now:yyyy}-{rnd.Next(1000, 10000)}";
@@ -474,27 +440,21 @@ namespace BusinessPermitLicensingSystem
         }
 
         // ===================== RENTAL RATES ===================== //
+
         public static DataTable GetRentalRates()
         {
-            using var con = new SqlConnection(ConnectionString);
-            con.Open();
-
-            using var cmd = new SqlCommand("SELECT * FROM RentalRates ORDER BY Section", con);
-            using var adapter = new SqlDataAdapter(cmd);
-
-            var dt = new DataTable();
-            adapter.Fill(dt);
-            return dt;
+            using var con = OpenConnection();
+            using var cmd = new SqlCommand(
+                "SELECT Section, RatePerSqm, FlatRate, RateType FROM RentalRates ORDER BY Section", con);
+            return FillDataTable(cmd);
         }
 
-        public static (double RatePerSqm, double FlatRate, string RateType) GetRateBySection(
+        public static (decimal RatePerSqm, decimal FlatRate, string RateType) GetRateBySection(
             string section)
         {
             try
             {
-                using var con = new SqlConnection(ConnectionString);
-                con.Open();
-
+                using var con = OpenConnection();
                 using var cmd = new SqlCommand(@"
                     SELECT RatePerSqm, FlatRate, RateType
                     FROM   RentalRates
@@ -502,12 +462,11 @@ namespace BusinessPermitLicensingSystem
                 cmd.Parameters.AddWithValue("@section", section);
 
                 using var reader = cmd.ExecuteReader();
-
                 if (reader.Read())
                 {
                     return (
-                        Convert.ToDouble(reader["RatePerSqm"]),
-                        Convert.ToDouble(reader["FlatRate"]),
+                        Convert.ToDecimal(reader["RatePerSqm"]),
+                        Convert.ToDecimal(reader["FlatRate"]),
                         reader["RateType"].ToString()!
                     );
                 }
@@ -519,15 +478,13 @@ namespace BusinessPermitLicensingSystem
 
         public static (bool Success, string? ErrorMessage) UpdateRentalRate(
             string section,
-            double ratePerSqm,
-            double flatRate,
+            decimal ratePerSqm,
+            decimal flatRate,
             string rateType)
         {
             try
             {
-                using var con = new SqlConnection(ConnectionString);
-                con.Open();
-
+                using var con = OpenConnection();
                 using var cmd = new SqlCommand(@"
                     UPDATE RentalRates
                     SET
@@ -552,15 +509,13 @@ namespace BusinessPermitLicensingSystem
 
         public static (bool Success, string? ErrorMessage) AddRentalRate(
             string section,
-            double ratePerSqm,
-            double flatRate,
+            decimal ratePerSqm,
+            decimal flatRate,
             string rateType)
         {
             try
             {
-                using var con = new SqlConnection(ConnectionString);
-                con.Open();
-
+                using var con = OpenConnection();
                 using var cmd = new SqlCommand(@"
                     INSERT INTO RentalRates (Section, RatePerSqm, FlatRate, RateType)
                     VALUES (@section, @ratePerSqm, @flatRate, @rateType)", con);
@@ -584,19 +539,18 @@ namespace BusinessPermitLicensingSystem
         }
 
         // ===================== PAYMENT STATUS ===================== //
+
         public static (bool Success, string? ErrorMessage) UpdatePaymentStatus(
             string sin,
             string status,
             string orNumber = "",
-            double amountPaid = 0,
-            double penalty = 0,
+            decimal amountPaid = 0,
+            decimal penalty = 0,
             long recordedBy = 0)
         {
             try
             {
-                using var con = new SqlConnection(ConnectionString);
-                con.Open();
-
+                using var con = OpenConnection();
                 using var cmd = new SqlCommand(@"
                     UPDATE Profiling
                     SET PaymentStatus = @status
@@ -618,18 +572,17 @@ namespace BusinessPermitLicensingSystem
         }
 
         // ===================== PAYMENT HISTORY ===================== //
+
         public static (bool Success, string? ErrorMessage) RecordPayment(
             string sin,
             string orNumber,
-            double amountPaid,
-            double penalty,
+            decimal amountPaid,
+            decimal penalty,
             long recordedBy)
         {
             try
             {
-                using var con = new SqlConnection(ConnectionString);
-                con.Open();
-
+                using var con = OpenConnection();
                 using var cmd = new SqlCommand(@"
                     INSERT INTO PaymentHistory
                         (SIN, ORNumber, AmountPaid, Penalty, DatePaid, RecordedBy)
@@ -654,9 +607,7 @@ namespace BusinessPermitLicensingSystem
 
         public static DataTable GetPaymentHistory(string sin)
         {
-            using var con = new SqlConnection(ConnectionString);
-            con.Open();
-
+            using var con = OpenConnection();
             using var cmd = new SqlCommand(@"
                 SELECT
                     ph.Id                                    AS [#],
@@ -672,26 +623,21 @@ namespace BusinessPermitLicensingSystem
                 ORDER BY ph.DatePaid DESC", con);
 
             cmd.Parameters.AddWithValue("@sin", sin);
-
-            using var adapter = new SqlDataAdapter(cmd);
-            var dt = new DataTable();
-            adapter.Fill(dt);
-            return dt;
+            return FillDataTable(cmd);
         }
 
         // ===================== DASHBOARD STATISTICS ===================== //
+
         public static (int Total, int Paid, int Unpaid) GetPaymentSummary()
         {
-            using var con = new SqlConnection(ConnectionString);
-            con.Open();
-
+            using var con = OpenConnection();
             using var cmd = new SqlCommand(@"
-        SELECT
-            COUNT(*)                                                   AS Total,
-            ISNULL(SUM(CASE WHEN PaymentStatus = 'Paid'   THEN 1 ELSE 0 END), 0) AS Paid,
-            ISNULL(SUM(CASE WHEN PaymentStatus = 'Unpaid' THEN 1 ELSE 0 END), 0) AS Unpaid
-        FROM Profiling
-        WHERE IsArchived = 0", con);
+                SELECT
+                    COUNT(*)                                                              AS Total,
+                    ISNULL(SUM(CASE WHEN PaymentStatus = 'Paid'   THEN 1 ELSE 0 END), 0) AS Paid,
+                    ISNULL(SUM(CASE WHEN PaymentStatus = 'Unpaid' THEN 1 ELSE 0 END), 0) AS Unpaid
+                FROM Profiling
+                WHERE IsArchived = 0", con);
 
             using var reader = cmd.ExecuteReader();
             if (reader.Read())
@@ -705,66 +651,48 @@ namespace BusinessPermitLicensingSystem
             return (0, 0, 0);
         }
 
-        public static (double TotalCollected, double TotalUncollected, double TotalPenalty) GetCollectionSummary()
+        public static (decimal TotalCollected, decimal TotalUncollected, decimal TotalPenalty) GetCollectionSummary()
         {
-            using var con = new SqlConnection(ConnectionString);
-            con.Open();
-
+            using var con = OpenConnection();
             using var cmd = new SqlCommand(@"
-        SELECT
-            ISNULL(SUM(CASE WHEN PaymentStatus = 'Paid'   THEN MonthlyRental ELSE 0 END), 0) AS TotalCollected,
-            ISNULL(SUM(CASE WHEN PaymentStatus = 'Unpaid' THEN MonthlyRental ELSE 0 END), 0) AS TotalUncollected,
-            ISNULL(SUM(CASE WHEN PaymentStatus = 'Unpaid' THEN Penalty       ELSE 0 END), 0) AS TotalPenalty
-        FROM Profiling
-        WHERE IsArchived = 0", con);
+                SELECT
+                    ISNULL(SUM(CASE WHEN PaymentStatus = 'Paid'   THEN MonthlyRental ELSE 0 END), 0) AS TotalCollected,
+                    ISNULL(SUM(CASE WHEN PaymentStatus = 'Unpaid' THEN MonthlyRental ELSE 0 END), 0) AS TotalUncollected,
+                    ISNULL(SUM(CASE WHEN PaymentStatus = 'Unpaid' THEN Penalty       ELSE 0 END), 0) AS TotalPenalty
+                FROM Profiling
+                WHERE IsArchived = 0", con);
 
             using var reader = cmd.ExecuteReader();
             if (reader.Read())
             {
                 return (
-                    Convert.ToDouble(reader["TotalCollected"]),
-                    Convert.ToDouble(reader["TotalUncollected"]),
-                    Convert.ToDouble(reader["TotalPenalty"])
+                    Convert.ToDecimal(reader["TotalCollected"]),
+                    Convert.ToDecimal(reader["TotalUncollected"]),
+                    Convert.ToDecimal(reader["TotalPenalty"])
                 );
             }
             return (0, 0, 0);
         }
 
         // ===================== ARCHIVE ===================== //
+
         public static (bool Success, string? ErrorMessage) ArchiveProfiling(string sin)
-        {
-            try
-            {
-                using var con = new SqlConnection(ConnectionString);
-                con.Open();
-
-                using var cmd = new SqlCommand(@"
-                    UPDATE Profiling
-                    SET IsArchived = 1
-                    WHERE SIN = @sin", con);
-
-                cmd.Parameters.AddWithValue("@sin", sin);
-                cmd.ExecuteNonQuery();
-                return (true, null);
-            }
-            catch (Exception ex)
-            {
-                return (false, ex.Message);
-            }
-        }
+            => SetArchiveStatus(sin, archived: true);
 
         public static (bool Success, string? ErrorMessage) RestoreProfiling(string sin)
+            => SetArchiveStatus(sin, archived: false);
+
+        private static (bool Success, string? ErrorMessage) SetArchiveStatus(string sin, bool archived)
         {
             try
             {
-                using var con = new SqlConnection(ConnectionString);
-                con.Open();
-
+                using var con = OpenConnection();
                 using var cmd = new SqlCommand(@"
                     UPDATE Profiling
-                    SET IsArchived = 0
+                    SET IsArchived = @archived
                     WHERE SIN = @sin", con);
 
+                cmd.Parameters.AddWithValue("@archived", archived ? 1 : 0);
                 cmd.Parameters.AddWithValue("@sin", sin);
                 cmd.ExecuteNonQuery();
                 return (true, null);
@@ -773,43 +701,12 @@ namespace BusinessPermitLicensingSystem
             {
                 return (false, ex.Message);
             }
-        }
-
-        public static DataTable GetArchivedProfiles()
-        {
-            using var con = new SqlConnection(ConnectionString);
-            con.Open();
-
-            using var cmd = new SqlCommand(@"
-                SELECT
-                    SIN                                                 AS [SIN],
-                    FullName                                            AS [Full Name],
-                    BusinessName                                        AS [Business Name],
-                    BusinessSection                                     AS [Business Section],
-                    StallNumber                                         AS [Stall Number],
-                    StallSize                                           AS [Stall Size],
-                    MonthlyRental                                       AS [Monthly Rental],
-                    PaymentStatus                                       AS [Payment Status],
-                    Penalty                                             AS [Penalty],
-                    AdditionalCharge                                    AS [Additional Charge],
-                    CASE
-                        WHEN ISDATE(StartDate) = 1
-                        THEN FORMAT(CONVERT(DATE, StartDate), 'MM/dd/yyyy')
-                        ELSE ''
-                    END                                                 AS [Date of Occupancy]
-                FROM Profiling
-                WHERE IsArchived = 1
-                ORDER BY SIN DESC", con);
-
-            using var adapter = new SqlDataAdapter(cmd);
-            var dt = new DataTable();
-            adapter.Fill(dt);
-            return dt;
         }
 
         // ===================== PENALTY ===================== //
-        public static double CalculatePenalty(
-            double monthlyRental,
+
+        public static decimal CalculatePenalty(
+            decimal monthlyRental,
             string paymentStatus,
             string startDate)
         {
@@ -818,10 +715,10 @@ namespace BusinessPermitLicensingSystem
             if (!DateTime.TryParse(startDate, out DateTime start)) return 0;
 
             DateTime today = DateTime.Today;
-            DateTime firstDueDate = new DateTime(
-                start.Month == 12 ? start.Year + 1 : start.Year,
-                start.Month == 12 ? 1 : start.Month + 1,
-                20);
+
+            int firstDueMonth = start.Month == 12 ? 1 : start.Month + 1;
+            int firstDueYear = start.Month == 12 ? start.Year + 1 : start.Year;
+            DateTime firstDueDate = new DateTime(firstDueYear, firstDueMonth, 20);
 
             if (today <= firstDueDate) return 0;
 
@@ -830,110 +727,85 @@ namespace BusinessPermitLicensingSystem
 
             while (dueDate < today)
             {
-                if (today > dueDate) missedMonths++;
-
-                dueDate = new DateTime(
-                    dueDate.Month == 12 ? dueDate.Year + 1 : dueDate.Year,
-                    dueDate.Month == 12 ? 1 : dueDate.Month + 1,
-                    20);
+                missedMonths++;
+                int nextMonth = dueDate.Month == 12 ? 1 : dueDate.Month + 1;
+                int nextYear = dueDate.Month == 12 ? dueDate.Year + 1 : dueDate.Year;
+                dueDate = new DateTime(nextYear, nextMonth, 20);
             }
 
-            if (missedMonths <= 0) return 0;
-
-            return Math.Round(monthlyRental * 0.25 * missedMonths, 2);
+            return missedMonths <= 0 ? 0 : Math.Round(monthlyRental * 0.25m * missedMonths, 2);
         }
 
-        public static void UpdatePenalty(string sin, double penalty)
+        /// <summary>Updates penalty for a single record. Throws on failure — callers should handle.</summary>
+        public static void UpdatePenalty(string sin, decimal penalty)
         {
-            try
-            {
-                using var con = new SqlConnection(ConnectionString);
-                con.Open();
+            using var con = OpenConnection();
+            using var cmd = new SqlCommand(@"
+                UPDATE Profiling
+                SET Penalty = @penalty
+                WHERE SIN = @sin", con);
 
-                using var cmd = new SqlCommand(@"
-                    UPDATE Profiling
-                    SET Penalty = @penalty
-                    WHERE SIN = @sin", con);
-
-                cmd.Parameters.AddWithValue("@penalty", penalty);
-                cmd.Parameters.AddWithValue("@sin", sin);
-                cmd.ExecuteNonQuery();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Penalty update error: {ex.Message}");
-            }
+            cmd.Parameters.AddWithValue("@penalty", penalty);
+            cmd.Parameters.AddWithValue("@sin", sin);
+            cmd.ExecuteNonQuery();
         }
 
+        /// <summary>Calculates and applies penalties to all unpaid profiles.</summary>
         public static (int Updated, int Skipped) ApplyPenaltiesToAll()
         {
             int updated = 0;
             int skipped = 0;
 
-            try
+            using var con = OpenConnection();
+            using var cmd = new SqlCommand(@"
+                SELECT SIN, MonthlyRental, PaymentStatus, StartDate
+                FROM   Profiling
+                WHERE  PaymentStatus != 'Paid'
+                AND    IsArchived     = 0", con);
+
+            using var reader = cmd.ExecuteReader();
+            var records = new List<(string Sin, decimal Rental, string Status, string StartDate)>();
+
+            while (reader.Read())
             {
-                using var con = new SqlConnection(ConnectionString);
-                con.Open();
-
-                using var cmd = new SqlCommand(@"
-                    SELECT SIN, MonthlyRental, PaymentStatus, StartDate
-                    FROM   Profiling
-                    WHERE  PaymentStatus != 'Paid'", con);
-
-                using var reader = cmd.ExecuteReader();
-                var records = new List<(string sin, double rental, string status, string startDate)>();
-
-                while (reader.Read())
-                {
-                    records.Add((
-                        reader["SIN"].ToString()!,
-                        Convert.ToDouble(reader["MonthlyRental"]),
-                        reader["PaymentStatus"].ToString()!,
-                        reader["StartDate"].ToString()!
-                    ));
-                }
-
-                reader.Close();
-
-                foreach (var record in records)
-                {
-                    double penalty = CalculatePenalty(record.rental, record.status, record.startDate);
-
-                    if (penalty > 0) { UpdatePenalty(record.sin, penalty); updated++; }
-                    else skipped++;
-                }
+                records.Add((
+                    reader["SIN"].ToString()!,
+                    Convert.ToDecimal(reader["MonthlyRental"]),
+                    reader["PaymentStatus"].ToString()!,
+                    reader["StartDate"].ToString()!
+                ));
             }
-            catch (Exception ex)
+
+            reader.Close();
+
+            foreach (var (sin, rental, status, startDate) in records)
             {
-                MessageBox.Show($"Error applying penalties: {ex.Message}");
+                decimal penalty = CalculatePenalty(rental, status, startDate);
+
+                if (penalty > 0) { UpdatePenalty(sin, penalty); updated++; }
+                else skipped++;
             }
 
             return (updated, skipped);
         }
 
         // ===================== AUDIT TRAIL ===================== //
+
         public static DataTable GetAuditTrail()
         {
-            using var con = new SqlConnection(ConnectionString);
-            con.Open();
-
+            using var con = OpenConnection();
             using var cmd = new SqlCommand(@"
                 SELECT Id, Action, SIN, UserId, Timestamp, Details
                 FROM   AuditTrail
                 WHERE  Action NOT IN ('Login', 'Logout')
                 ORDER BY Timestamp DESC", con);
 
-            using var adapter = new SqlDataAdapter(cmd);
-            var dt = new DataTable();
-            adapter.Fill(dt);
-            return dt;
+            return FillDataTable(cmd);
         }
 
         public static DataTable GetUserAuditTrail()
         {
-            using var con = new SqlConnection(ConnectionString);
-            con.Open();
-
+            using var con = OpenConnection();
             using var cmd = new SqlCommand(@"
                 SELECT
                     a.Id,
@@ -946,10 +818,7 @@ namespace BusinessPermitLicensingSystem
                 WHERE  a.Action IN ('Login', 'Logout')
                 ORDER BY a.Timestamp DESC", con);
 
-            using var adapter = new SqlDataAdapter(cmd);
-            var dt = new DataTable();
-            adapter.Fill(dt);
-            return dt;
+            return FillDataTable(cmd);
         }
 
         public static void LogAudit(
@@ -960,33 +829,71 @@ namespace BusinessPermitLicensingSystem
         {
             try
             {
-                using var con = new SqlConnection(ConnectionString);
-                con.Open();
-
+                using var con = OpenConnection();
                 using var cmd = new SqlCommand(@"
                     INSERT INTO AuditTrail (Action, SIN, UserId, Timestamp, Details)
                     VALUES (@action, @sin, @user, @timestamp, @details)", con);
 
                 cmd.Parameters.AddWithValue("@action", action);
-                cmd.Parameters.AddWithValue("@sin", sin ?? "");
+                cmd.Parameters.AddWithValue("@sin", (object?)sin ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@user", userId);
                 cmd.Parameters.AddWithValue("@timestamp", DateTime.Now);
-                cmd.Parameters.AddWithValue("@details", details ?? "");
+                cmd.Parameters.AddWithValue("@details", (object?)details ?? DBNull.Value);
 
                 cmd.ExecuteNonQuery();
             }
-            catch { } // Fail silently
+            catch { /* Audit failures must never crash the application */ }
+        }
+
+        // ===================== MONTHLY REPORT ===================== //
+
+        /// <summary>Returns profiles whose StartDate falls within a specific month/year.</summary>
+        public static DataTable GetMonthlyReport(int month, int year)
+            => GetMonthlyReport(month, year, month, year);
+
+        /// <summary>Returns profiles whose StartDate falls within a date range (month/year granularity).</summary>
+        public static DataTable GetMonthlyReport(
+            int fromMonth, int fromYear,
+            int toMonth, int toYear)
+        {
+            using var con = OpenConnection();
+            using var cmd = new SqlCommand(@"
+                SELECT
+                    SIN              AS [SIN],
+                    FullName         AS [Full Name],
+                    BusinessName     AS [Business Name],
+                    BusinessSection  AS [Business Section],
+                    MonthlyRental    AS [Monthly Rental],
+                    Penalty          AS [Penalty],
+                    AdditionalCharge AS [Additional Charge],
+                    PaymentStatus    AS [Payment Status]
+                FROM Profiling
+                WHERE IsArchived = 0
+                AND (YEAR(StartDate) * 12 + MONTH(StartDate))
+                    BETWEEN (@fromYear * 12 + @fromMonth)
+                    AND     (@toYear   * 12 + @toMonth)
+                ORDER BY PaymentStatus ASC, FullName ASC", con);
+
+            cmd.Parameters.AddWithValue("@fromMonth", fromMonth);
+            cmd.Parameters.AddWithValue("@fromYear", fromYear);
+            cmd.Parameters.AddWithValue("@toMonth", toMonth);
+            cmd.Parameters.AddWithValue("@toYear", toYear);
+
+            return FillDataTable(cmd);
         }
 
         // ===================== BILLING REPORT ===================== //
+
         public static List<BillingReportModel> GetProfiles()
         {
             var list = new List<BillingReportModel>();
 
-            using var con = new SqlConnection(ConnectionString);
-            con.Open();
+            using var con = OpenConnection();
+            using var cmd = new SqlCommand(@"
+                SELECT SIN, FullName, BusinessName, BusinessSection,
+                       StallNumber, StallSize, MonthlyRental
+                FROM   Profiling", con);
 
-            using var cmd = new SqlCommand("SELECT * FROM Profiling", con);
             using var reader = cmd.ExecuteReader();
 
             while (reader.Read())
@@ -999,7 +906,7 @@ namespace BusinessPermitLicensingSystem
                     BusinessSection = reader["BusinessSection"].ToString()!,
                     StallNumber = reader["StallNumber"].ToString()!,
                     StallSize = reader["StallSize"].ToString()!,
-                    MonthlyRental = Convert.ToDouble(reader["MonthlyRental"])
+                    MonthlyRental = Convert.ToDecimal(reader["MonthlyRental"])
                 });
             }
 
@@ -1007,108 +914,67 @@ namespace BusinessPermitLicensingSystem
         }
 
         // ===================== OR NUMBER ===================== //
+
         public static bool ORNumberExists(string orNumber)
         {
             try
             {
-                using var con = new SqlConnection(ConnectionString);
-                con.Open();
-
+                using var con = OpenConnection();
                 using var cmd = new SqlCommand(
                     "SELECT 1 FROM PaymentHistory WHERE ORNumber = @or", con);
                 cmd.Parameters.AddWithValue("@or", orNumber.Trim());
-
                 return cmd.ExecuteScalar() != null;
             }
             catch { return false; }
         }
 
-        // ===================== MONTHLY REPORT ===================== //
-        public static DataTable GetMonthlyReport(int month, int year)
-        {
-            using var con = new SqlConnection(ConnectionString);
-            con.Open();
+        // ===================== IMPORT ===================== //
 
-            using var cmd = new SqlCommand(@"
-                SELECT
-                    SIN              AS [SIN],
-                    FullName         AS [Full Name],
-                    BusinessName     AS [Business Name],
-                    BusinessSection  AS [Business Section],
-                    MonthlyRental    AS [Monthly Rental],
-                    Penalty          AS [Penalty],
-                    AdditionalCharge AS [Additional Charge],
-                    PaymentStatus    AS [Payment Status]
-                FROM Profiling
-                WHERE IsArchived        = 0
-                AND   ISDATE(StartDate) = 1
-                AND   MONTH(CONVERT(DATE, StartDate)) = @month
-                AND   YEAR(CONVERT(DATE, StartDate))  = @year
-                ORDER BY PaymentStatus ASC, FullName ASC", con);
-
-            cmd.Parameters.AddWithValue("@month", month);
-            cmd.Parameters.AddWithValue("@year", year);
-
-            using var adapter = new SqlDataAdapter(cmd);
-            var dt = new DataTable();
-            adapter.Fill(dt);
-            return dt;
-        }
-
-        // IMPORTING //
-
-        // ===================== GET ALL SINS ===================== //
         public static HashSet<string> GetAllSINs()
         {
-            using var con = new SqlConnection(ConnectionString);
-            con.Open();
+            using var con = OpenConnection();
             using var cmd = new SqlCommand("SELECT SIN FROM Profiling", con);
             using var reader = cmd.ExecuteReader();
-            var sins = new HashSet<string>();
+
+            var sins = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             while (reader.Read())
                 sins.Add(reader.GetString(0));
             return sins;
         }
 
-        // ===================== GET ALL STALL NUMBERS ===================== //
         public static HashSet<string> GetAllStallNumbers()
         {
-            using var con = new SqlConnection(ConnectionString);
-            con.Open();
+            using var con = OpenConnection();
             using var cmd = new SqlCommand(
                 "SELECT StallNumber FROM Profiling WHERE IsArchived = 0", con);
             using var reader = cmd.ExecuteReader();
-            var stallNumbers = new HashSet<string>();
+
+            var stallNumbers = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             while (reader.Read())
                 stallNumbers.Add(reader.GetString(0));
             return stallNumbers;
         }
 
-        // ===================== IMPORT PROFILING ===================== //
         public static (bool Success, string? ErrorMessage) ImportProfiling(DataTable dt)
         {
             try
             {
-                using var con = new SqlConnection(ConnectionString);
-                con.Open();
+                using var con = OpenConnection();
+                using var bulk = new SqlBulkCopy(con)
+                {
+                    DestinationTableName = "Profiling",
+                    BulkCopyTimeout = 600
+                };
 
-                using var bulk = new SqlBulkCopy(con);
-                bulk.DestinationTableName = "Profiling";
-                bulk.BulkCopyTimeout = 600;
+                string[] columns =
+                {
+                    "SIN", "FullName", "BusinessName", "BusinessSection",
+                    "StallNumber", "StallSize", "MonthlyRental", "PaymentStatus",
+                    "StartDate", "Penalty", "AdditionalCharge", "IsArchived"
+                };
 
-                // ✅ Explicit column mappings
-                bulk.ColumnMappings.Add("SIN", "SIN");
-                bulk.ColumnMappings.Add("FullName", "FullName");
-                bulk.ColumnMappings.Add("BusinessName", "BusinessName");
-                bulk.ColumnMappings.Add("BusinessSection", "BusinessSection");
-                bulk.ColumnMappings.Add("StallNumber", "StallNumber");
-                bulk.ColumnMappings.Add("StallSize", "StallSize");
-                bulk.ColumnMappings.Add("MonthlyRental", "MonthlyRental");
-                bulk.ColumnMappings.Add("PaymentStatus", "PaymentStatus");
-                bulk.ColumnMappings.Add("StartDate", "StartDate");
-                bulk.ColumnMappings.Add("Penalty", "Penalty");
-                bulk.ColumnMappings.Add("AdditionalCharge", "AdditionalCharge");
-                bulk.ColumnMappings.Add("IsArchived", "IsArchived");
+                foreach (string col in columns)
+                    bulk.ColumnMappings.Add(col, col);
 
                 bulk.WriteToServer(dt);
                 return (true, null);
@@ -1119,7 +985,11 @@ namespace BusinessPermitLicensingSystem
             }
         }
 
-        // ===================== PASSWORD HASHING — DO NOT MODIFY ===================== //
+        // ===================== PASSWORD HASHING ===================== //
+        // ⚠️ SHA-256 without salt is vulnerable to rainbow table attacks.
+        // Consider upgrading to PBKDF2 for new deployments.
+        // Do not change unless you also migrate all existing hashed passwords.
+
         private static string HashPassword(string password)
         {
             using var sha256 = SHA256.Create();

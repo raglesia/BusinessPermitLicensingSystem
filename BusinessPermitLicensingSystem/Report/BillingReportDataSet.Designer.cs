@@ -301,7 +301,7 @@ namespace BusinessPermitLicensingSystem.Report {
             
             private global::System.Data.DataColumn columnPenalty;
             
-            private global::System.Data.DataColumn columnAddtionalCharge;
+            private global::System.Data.DataColumn columnAdditionalCharge;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
@@ -420,9 +420,9 @@ namespace BusinessPermitLicensingSystem.Report {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
-            public global::System.Data.DataColumn AddtionalChargeColumn {
+            public global::System.Data.DataColumn AdditionalChargeColumn {
                 get {
-                    return this.columnAddtionalCharge;
+                    return this.columnAdditionalCharge;
                 }
             }
             
@@ -463,7 +463,7 @@ namespace BusinessPermitLicensingSystem.Report {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
-            public BillingTableRow AddBillingTableRow(string SIN, string FullName, string BusinessName, string BusinessSection, string StallNumber, string StallSize, double MonthlyRental, string PaymentStatus, string StartDate, string Penalty, string AddtionalCharge) {
+            public BillingTableRow AddBillingTableRow(string SIN, string FullName, string BusinessName, string BusinessSection, string StallNumber, string StallSize, double MonthlyRental, string PaymentStatus, string StartDate, string Penalty, string AdditionalCharge) {
                 BillingTableRow rowBillingTableRow = ((BillingTableRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         SIN,
@@ -476,7 +476,7 @@ namespace BusinessPermitLicensingSystem.Report {
                         PaymentStatus,
                         StartDate,
                         Penalty,
-                        AddtionalCharge};
+                        AdditionalCharge};
                 rowBillingTableRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowBillingTableRow);
                 return rowBillingTableRow;
@@ -509,7 +509,7 @@ namespace BusinessPermitLicensingSystem.Report {
                 this.columnPaymentStatus = base.Columns["PaymentStatus"];
                 this.columnStartDate = base.Columns["StartDate"];
                 this.columnPenalty = base.Columns["Penalty"];
-                this.columnAddtionalCharge = base.Columns["AddtionalCharge"];
+                this.columnAdditionalCharge = base.Columns["AdditionalCharge"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -535,8 +535,8 @@ namespace BusinessPermitLicensingSystem.Report {
                 base.Columns.Add(this.columnStartDate);
                 this.columnPenalty = new global::System.Data.DataColumn("Penalty", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnPenalty);
-                this.columnAddtionalCharge = new global::System.Data.DataColumn("AddtionalCharge", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnAddtionalCharge);
+                this.columnAdditionalCharge = new global::System.Data.DataColumn("AdditionalCharge", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnAdditionalCharge);
                 this.columnSIN.AllowDBNull = false;
             }
             
@@ -835,17 +835,17 @@ namespace BusinessPermitLicensingSystem.Report {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
-            public string AddtionalCharge {
+            public string AdditionalCharge {
                 get {
                     try {
-                        return ((string)(this[this.tableBillingTable.AddtionalChargeColumn]));
+                        return ((string)(this[this.tableBillingTable.AdditionalChargeColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'AddtionalCharge\' in table \'BillingTable\' is DBNull.", e);
+                        throw new global::System.Data.StrongTypingException("The value for column \'AdditionalCharge\' in table \'BillingTable\' is DBNull.", e);
                     }
                 }
                 set {
-                    this[this.tableBillingTable.AddtionalChargeColumn] = value;
+                    this[this.tableBillingTable.AdditionalChargeColumn] = value;
                 }
             }
             
@@ -959,14 +959,14 @@ namespace BusinessPermitLicensingSystem.Report {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
-            public bool IsAddtionalChargeNull() {
-                return this.IsNull(this.tableBillingTable.AddtionalChargeColumn);
+            public bool IsAdditionalChargeNull() {
+                return this.IsNull(this.tableBillingTable.AdditionalChargeColumn);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "18.0.0.0")]
-            public void SetAddtionalChargeNull() {
-                this[this.tableBillingTable.AddtionalChargeColumn] = global::System.Convert.DBNull;
+            public void SetAdditionalChargeNull() {
+                this[this.tableBillingTable.AdditionalChargeColumn] = global::System.Convert.DBNull;
             }
         }
         

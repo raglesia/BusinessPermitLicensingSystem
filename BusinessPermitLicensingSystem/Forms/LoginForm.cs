@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 
 namespace BusinessPermitLicensingSystem.Forms
@@ -28,12 +30,11 @@ namespace BusinessPermitLicensingSystem.Forms
             string username = txtUser.Text.Trim();
             string password = txtPass.Text;
 
-            if (string.IsNullOrWhiteSpace(username) ||
-                string.IsNullOrWhiteSpace(password))
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
             {
                 MessageBox.Show(
                     "Please enter both username and password.",
-                    "Masinloc BPLS - Log In",
+                    "Log In",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
                 return;
@@ -43,25 +44,24 @@ namespace BusinessPermitLicensingSystem.Forms
 
             if (isValid)
             {
-                Session.CurrentUserId = long.Parse(messageOrUserId!);
-                Session.CurrentUsername = username;
-                Session.CurrentFullName = Database.GetFullName(Session.CurrentUserId.Value);
-                Session.CurrentPosition = Database.GetPosition(Session.CurrentUserId.Value);
+                long userId = long.Parse(messageOrUserId!);
 
-                Database.LogAudit(
-                    "Login",
-                    null,
-                    Session.CurrentUserId ?? 0,
+                Session.CurrentUserId = userId;
+                Session.CurrentUsername = username;
+                Session.CurrentFullName = Database.GetFullName(userId);
+                Session.CurrentPosition = Database.GetPosition(userId);
+
+                Database.LogAudit("Login", null, userId,
                     $"User '{username}' logged in.");
 
                 new DashboardForm().Show();
-                Hide();
+                this.Hide();
             }
             else
             {
                 MessageBox.Show(
-                    messageOrUserId ?? "Invalid Username or Password.",
-                    "Masinloc BPLS - Log In",
+                    messageOrUserId ?? "Invalid username or password.",
+                    "Log In",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
 
@@ -74,7 +74,7 @@ namespace BusinessPermitLicensingSystem.Forms
         private void btnCreate_Click_1(object sender, EventArgs e)
         {
             new AccountCreationForm().Show();
-            Hide();
+            this.Hide();
         }
 
         // ===================== EXIT ===================== //
@@ -86,11 +86,13 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== SECURITY ===================== //
         private void SetupSecurity()
         {
-            txtUser.KeyDown += (s, e) => { if (e.Control && e.KeyCode == Keys.V) e.SuppressKeyPress = true; };
-            txtPass.KeyDown += (s, e) => { if (e.Control && e.KeyCode == Keys.V) e.SuppressKeyPress = true; };
+            TextBox[] protectedFields = { txtUser, txtPass };
 
-            txtUser.ContextMenuStrip = new ContextMenuStrip();
-            txtPass.ContextMenuStrip = new ContextMenuStrip();
+            foreach (var field in protectedFields)
+            {
+                field.KeyDown += (s, e) => { if (e.Control && e.KeyCode == Keys.V) e.SuppressKeyPress = true; };
+                field.ContextMenuStrip = new ContextMenuStrip();
+            }
         }
 
         // ===================== WINDOW SETTINGS ===================== //

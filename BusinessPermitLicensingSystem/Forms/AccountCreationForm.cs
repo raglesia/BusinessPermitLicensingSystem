@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Forms;
 
 namespace BusinessPermitLicensingSystem.Forms
@@ -34,9 +35,11 @@ namespace BusinessPermitLicensingSystem.Forms
             {
                 MessageBox.Show(
                     "Passwords do not match. Please try again.",
-                    "Masinloc BPLS - Account Creation",
+                    "Account Creation",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
+                txtconpass.Clear();
+                txtconpass.Focus();
                 return;
             }
 
@@ -46,20 +49,19 @@ namespace BusinessPermitLicensingSystem.Forms
             {
                 MessageBox.Show(
                     "Account created successfully!",
-                    "Masinloc BPLS - Account Creation",
+                    "Account Creation",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
 
                 ClearFields();
-
                 new LogInForm().Show();
-                Close();
+                this.Close();
             }
             else
             {
                 MessageBox.Show(
                     result.ErrorMessage,
-                    "Masinloc BPLS - Account Creation",
+                    "Account Creation",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
@@ -79,7 +81,7 @@ namespace BusinessPermitLicensingSystem.Forms
         private void btnCancel_Click(object sender, EventArgs e)
         {
             new LogInForm().Show();
-            Hide();
+            this.Hide();
         }
 
         // ===================== WINDOW SETTINGS ===================== //
