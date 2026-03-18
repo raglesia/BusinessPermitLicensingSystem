@@ -18,8 +18,6 @@ namespace BusinessPermitLicensingSystem
             ?? throw new InvalidOperationException("Connection string 'BPLS' not found in App.config.");
 
         public static string GetConnectionString() => ConnectionString;
-
-        /// <summary>Opens and returns a new SqlConnection. Caller is responsible for disposing.</summary>
         private static SqlConnection OpenConnection()
         {
             var con = new SqlConnection(ConnectionString);
@@ -142,7 +140,7 @@ namespace BusinessPermitLicensingSystem
             foreach (string sql in migrations)
             {
                 try { ExecuteNonQuery(con, sql); }
-                catch (SqlException) { /* Column already exists — safe to ignore */ }
+                catch (SqlException) {}
             }
         }
 
@@ -735,8 +733,6 @@ namespace BusinessPermitLicensingSystem
 
             return missedMonths <= 0 ? 0 : Math.Round(monthlyRental * 0.25m * missedMonths, 2);
         }
-
-        /// <summary>Updates penalty for a single record. Throws on failure — callers should handle.</summary>
         public static void UpdatePenalty(string sin, decimal penalty)
         {
             using var con = OpenConnection();
@@ -749,8 +745,6 @@ namespace BusinessPermitLicensingSystem
             cmd.Parameters.AddWithValue("@sin", sin);
             cmd.ExecuteNonQuery();
         }
-
-        /// <summary>Calculates and applies penalties to all unpaid profiles.</summary>
         public static (int Updated, int Skipped) ApplyPenaltiesToAll()
         {
             int updated = 0;
@@ -842,16 +836,14 @@ namespace BusinessPermitLicensingSystem
 
                 cmd.ExecuteNonQuery();
             }
-            catch { /* Audit failures must never crash the application */ }
+            catch {}
         }
 
         // ===================== MONTHLY REPORT ===================== //
 
-        /// <summary>Returns profiles whose StartDate falls within a specific month/year.</summary>
         public static DataTable GetMonthlyReport(int month, int year)
             => GetMonthlyReport(month, year, month, year);
 
-        /// <summary>Returns profiles whose StartDate falls within a date range (month/year granularity).</summary>
         public static DataTable GetMonthlyReport(
             int fromMonth, int fromYear,
             int toMonth, int toYear)
@@ -986,9 +978,6 @@ namespace BusinessPermitLicensingSystem
         }
 
         // ===================== PASSWORD HASHING ===================== //
-        // ⚠️ SHA-256 without salt is vulnerable to rainbow table attacks.
-        // Consider upgrading to PBKDF2 for new deployments.
-        // Do not change unless you also migrate all existing hashed passwords.
 
         private static string HashPassword(string password)
         {
