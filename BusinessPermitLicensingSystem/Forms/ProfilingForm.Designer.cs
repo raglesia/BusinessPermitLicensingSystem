@@ -66,7 +66,7 @@
             // 
             // txtFName
             // 
-            txtFName.BackColor = SystemColors.GradientActiveCaption;
+            txtFName.BackColor = Color.White;
             txtFName.Location = new Point(238, 75);
             txtFName.Name = "txtFName";
             txtFName.Size = new Size(410, 34);
@@ -74,7 +74,7 @@
             // 
             // txtBName
             // 
-            txtBName.BackColor = SystemColors.GradientActiveCaption;
+            txtBName.BackColor = Color.White;
             txtBName.Location = new Point(238, 118);
             txtBName.Name = "txtBName";
             txtBName.Size = new Size(410, 34);
@@ -82,7 +82,7 @@
             // 
             // txtSNumber
             // 
-            txtSNumber.BackColor = SystemColors.GradientActiveCaption;
+            txtSNumber.BackColor = Color.White;
             txtSNumber.Location = new Point(238, 70);
             txtSNumber.Name = "txtSNumber";
             txtSNumber.Size = new Size(410, 34);
@@ -90,7 +90,7 @@
             // 
             // txtSSize
             // 
-            txtSSize.BackColor = SystemColors.GradientActiveCaption;
+            txtSSize.BackColor = Color.White;
             txtSSize.Location = new Point(238, 107);
             txtSSize.Name = "txtSSize";
             txtSSize.Size = new Size(410, 34);
@@ -243,7 +243,7 @@
             // 
             // dtpStartDate
             // 
-            dtpStartDate.CalendarMonthBackground = SystemColors.GradientActiveCaption;
+            dtpStartDate.CalendarMonthBackground = Color.White;
             dtpStartDate.Location = new Point(238, 147);
             dtpStartDate.Name = "dtpStartDate";
             dtpStartDate.Size = new Size(410, 34);
@@ -260,7 +260,7 @@
             // 
             // cmbBSection
             // 
-            cmbBSection.BackColor = SystemColors.GradientActiveCaption;
+            cmbBSection.BackColor = Color.White;
             cmbBSection.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbBSection.FormattingEnabled = true;
             cmbBSection.Location = new Point(238, 28);
@@ -283,7 +283,7 @@
             // 
             // txtAdditionalCharge
             // 
-            txtAdditionalCharge.BackColor = SystemColors.GradientActiveCaption;
+            txtAdditionalCharge.BackColor = Color.White;
             txtAdditionalCharge.Location = new Point(238, 37);
             txtAdditionalCharge.Name = "txtAdditionalCharge";
             txtAdditionalCharge.Size = new Size(410, 34);

@@ -763,13 +763,12 @@ namespace BusinessPermitLicensingSystem
                 var (imported, skipped) = await Task.Run(() =>
                 {
                     var existingSINs = Database.GetAllSINs();
-                    var existingStallNumbers = Database.GetAllStallNumbers();
 
                     List<ImportRow> rows = ext == ".csv"
                         ? ReadCsv(filePath)
                         : ReadExcel(filePath);
 
-                    return ImportToDatabase(rows, existingSINs, existingStallNumbers);
+                    return ImportToDatabase(rows, existingSINs);
                 });
 
                 LoadProfiles();
@@ -867,8 +866,7 @@ namespace BusinessPermitLicensingSystem
 
         private (int Imported, List<string> Skipped) ImportToDatabase(
             List<ImportRow> rows,
-            HashSet<string> existingSINs,
-            HashSet<string> existingStallNumbers)
+            HashSet<string> existingSINs)
         {
             int imported = 0;
             var skipped = new List<string>();
@@ -901,12 +899,6 @@ namespace BusinessPermitLicensingSystem
                     continue;
                 }
 
-                if (existingStallNumbers.Contains(row.StallNumber))
-                {
-                    skipped.Add($"SIN {row.SIN} — duplicate Stall Number {row.StallNumber}");
-                    continue;
-                }
-
                 decimal.TryParse(row.MonthlyRental, out decimal monthlyRental);
                 decimal.TryParse(row.Penalty, out decimal penalty);
                 decimal.TryParse(row.AdditionalCharge, out decimal additionalCharge);
@@ -917,7 +909,6 @@ namespace BusinessPermitLicensingSystem
                     row.StartDate, penalty, additionalCharge, 0);
 
                 existingSINs.Add(row.SIN);
-                existingStallNumbers.Add(row.StallNumber);
                 imported++;
             }
 

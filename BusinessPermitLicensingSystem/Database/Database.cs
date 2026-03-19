@@ -280,25 +280,6 @@ namespace BusinessPermitLicensingSystem
             return FillDataTable(cmd);
         }
 
-        public static bool StallNumberExists(string stallNumber, string excludeSIN = "")
-        {
-            try
-            {
-                using var con = OpenConnection();
-                using var cmd = new SqlCommand(@"
-                    SELECT 1 FROM Profiling
-                    WHERE StallNumber = @stall
-                    AND   IsArchived  = 0
-                    AND   SIN        != @excludeSIN", con);
-
-                cmd.Parameters.AddWithValue("@stall", stallNumber.Trim());
-                cmd.Parameters.AddWithValue("@excludeSIN", excludeSIN);
-
-                return cmd.ExecuteScalar() != null;
-            }
-            catch { return false; }
-        }
-
         public static (bool Success, string? ErrorMessage) AddProfiling(
             string sin,
             string fullName,
@@ -427,23 +408,30 @@ namespace BusinessPermitLicensingSystem
 
         public static string GenerateUniqueSIN()
         {
-            var rnd = new Random();
-            string sin;
+            string year = DateTime.Now.Year.ToString();
+            int nextNumber = 1;
 
-            using var con = OpenConnection();
-            do
+            using (SqlConnection conn = new SqlConnection(ConnectionString))
             {
-                sin = $"SIN-{DateTime.Now:yyyy}-{rnd.Next(1000, 10000)}";
+                conn.Open();
 
-                using var cmdCheck = new SqlCommand(
-                    "SELECT 1 FROM Profiling WHERE SIN = @sin", con);
-                cmdCheck.Parameters.AddWithValue("@sin", sin);
+                string query = @"
+            SELECT MAX(CAST(RIGHT(SIN, 4) AS INT))
+            FROM Profiling
+            WHERE SIN LIKE @pattern";
 
-                if (cmdCheck.ExecuteScalar() == null) break;
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@pattern", $"SIN-{year}-%");
+
+                    var result = cmd.ExecuteScalar();
+
+                    if (result != DBNull.Value && result != null)
+                        nextNumber = Convert.ToInt32(result) + 1;
+                }
             }
-            while (true);
 
-            return sin;
+            return $"SIN-{year}-{nextNumber:D4}";
         }
 
         // ===================== RENTAL RATES ===================== //
@@ -943,19 +931,7 @@ namespace BusinessPermitLicensingSystem
             return sins;
         }
 
-        public static HashSet<string> GetAllStallNumbers()
-        {
-            using var con = OpenConnection();
-            using var cmd = new SqlCommand(
-                "SELECT StallNumber FROM Profiling WHERE IsArchived = 0", con);
-            using var reader = cmd.ExecuteReader();
-
-            var stallNumbers = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            while (reader.Read())
-                stallNumbers.Add(reader.GetString(0));
-            return stallNumbers;
-        }
-
+  
         public static (bool Success, string? ErrorMessage) ImportProfiling(DataTable dt)
         {
             try

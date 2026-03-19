@@ -289,19 +289,6 @@ namespace BusinessPermitLicensingSystem.Forms
                 }
             }
 
-            string excludeSIN = isEditMode ? currentSIN : "";
-            if (Database.StallNumberExists(stallNumber, excludeSIN))
-            {
-                MessageBox.Show(
-                    $"Stall Number '{stallNumber}' is already assigned to another stall owner.\n\n" +
-                    "Please enter a different Stall Number.",
-                    "Duplicate Stall Number",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-                txtSNumber.Focus();
-                return;
-            }
-
             if (!decimal.TryParse(txtMRental.Text, out decimal monthlyRental))
             {
                 MessageBox.Show("Monthly Rental must be a valid number.");
