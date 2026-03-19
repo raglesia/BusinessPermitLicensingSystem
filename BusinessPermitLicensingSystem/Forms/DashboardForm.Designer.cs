@@ -149,7 +149,7 @@
             lblPenaltyNotice.AutoSize = true;
             lblPenaltyNotice.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblPenaltyNotice.ForeColor = Color.Red;
-            lblPenaltyNotice.Location = new Point(0, 293);
+            lblPenaltyNotice.Location = new Point(3, 293);
             lblPenaltyNotice.Name = "lblPenaltyNotice";
             lblPenaltyNotice.Size = new Size(144, 28);
             lblPenaltyNotice.TabIndex = 7;

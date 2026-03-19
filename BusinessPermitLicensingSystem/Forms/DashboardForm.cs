@@ -42,6 +42,7 @@ namespace BusinessPermitLicensingSystem.Forms
 
         private void button3_Click(object sender, EventArgs e)
         {
+            
             new RentalRatesForm().ShowDialog();
         }
 
@@ -68,6 +69,12 @@ namespace BusinessPermitLicensingSystem.Forms
 
         private void button5_Click(object sender, EventArgs e)
         {
+            if (Session.CurrentFullName != "Jeason S. Barnachia")
+            {
+                MessageBox.Show("Contact Administrator to access Audit Logs.", "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            else
             new AuditTrail().Show();
             this.Hide();
         }

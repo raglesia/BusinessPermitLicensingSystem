@@ -66,7 +66,6 @@ namespace BusinessPermitLicensingSystem.Forms
             chkAdditional.CheckedChanged += (s, e) => UpdateTotalAmountDue();
 
             txtFName.KeyPress += (s, e) => InputValidator.AllowOnlyLetters(e, allowDot: true);
-            txtBName.KeyPress += (s, e) => InputValidator.AllowLettersDigitsDotCommaSpace(e);
             txtSSize.KeyPress += (s, e) => InputValidator.AllowDecimalNumbers(e, txtSSize);
             txtSNumber.KeyPress += (s, e) => InputValidator.AllowDigitsAndComma(e);
             txtAdditionalCharge.KeyPress += (s, e) => InputValidator.AllowDecimalNumbers(e, txtAdditionalCharge);

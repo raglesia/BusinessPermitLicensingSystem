@@ -409,13 +409,22 @@ namespace BusinessPermitLicensingSystem
                     ? (false, "Record not found.")
                     : (true, null);
             }
-            catch (Exception ex)
+            catch (SqlException ex)
             {
-                return (false, $"Database error: {ex.Message}");
+                if (ex.Number == 547)
+                {
+                    return (false,
+                        "This stall owner has existing payment records. Please archive the record instead.");
+                }
+
+                return (false, "Database error occurred.");
+            }
+            catch (Exception)
+            {
+                return (false, "Unexpected error occurred.");
             }
         }
 
-        /// <summary>Generates a unique SIN in the format SIN-YYYY-NNNN.</summary>
         public static string GenerateUniqueSIN()
         {
             var rnd = new Random();
@@ -624,7 +633,7 @@ namespace BusinessPermitLicensingSystem
             return FillDataTable(cmd);
         }
 
-        // ===================== DASHBOARD STATISTICS ===================== //
+        // ===================== STATISTICS ===================== //
 
         public static (int Total, int Paid, int Unpaid) GetPaymentSummary()
         {

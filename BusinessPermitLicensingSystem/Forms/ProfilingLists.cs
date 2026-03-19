@@ -225,7 +225,7 @@ namespace BusinessPermitLicensingSystem
                     Convert([Stall Number], 'System.String')   LIKE '%{search}%' OR
                     Convert([Stall Size], 'System.String')     LIKE '%{search}%' OR
                     Convert([Monthly Rental], 'System.String') LIKE '%{search}%' OR
-                    [Payment Status]                           = '{search}'       OR
+                    [Payment Status]                           = '{search}'      OR
                     Convert([Penalty], 'System.String')        LIKE '%{search}%' OR
                     [Date of Occupancy]                        LIKE '%{search}%'";
 
