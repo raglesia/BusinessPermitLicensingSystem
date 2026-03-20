@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -28,7 +29,6 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== SETUP ===================== //
         private void SetupGrid()
         {
-            // ✅ Enable double buffering
             typeof(DataGridView)
                 .GetProperty("DoubleBuffered",
                     System.Reflection.BindingFlags.Instance |
@@ -57,6 +57,36 @@ namespace BusinessPermitLicensingSystem.Forms
         {
             dataGridView1.DataSource = Database.GetArchivedProfiles();
             ColorPaymentStatusColumn();
+        }
+
+        // ===================== PAYMENT HISTORY ===================== //
+        private void btnPaymentHistory_Click(object sender, EventArgs e)
+        {
+            if (dataGridView1.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Please select a record first.", "No Selection",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var row = dataGridView1.SelectedRows[0];
+            string sin = row.Cells["SIN"].Value?.ToString() ?? "";
+            string fullName = row.Cells["Full Name"].Value?.ToString() ?? "";
+            string businessName = row.Cells["Business Name"].Value?.ToString() ?? "";
+
+            DataTable history = Database.GetPaymentHistory(sin);
+
+            if (history.Rows.Count == 0)
+            {
+                MessageBox.Show(
+                    $"No payment history found for {businessName}.",
+                    "No Records",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            new PaymentHistoryForm(sin, fullName, businessName, history).ShowDialog();
         }
 
         // ===================== RESTORE ===================== //

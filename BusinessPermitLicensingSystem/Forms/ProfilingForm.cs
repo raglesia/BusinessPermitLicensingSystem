@@ -29,9 +29,6 @@ namespace BusinessPermitLicensingSystem.Forms
         public ProfilingForm()
         {
             InitializeComponent();
-
-            this.Size = new Size(692, 735);
-            this.StartPosition = FormStartPosition.CenterScreen;
         }
 
         // ===================== FORM LOAD ===================== //
@@ -185,6 +182,7 @@ namespace BusinessPermitLicensingSystem.Forms
                 txtAdditionalCharge.Text = "0.00";
             }
 
+            // ✅ Single block, no duplicate
             if (!string.IsNullOrWhiteSpace(_editStartDate) &&
                 DateTime.TryParse(_editStartDate, out DateTime parsedDate))
                 dtpStartDate.Value = parsedDate;
@@ -303,7 +301,7 @@ namespace BusinessPermitLicensingSystem.Forms
 
             if (isEditMode && paymentStatus == "Paid")
             {
-                penalty = Database.CalculatePenalty(monthlyRental, paymentStatus, startDate);
+                penalty = Database.CalculatePenalty(monthlyRental, "Unpaid", startDate);
 
                 var dialog = new ORNumberDialog();
                 if (dialog.ShowDialog() != DialogResult.OK)
@@ -475,11 +473,13 @@ namespace BusinessPermitLicensingSystem.Forms
             decimal penalty = isEditMode
                 ? Database.CalculatePenalty(
                     rental,
-                    cmbPaymentStatus.SelectedItem?.ToString() ?? "Unpaid",
+                    "Unpaid",
                     dtpStartDate.Value.ToString("yyyy-MM-dd"))
                 : 0;
 
             decimal total = rental + penalty + (chkAdditional.Checked ? additional : 0);
+
+            txtPenalty.Text = penalty.ToString("N2");
             lblTotalDue.Text = total.ToString("C2", new CultureInfo("en-PH"));
         }
     }

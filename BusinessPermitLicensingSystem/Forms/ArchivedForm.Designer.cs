@@ -35,6 +35,7 @@
             tableLayoutPanel1 = new TableLayoutPanel();
             panel1 = new Panel();
             lblUsername = new Label();
+            btnPaymentHistory = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             tableLayoutPanel1.SuspendLayout();
             panel1.SuspendLayout();
@@ -57,9 +58,9 @@
             btnRestore.ImageAlign = ContentAlignment.MiddleLeft;
             btnRestore.Location = new Point(0, 527);
             btnRestore.Name = "btnRestore";
-            btnRestore.Size = new Size(149, 67);
+            btnRestore.Size = new Size(214, 67);
             btnRestore.TabIndex = 1;
-            btnRestore.Text = "          Restore";
+            btnRestore.Text = "          Restore Record";
             btnRestore.UseVisualStyleBackColor = false;
             btnRestore.Click += btnRestore_Click_1;
             // 
@@ -69,7 +70,7 @@
             btnClose.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnClose.Image = Properties.Resources.icons8_back_64;
             btnClose.ImageAlign = ContentAlignment.MiddleLeft;
-            btnClose.Location = new Point(155, 527);
+            btnClose.Location = new Point(1421, 524);
             btnClose.Name = "btnClose";
             btnClose.Size = new Size(146, 67);
             btnClose.TabIndex = 2;
@@ -94,7 +95,7 @@
             // 
             panel1.Controls.Add(lblUsername);
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 593);
+            panel1.Location = new Point(0, 606);
             panel1.Name = "panel1";
             panel1.Size = new Size(1567, 31);
             panel1.TabIndex = 4;
@@ -110,12 +111,26 @@
             lblUsername.TabIndex = 0;
             lblUsername.Text = "Username";
             // 
+            // btnPaymentHistory
+            // 
+            btnPaymentHistory.BackColor = SystemColors.GradientActiveCaption;
+            btnPaymentHistory.Image = Properties.Resources.icons8_payment_history_64;
+            btnPaymentHistory.ImageAlign = ContentAlignment.MiddleLeft;
+            btnPaymentHistory.Location = new Point(220, 527);
+            btnPaymentHistory.Name = "btnPaymentHistory";
+            btnPaymentHistory.Size = new Size(223, 67);
+            btnPaymentHistory.TabIndex = 5;
+            btnPaymentHistory.Text = "           Payment History";
+            btnPaymentHistory.UseVisualStyleBackColor = false;
+            btnPaymentHistory.Click += btnPaymentHistory_Click;
+            // 
             // ArchivedForm
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.GradientActiveCaption;
-            ClientSize = new Size(1567, 624);
+            ClientSize = new Size(1567, 637);
+            Controls.Add(btnPaymentHistory);
             Controls.Add(panel1);
             Controls.Add(tableLayoutPanel1);
             Controls.Add(btnClose);
@@ -144,5 +159,6 @@
         private TableLayoutPanel tableLayoutPanel1;
         private Panel panel1;
         private Label lblUsername;
+        private Button btnPaymentHistory;
     }
 }

@@ -10,6 +10,8 @@ namespace BusinessPermitLicensingSystem.Forms
 {
     public partial class PaymentHistoryForm : Form
     {
+        private void InitializeComponent() { }
+
         // ===================== FIELDS ===================== //
         private DataGridView dgvHistory;
         private Label lblTitle;
@@ -18,16 +20,16 @@ namespace BusinessPermitLicensingSystem.Forms
         private static readonly CultureInfo PhCulture = new CultureInfo("en-PH");
 
         // ===================== CONSTRUCTOR ===================== //
-        public PaymentHistoryForm(string sin, string businessName, DataTable history)
+        public PaymentHistoryForm(string sin, string fullName, string businessName, DataTable history)
         {
-            SetupUI(sin, businessName, history);
+            SetupUI(sin, fullName, businessName, history);
         }
 
         // ===================== UI SETUP ===================== //
-        private void SetupUI(string sin, string businessName, DataTable history)
+        private void SetupUI(string sin, string fullName, string businessName, DataTable history)
         {
             SetupForm();
-            SetupLabels(sin, businessName);
+            SetupLabels(sin, fullName, businessName);
             SetupGrid(history);
             SetupSummary(history);
             SetupButtons();
@@ -36,7 +38,7 @@ namespace BusinessPermitLicensingSystem.Forms
         private void SetupForm()
         {
             Text = "Masinloc - BPLS";
-            Size = new Size(1619, 610);
+            Size = new Size(1650, 610);
             StartPosition = FormStartPosition.CenterParent;
             BackColor = Color.White;
             MinimizeBox = false;
@@ -47,7 +49,7 @@ namespace BusinessPermitLicensingSystem.Forms
                 Application.StartupPath, "Resources", "MasinlocLogoIcon.ico"));
         }
 
-        private void SetupLabels(string sin, string businessName)
+        private void SetupLabels(string sin, string fullName, string businessName)
         {
             lblTitle = new Label
             {
@@ -58,25 +60,23 @@ namespace BusinessPermitLicensingSystem.Forms
             };
             Controls.Add(lblTitle);
 
-            var lblSIN = new Label
+            Controls.Add(new Label
             {
-                Text = sin,
+                Text = $"{fullName}  |  {sin}",
                 Font = new Font("Segoe UI", 9),
                 ForeColor = Color.Gray,
                 Location = new Point(15, 45),
                 AutoSize = true
-            };
-            Controls.Add(lblSIN);
+            });
         }
 
         private void SetupGrid(DataTable history)
         {
+            // Grid: starts at y=70, height=380 → ends at y=450
             dgvHistory = new DataGridView
             {
-                Location = new Point(15, 75),
+                Location = new Point(15, 70),
                 Size = new Size(1580, 430),
-                Anchor = AnchorStyles.Top | AnchorStyles.Left |
-                                        AnchorStyles.Right | AnchorStyles.Bottom,
                 DataSource = history,
                 ReadOnly = true,
                 AllowUserToAddRows = false,
@@ -102,12 +102,15 @@ namespace BusinessPermitLicensingSystem.Forms
                 if (dgvHistory.Columns["#"] != null)
                     dgvHistory.Columns["#"].Visible = false;
 
-                foreach (string col in new[] { "Amount Paid", "Penalty", "Total Paid" })
+                foreach (string col in new[] { "Monthly Rental", "Penalty", "Amount Paid" })
                 {
                     if (dgvHistory.Columns[col] == null) continue;
                     dgvHistory.Columns[col].DefaultCellStyle.Format = "C2";
                     dgvHistory.Columns[col].DefaultCellStyle.FormatProvider = PhCulture;
                 }
+
+                foreach (DataGridViewColumn col in dgvHistory.Columns)
+                    col.SortMode = DataGridViewColumnSortMode.NotSortable;
             };
 
             Controls.Add(dgvHistory);
@@ -115,22 +118,22 @@ namespace BusinessPermitLicensingSystem.Forms
 
         private void SetupSummary(DataTable history)
         {
-            double totalPaid = 0;
-            double totalPenalty = 0;
+            decimal totalAmountPaid = 0;
+            decimal totalPenalty = 0;
 
             foreach (DataRow row in history.Rows)
             {
-                totalPaid += Convert.ToDouble(row["Amount Paid"]);
-                totalPenalty += Convert.ToDouble(row["Penalty"]);
+                totalAmountPaid += Convert.ToDecimal(row["Amount Paid"]);
+                totalPenalty += Convert.ToDecimal(row["Penalty"]);
             }
 
             lblSummary = new Label
             {
                 Text = $"Total Payments: {history.Rows.Count}     " +
-                       $"Total Amount Paid: {totalPaid.ToString("C2", PhCulture)}     " +
-                       $"Total Penalty: {totalPenalty.ToString("C2", PhCulture)}",
+                           $"Total Amount Paid: {totalAmountPaid.ToString("C2", PhCulture)}     " +
+                           $"Total Penalty: {totalPenalty.ToString("C2", PhCulture)}",
                 Font = new Font("Segoe UI", 9, FontStyle.Bold),
-                Location = new Point(15, 520),
+                Location = new Point(10, 515),
                 AutoSize = true
             };
             Controls.Add(lblSummary);
@@ -138,10 +141,11 @@ namespace BusinessPermitLicensingSystem.Forms
 
         private void SetupButtons()
         {
+            // Close button: y=458 (aligned with summary)
             var btnClose = new Button
             {
                 Text = "Close",
-                Location = new Point(1509, 515),
+                Location = new Point(1540, 510),
                 Size = new Size(85, 32),
                 BackColor = Color.IndianRed,
                 ForeColor = Color.White,
@@ -150,10 +154,8 @@ namespace BusinessPermitLicensingSystem.Forms
                 Cursor = Cursors.Hand
             };
             btnClose.FlatAppearance.BorderSize = 0;
-            btnClose.Click += (s, e) => Close();
+            btnClose.Click += (s, e) => this.Close();
             Controls.Add(btnClose);
         }
-
-        private void InitializeComponent() { }
     }
 }

@@ -411,25 +411,18 @@ namespace BusinessPermitLicensingSystem
             string year = DateTime.Now.Year.ToString();
             int nextNumber = 1;
 
-            using (SqlConnection conn = new SqlConnection(ConnectionString))
-            {
-                conn.Open();
+            using var con = OpenConnection();
+            using var cmd = new SqlCommand(@"
+        SELECT MAX(CAST(RIGHT(SIN, 4) AS INT))
+        FROM   Profiling
+        WHERE  SIN LIKE @pattern", con);
 
-                string query = @"
-            SELECT MAX(CAST(RIGHT(SIN, 4) AS INT))
-            FROM Profiling
-            WHERE SIN LIKE @pattern";
+            cmd.Parameters.AddWithValue("@pattern", $"SIN-{year}-%");
 
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@pattern", $"SIN-{year}-%");
+            var result = cmd.ExecuteScalar();
 
-                    var result = cmd.ExecuteScalar();
-
-                    if (result != DBNull.Value && result != null)
-                        nextNumber = Convert.ToInt32(result) + 1;
-                }
-            }
+            if (result != DBNull.Value && result != null)
+                nextNumber = Convert.ToInt32(result) + 1;
 
             return $"SIN-{year}-{nextNumber:D4}";
         }
@@ -537,19 +530,21 @@ namespace BusinessPermitLicensingSystem
 
         public static (bool Success, string? ErrorMessage) UpdatePaymentStatus(
             string sin,
-            string status,
-            string orNumber = "",
-            decimal amountPaid = 0,
-            decimal penalty = 0,
-            long recordedBy = 0)
+    string status,
+    string orNumber = "",
+    decimal amountPaid = 0,
+    decimal penalty = 0,
+    long recordedBy = 0)
         {
             try
             {
                 using var con = OpenConnection();
                 using var cmd = new SqlCommand(@"
-                    UPDATE Profiling
-                    SET PaymentStatus = @status
-                    WHERE SIN = @sin", con);
+            UPDATE Profiling
+            SET
+                PaymentStatus = @status,
+                Penalty       = CASE WHEN @status = 'Paid' THEN 0 ELSE Penalty END
+            WHERE SIN = @sin", con);
 
                 cmd.Parameters.AddWithValue("@status", status);
                 cmd.Parameters.AddWithValue("@sin", sin);
@@ -605,11 +600,10 @@ namespace BusinessPermitLicensingSystem
             using var con = OpenConnection();
             using var cmd = new SqlCommand(@"
                 SELECT
-                    ph.Id                                    AS [#],
                     ph.ORNumber                              AS [OR Number],
-                    ph.AmountPaid                            AS [Amount Paid],
+                    ph.AmountPaid - ph.Penalty               AS [Monthly Rental],
                     ph.Penalty                               AS [Penalty],
-                    (ph.AmountPaid + ph.Penalty)             AS [Total Paid],
+                    ph.AmountPaid                            AS [Amount Paid],
                     FORMAT(ph.DatePaid, 'MM/dd/yyyy HH:mm') AS [Date Paid],
                     u.FullName                               AS [Recorded By]
                 FROM PaymentHistory ph

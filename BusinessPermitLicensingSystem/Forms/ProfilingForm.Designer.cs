@@ -55,6 +55,8 @@
             groupBox1 = new GroupBox();
             groupBox2 = new GroupBox();
             groupBox3 = new GroupBox();
+            txtPenalty = new TextBox();
+            label11 = new Label();
             lblTotalDue = new Label();
             label10 = new Label();
             panel1 = new Panel();
@@ -75,7 +77,7 @@
             // txtBName
             // 
             txtBName.BackColor = Color.White;
-            txtBName.Location = new Point(238, 118);
+            txtBName.Location = new Point(238, 112);
             txtBName.Name = "txtBName";
             txtBName.Size = new Size(410, 34);
             txtBName.TabIndex = 2;
@@ -83,7 +85,7 @@
             // txtSNumber
             // 
             txtSNumber.BackColor = Color.White;
-            txtSNumber.Location = new Point(238, 70);
+            txtSNumber.Location = new Point(236, 67);
             txtSNumber.Name = "txtSNumber";
             txtSNumber.Size = new Size(410, 34);
             txtSNumber.TabIndex = 4;
@@ -91,7 +93,7 @@
             // txtSSize
             // 
             txtSSize.BackColor = Color.White;
-            txtSSize.Location = new Point(238, 107);
+            txtSSize.Location = new Point(236, 104);
             txtSSize.Name = "txtSSize";
             txtSSize.Size = new Size(410, 34);
             txtSSize.TabIndex = 5;
@@ -99,6 +101,7 @@
             // txtMRental
             // 
             txtMRental.BackColor = Color.White;
+            txtMRental.Enabled = false;
             txtMRental.Location = new Point(238, 74);
             txtMRental.Name = "txtMRental";
             txtMRental.Size = new Size(410, 34);
@@ -119,7 +122,7 @@
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label2.Location = new Point(6, 112);
+            label2.Location = new Point(5, 112);
             label2.Name = "label2";
             label2.Size = new Size(162, 28);
             label2.TabIndex = 8;
@@ -129,7 +132,7 @@
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label3.Location = new Point(6, 39);
+            label3.Location = new Point(6, 36);
             label3.Name = "label3";
             label3.Size = new Size(169, 28);
             label3.TabIndex = 9;
@@ -139,7 +142,7 @@
             // 
             label4.AutoSize = true;
             label4.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            label4.Location = new Point(6, 76);
+            label4.Location = new Point(5, 73);
             label4.Name = "label4";
             label4.Size = new Size(142, 28);
             label4.TabIndex = 10;
@@ -149,7 +152,7 @@
             // 
             label5.AutoSize = true;
             label5.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            label5.Location = new Point(6, 113);
+            label5.Location = new Point(6, 110);
             label5.Name = "label5";
             label5.Size = new Size(102, 28);
             label5.TabIndex = 11;
@@ -168,6 +171,7 @@
             // txtBIN
             // 
             txtBIN.BackColor = Color.White;
+            txtBIN.Enabled = false;
             txtBIN.Location = new Point(238, 38);
             txtBIN.Name = "txtBIN";
             txtBIN.Size = new Size(410, 34);
@@ -177,7 +181,7 @@
             // 
             label7.AutoSize = true;
             label7.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label7.Location = new Point(6, 37);
+            label7.Location = new Point(6, 38);
             label7.Name = "label7";
             label7.Size = new Size(55, 28);
             label7.TabIndex = 14;
@@ -189,7 +193,7 @@
             btnSave.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnSave.Image = Properties.Resources.icons8_save_64;
             btnSave.ImageAlign = ContentAlignment.MiddleLeft;
-            btnSave.Location = new Point(97, 574);
+            btnSave.Location = new Point(112, 607);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(202, 64);
             btnSave.TabIndex = 10;
@@ -203,7 +207,7 @@
             button1.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             button1.Image = Properties.Resources.icons8_back_64;
             button1.ImageAlign = ContentAlignment.MiddleLeft;
-            button1.Location = new Point(372, 574);
+            button1.Location = new Point(367, 607);
             button1.Name = "button1";
             button1.Size = new Size(202, 64);
             button1.TabIndex = 11;
@@ -225,7 +229,7 @@
             // 
             label8.AutoSize = true;
             label8.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            label8.Location = new Point(6, 119);
+            label8.Location = new Point(6, 151);
             label8.Name = "label8";
             label8.Size = new Size(157, 28);
             label8.TabIndex = 19;
@@ -236,7 +240,7 @@
             cmbPaymentStatus.BackColor = SystemColors.GradientActiveCaption;
             cmbPaymentStatus.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbPaymentStatus.FormattingEnabled = true;
-            cmbPaymentStatus.Location = new Point(238, 111);
+            cmbPaymentStatus.Location = new Point(238, 148);
             cmbPaymentStatus.Name = "cmbPaymentStatus";
             cmbPaymentStatus.Size = new Size(410, 36);
             cmbPaymentStatus.TabIndex = 9;
@@ -244,7 +248,7 @@
             // dtpStartDate
             // 
             dtpStartDate.CalendarMonthBackground = Color.White;
-            dtpStartDate.Location = new Point(238, 147);
+            dtpStartDate.Location = new Point(236, 144);
             dtpStartDate.Name = "dtpStartDate";
             dtpStartDate.Size = new Size(410, 34);
             dtpStartDate.TabIndex = 6;
@@ -252,9 +256,10 @@
             // label9
             // 
             label9.AutoSize = true;
-            label9.Location = new Point(6, 152);
+            label9.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label9.Location = new Point(6, 150);
             label9.Name = "label9";
-            label9.Size = new Size(203, 28);
+            label9.Size = new Size(194, 28);
             label9.TabIndex = 22;
             label9.Text = "Date of Occupancy: ";
             // 
@@ -263,7 +268,7 @@
             cmbBSection.BackColor = Color.White;
             cmbBSection.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbBSection.FormattingEnabled = true;
-            cmbBSection.Location = new Point(238, 28);
+            cmbBSection.Location = new Point(236, 28);
             cmbBSection.Name = "cmbBSection";
             cmbBSection.Size = new Size(410, 36);
             cmbBSection.TabIndex = 3;
@@ -318,13 +323,15 @@
             groupBox2.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             groupBox2.Location = new Point(12, 162);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(654, 190);
+            groupBox2.Size = new Size(654, 204);
             groupBox2.TabIndex = 28;
             groupBox2.TabStop = false;
             groupBox2.Text = "STALL INFORMATION";
             // 
             // groupBox3
             // 
+            groupBox3.Controls.Add(txtPenalty);
+            groupBox3.Controls.Add(label11);
             groupBox3.Controls.Add(lblTotalDue);
             groupBox3.Controls.Add(label10);
             groupBox3.Controls.Add(txtAdditionalCharge);
@@ -336,16 +343,35 @@
             groupBox3.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             groupBox3.Location = new Point(12, 358);
             groupBox3.Name = "groupBox3";
-            groupBox3.Size = new Size(654, 194);
+            groupBox3.Size = new Size(654, 243);
             groupBox3.TabIndex = 29;
             groupBox3.TabStop = false;
             groupBox3.Text = "RENTAL INFORMATION";
+            // 
+            // txtPenalty
+            // 
+            txtPenalty.BackColor = Color.White;
+            txtPenalty.Enabled = false;
+            txtPenalty.Location = new Point(238, 111);
+            txtPenalty.Name = "txtPenalty";
+            txtPenalty.Size = new Size(410, 34);
+            txtPenalty.TabIndex = 28;
+            // 
+            // label11
+            // 
+            label11.AutoSize = true;
+            label11.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label11.Location = new Point(6, 114);
+            label11.Name = "label11";
+            label11.Size = new Size(83, 28);
+            label11.TabIndex = 27;
+            label11.Text = "Penalty:";
             // 
             // lblTotalDue
             // 
             lblTotalDue.AutoSize = true;
             lblTotalDue.ForeColor = Color.DarkRed;
-            lblTotalDue.Location = new Point(238, 158);
+            lblTotalDue.Location = new Point(236, 198);
             lblTotalDue.Name = "lblTotalDue";
             lblTotalDue.Size = new Size(66, 28);
             lblTotalDue.TabIndex = 26;
@@ -355,7 +381,7 @@
             // 
             label10.AutoSize = true;
             label10.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label10.Location = new Point(6, 158);
+            label10.Location = new Point(6, 198);
             label10.Name = "label10";
             label10.Size = new Size(183, 28);
             label10.TabIndex = 25;
@@ -365,7 +391,7 @@
             // 
             panel1.Controls.Add(lblUsername);
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 644);
+            panel1.Location = new Point(0, 677);
             panel1.Name = "panel1";
             panel1.Size = new Size(670, 35);
             panel1.TabIndex = 30;
@@ -375,7 +401,7 @@
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.GradientActiveCaption;
-            ClientSize = new Size(670, 679);
+            ClientSize = new Size(670, 712);
             Controls.Add(panel1);
             Controls.Add(groupBox3);
             Controls.Add(groupBox2);
@@ -431,5 +457,7 @@
         private Panel panel1;
         private Label lblTotalDue;
         private Label label10;
+        private Label label11;
+        private TextBox txtPenalty;
     }
 }

@@ -52,7 +52,7 @@ namespace BusinessPermitLicensingSystem
             dataGridView1.AllowUserToDeleteRows = false;
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView1.MultiSelect = true;
-            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
             dataGridView1.RowHeadersVisible = false;
 
             // ✅ Add checkbox column before data binding
@@ -395,6 +395,7 @@ namespace BusinessPermitLicensingSystem
 
             var row = dataGridView1.SelectedRows[0];
             string sin = row.Cells["SIN"].Value?.ToString() ?? "";
+            string fullName = row.Cells["Full Name"].Value?.ToString() ?? "";
             string businessName = row.Cells["Business Name"].Value?.ToString() ?? "";
 
             DataTable history = Database.GetPaymentHistory(sin);
@@ -406,7 +407,10 @@ namespace BusinessPermitLicensingSystem
                 return;
             }
 
-            new PaymentHistoryForm(sin, businessName, history).ShowDialog();
+            new PaymentHistoryForm(sin, fullName, businessName, history).ShowDialog();
+
+            LoadProfiles();
+            HighlightRecord(sin);
         }
 
         // ===================== EXPORT TO EXCEL ===================== //
