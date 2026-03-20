@@ -527,14 +527,13 @@ namespace BusinessPermitLicensingSystem
         }
 
         // ===================== PAYMENT STATUS ===================== //
-
         public static (bool Success, string? ErrorMessage) UpdatePaymentStatus(
             string sin,
-    string status,
-    string orNumber = "",
-    decimal amountPaid = 0,
-    decimal penalty = 0,
-    long recordedBy = 0)
+            string status,
+            string orNumber = "",
+            decimal amountPaid = 0,
+            decimal penalty = 0,
+            long recordedBy = 0)
         {
             try
             {
@@ -774,6 +773,21 @@ namespace BusinessPermitLicensingSystem
             return (updated, skipped);
         }
 
+
+        // RESET MONTHLY PAYMENT //
+        public static int ResetMonthlyPaymentStatus()
+        {
+            if (DateTime.Today.Day != 1) return 0;
+
+            using var con = OpenConnection();
+            using var cmd = new SqlCommand(@"
+        UPDATE Profiling
+        SET    PaymentStatus = 'Unpaid'
+        WHERE  PaymentStatus = 'Paid'
+        AND    IsArchived     = 0", con);
+
+            return cmd.ExecuteNonQuery();
+        }
         // ===================== AUDIT TRAIL ===================== //
 
         public static DataTable GetAuditTrail()

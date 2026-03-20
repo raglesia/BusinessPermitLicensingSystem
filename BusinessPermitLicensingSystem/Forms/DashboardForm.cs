@@ -98,6 +98,7 @@ namespace BusinessPermitLicensingSystem.Forms
         {
             try
             {
+                int reset = Database.ResetMonthlyPaymentStatus();
                 var (updated, _) = Database.ApplyPenaltiesToAll();
 
                 if (updated > 0)
@@ -108,7 +109,9 @@ namespace BusinessPermitLicensingSystem.Forms
                 else
                 {
                     lblPenaltyNotice.ForeColor = Color.SeaGreen;
-                    lblPenaltyNotice.Text = "✅ No penalty charges at this time.";
+                    lblPenaltyNotice.Text = reset > 0
+                        ? $"✅ New billing cycle started. {reset} record(s) reset to Unpaid."
+                        : "✅ No penalty charges at this time.";
                 }
 
                 lblPenaltyNotice.Visible = true;
