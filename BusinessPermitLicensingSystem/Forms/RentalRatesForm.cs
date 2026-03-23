@@ -327,6 +327,11 @@ namespace BusinessPermitLicensingSystem.Forms
                     dgvRates.Columns["FlatRate"].HeaderText = "Flat Rate (₱)";
                 if (dgvRates.Columns["RateType"] != null)
                     dgvRates.Columns["RateType"].HeaderText = "Type";
+
+                // ✅ Stretch last column to fill remaining space — removes horizontal scrollbar
+                if (dgvRates.Columns.Count > 0)
+                    dgvRates.Columns[dgvRates.Columns.Count - 1]
+                        .AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             };
         }
 

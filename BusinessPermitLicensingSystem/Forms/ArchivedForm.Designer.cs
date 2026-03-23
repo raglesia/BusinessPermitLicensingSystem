@@ -29,26 +29,17 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ArchivedForm));
-            dataGridView1 = new DataGridView();
             btnRestore = new Button();
             btnClose = new Button();
-            tableLayoutPanel1 = new TableLayoutPanel();
             panel1 = new Panel();
             lblUsername = new Label();
             btnPaymentHistory = new Button();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
-            tableLayoutPanel1.SuspendLayout();
+            dataGridView1 = new DataGridView();
+            panel2 = new Panel();
             panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            panel2.SuspendLayout();
             SuspendLayout();
-            // 
-            // dataGridView1
-            // 
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(3, 3);
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.RowHeadersWidth = 62;
-            dataGridView1.Size = new Size(1561, 515);
-            dataGridView1.TabIndex = 0;
             // 
             // btnRestore
             // 
@@ -56,7 +47,7 @@
             btnRestore.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnRestore.Image = Properties.Resources.icons8_restore_page_64;
             btnRestore.ImageAlign = ContentAlignment.MiddleLeft;
-            btnRestore.Location = new Point(0, 527);
+            btnRestore.Location = new Point(0, 12);
             btnRestore.Name = "btnRestore";
             btnRestore.Size = new Size(214, 67);
             btnRestore.TabIndex = 1;
@@ -70,26 +61,13 @@
             btnClose.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnClose.Image = Properties.Resources.icons8_back_64;
             btnClose.ImageAlign = ContentAlignment.MiddleLeft;
-            btnClose.Location = new Point(1421, 524);
+            btnClose.Location = new Point(1353, 533);
             btnClose.Name = "btnClose";
-            btnClose.Size = new Size(146, 67);
+            btnClose.Size = new Size(214, 67);
             btnClose.TabIndex = 2;
-            btnClose.Text = "           Back";
+            btnClose.Text = "      Back";
             btnClose.UseVisualStyleBackColor = false;
             btnClose.Click += btnClose_Click;
-            // 
-            // tableLayoutPanel1
-            // 
-            tableLayoutPanel1.ColumnCount = 1;
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tableLayoutPanel1.Controls.Add(dataGridView1, 0, 0);
-            tableLayoutPanel1.Dock = DockStyle.Top;
-            tableLayoutPanel1.Location = new Point(0, 0);
-            tableLayoutPanel1.Name = "tableLayoutPanel1";
-            tableLayoutPanel1.RowCount = 1;
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel1.Size = new Size(1567, 521);
-            tableLayoutPanel1.TabIndex = 3;
             // 
             // panel1
             // 
@@ -116,7 +94,7 @@
             btnPaymentHistory.BackColor = SystemColors.GradientActiveCaption;
             btnPaymentHistory.Image = Properties.Resources.icons8_payment_history_64;
             btnPaymentHistory.ImageAlign = ContentAlignment.MiddleLeft;
-            btnPaymentHistory.Location = new Point(220, 527);
+            btnPaymentHistory.Location = new Point(220, 12);
             btnPaymentHistory.Name = "btnPaymentHistory";
             btnPaymentHistory.Size = new Size(223, 67);
             btnPaymentHistory.TabIndex = 5;
@@ -124,15 +102,32 @@
             btnPaymentHistory.UseVisualStyleBackColor = false;
             btnPaymentHistory.Click += btnPaymentHistory_Click;
             // 
+            // dataGridView1
+            // 
+            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView1.Location = new Point(3, 3);
+            dataGridView1.Name = "dataGridView1";
+            dataGridView1.RowHeadersWidth = 62;
+            dataGridView1.Size = new Size(1561, 436);
+            dataGridView1.TabIndex = 0;
+            // 
+            // panel2
+            // 
+            panel2.Controls.Add(dataGridView1);
+            panel2.Location = new Point(0, 85);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(1567, 442);
+            panel2.TabIndex = 6;
+            // 
             // ArchivedForm
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.GradientActiveCaption;
             ClientSize = new Size(1567, 637);
+            Controls.Add(panel2);
             Controls.Add(btnPaymentHistory);
             Controls.Add(panel1);
-            Controls.Add(tableLayoutPanel1);
             Controls.Add(btnClose);
             Controls.Add(btnRestore);
             Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
@@ -144,21 +139,20 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Masinloc BPLS - Archived ";
             Load += ArchivedForm_Load;
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
-            tableLayoutPanel1.ResumeLayout(false);
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            panel2.ResumeLayout(false);
             ResumeLayout(false);
         }
 
         #endregion
-
-        private DataGridView dataGridView1;
         private Button btnRestore;
         private Button btnClose;
-        private TableLayoutPanel tableLayoutPanel1;
         private Panel panel1;
         private Label lblUsername;
         private Button btnPaymentHistory;
+        private DataGridView dataGridView1;
+        private Panel panel2;
     }
 }

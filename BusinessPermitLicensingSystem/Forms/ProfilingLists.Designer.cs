@@ -135,7 +135,7 @@
             btnImport.Location = new Point(1090, 1);
             btnImport.Name = "btnImport";
             btnImport.Size = new Size(192, 68);
-            btnImport.TabIndex = 42;
+            btnImport.TabIndex = 5;
             btnImport.Text = "      Import\r\n      Records\r\n";
             btnImport.UseVisualStyleBackColor = false;
             btnImport.Click += btnImport_Click;
@@ -150,7 +150,7 @@
             btnMonthlyReport.Location = new Point(1288, 1);
             btnMonthlyReport.Name = "btnMonthlyReport";
             btnMonthlyReport.Size = new Size(192, 68);
-            btnMonthlyReport.TabIndex = 5;
+            btnMonthlyReport.TabIndex = 6;
             btnMonthlyReport.Text = "           Collection\r            Report\r\n";
             btnMonthlyReport.UseVisualStyleBackColor = false;
             btnMonthlyReport.Click += btnMonthlyReport_Click_1;
@@ -209,7 +209,7 @@
             btnPaymentHistory.Location = new Point(3, 1);
             btnPaymentHistory.Name = "btnPaymentHistory";
             btnPaymentHistory.Size = new Size(219, 68);
-            btnPaymentHistory.TabIndex = 8;
+            btnPaymentHistory.TabIndex = 1;
             btnPaymentHistory.Text = "Payment History";
             btnPaymentHistory.TextAlign = ContentAlignment.MiddleRight;
             btnPaymentHistory.UseVisualStyleBackColor = false;
@@ -225,7 +225,7 @@
             button1.Location = new Point(1684, 1);
             button1.Name = "button1";
             button1.Size = new Size(192, 68);
-            button1.TabIndex = 7;
+            button1.TabIndex = 8;
             button1.Text = "            Main Menu";
             button1.UseVisualStyleBackColor = false;
             button1.Click += button1_Click;
@@ -240,7 +240,7 @@
             btnExport.Location = new Point(1486, 1);
             btnExport.Name = "btnExport";
             btnExport.Size = new Size(192, 68);
-            btnExport.TabIndex = 6;
+            btnExport.TabIndex = 7;
             btnExport.Text = "          Export Report";
             btnExport.UseVisualStyleBackColor = false;
             btnExport.Click += btnExport_Click;

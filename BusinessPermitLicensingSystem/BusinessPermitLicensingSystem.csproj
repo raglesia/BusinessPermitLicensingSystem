@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="app.manifest" />
     <None Remove="Report\BillingReport.rdlc" />
     <None Remove="Resources\Masinloc Logo.jpg" />
   </ItemGroup>
@@ -53,6 +54,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="App.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Report\BillingReportDataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>BillingReportDataSet.Designer.cs</LastGenOutput>

@@ -85,7 +85,7 @@
             // txtSNumber
             // 
             txtSNumber.BackColor = Color.White;
-            txtSNumber.Location = new Point(236, 67);
+            txtSNumber.Location = new Point(236, 24);
             txtSNumber.Name = "txtSNumber";
             txtSNumber.Size = new Size(410, 34);
             txtSNumber.TabIndex = 4;
@@ -93,7 +93,7 @@
             // txtSSize
             // 
             txtSSize.BackColor = Color.White;
-            txtSSize.Location = new Point(236, 104);
+            txtSSize.Location = new Point(236, 64);
             txtSSize.Name = "txtSSize";
             txtSSize.Size = new Size(410, 34);
             txtSSize.TabIndex = 5;
@@ -112,7 +112,7 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.Location = new Point(6, 75);
+            label1.Location = new Point(6, 81);
             label1.Name = "label1";
             label1.Size = new Size(115, 28);
             label1.TabIndex = 7;
@@ -122,7 +122,7 @@
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label2.Location = new Point(5, 112);
+            label2.Location = new Point(6, 118);
             label2.Name = "label2";
             label2.Size = new Size(162, 28);
             label2.TabIndex = 8;
@@ -132,7 +132,7 @@
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label3.Location = new Point(6, 36);
+            label3.Location = new Point(6, 160);
             label3.Name = "label3";
             label3.Size = new Size(169, 28);
             label3.TabIndex = 9;
@@ -142,7 +142,7 @@
             // 
             label4.AutoSize = true;
             label4.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            label4.Location = new Point(5, 73);
+            label4.Location = new Point(6, 30);
             label4.Name = "label4";
             label4.Size = new Size(142, 28);
             label4.TabIndex = 10;
@@ -152,7 +152,7 @@
             // 
             label5.AutoSize = true;
             label5.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            label5.Location = new Point(6, 110);
+            label5.Location = new Point(6, 70);
             label5.Name = "label5";
             label5.Size = new Size(102, 28);
             label5.TabIndex = 11;
@@ -162,7 +162,7 @@
             // 
             label6.AutoSize = true;
             label6.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            label6.Location = new Point(6, 77);
+            label6.Location = new Point(6, 80);
             label6.Name = "label6";
             label6.Size = new Size(161, 28);
             label6.TabIndex = 12;
@@ -181,7 +181,7 @@
             // 
             label7.AutoSize = true;
             label7.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label7.Location = new Point(6, 38);
+            label7.Location = new Point(6, 44);
             label7.Name = "label7";
             label7.Size = new Size(55, 28);
             label7.TabIndex = 14;
@@ -229,7 +229,7 @@
             // 
             label8.AutoSize = true;
             label8.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            label8.Location = new Point(6, 151);
+            label8.Location = new Point(6, 156);
             label8.Name = "label8";
             label8.Size = new Size(157, 28);
             label8.TabIndex = 19;
@@ -248,7 +248,7 @@
             // dtpStartDate
             // 
             dtpStartDate.CalendarMonthBackground = Color.White;
-            dtpStartDate.Location = new Point(236, 144);
+            dtpStartDate.Location = new Point(236, 104);
             dtpStartDate.Name = "dtpStartDate";
             dtpStartDate.Size = new Size(410, 34);
             dtpStartDate.TabIndex = 6;
@@ -257,7 +257,7 @@
             // 
             label9.AutoSize = true;
             label9.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label9.Location = new Point(6, 150);
+            label9.Location = new Point(6, 110);
             label9.Name = "label9";
             label9.Size = new Size(194, 28);
             label9.TabIndex = 22;
@@ -268,7 +268,7 @@
             cmbBSection.BackColor = Color.White;
             cmbBSection.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbBSection.FormattingEnabled = true;
-            cmbBSection.Location = new Point(236, 28);
+            cmbBSection.Location = new Point(238, 152);
             cmbBSection.Name = "cmbBSection";
             cmbBSection.Size = new Size(410, 36);
             cmbBSection.TabIndex = 3;
@@ -296,6 +296,8 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(cmbBSection);
+            groupBox1.Controls.Add(label3);
             groupBox1.Controls.Add(label7);
             groupBox1.Controls.Add(txtBIN);
             groupBox1.Controls.Add(txtFName);
@@ -305,15 +307,13 @@
             groupBox1.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             groupBox1.Location = new Point(12, 1);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(654, 155);
+            groupBox1.Size = new Size(654, 201);
             groupBox1.TabIndex = 27;
             groupBox1.TabStop = false;
             groupBox1.Text = "STALL OWNER INFORMATION";
             // 
             // groupBox2
             // 
-            groupBox2.Controls.Add(label3);
-            groupBox2.Controls.Add(cmbBSection);
             groupBox2.Controls.Add(txtSNumber);
             groupBox2.Controls.Add(label4);
             groupBox2.Controls.Add(txtSSize);
@@ -321,9 +321,9 @@
             groupBox2.Controls.Add(label5);
             groupBox2.Controls.Add(dtpStartDate);
             groupBox2.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            groupBox2.Location = new Point(12, 162);
+            groupBox2.Location = new Point(12, 202);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(654, 204);
+            groupBox2.Size = new Size(654, 150);
             groupBox2.TabIndex = 28;
             groupBox2.TabStop = false;
             groupBox2.Text = "STALL INFORMATION";
@@ -361,7 +361,7 @@
             // 
             label11.AutoSize = true;
             label11.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label11.Location = new Point(6, 114);
+            label11.Location = new Point(6, 117);
             label11.Name = "label11";
             label11.Size = new Size(83, 28);
             label11.TabIndex = 27;

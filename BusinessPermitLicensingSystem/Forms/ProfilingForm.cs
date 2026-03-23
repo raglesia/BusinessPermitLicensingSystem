@@ -181,8 +181,6 @@ namespace BusinessPermitLicensingSystem.Forms
                 txtAdditionalCharge.Enabled = false;
                 txtAdditionalCharge.Text = "0.00";
             }
-
-            // ✅ Single block, no duplicate
             if (!string.IsNullOrWhiteSpace(_editStartDate) &&
                 DateTime.TryParse(_editStartDate, out DateTime parsedDate))
                 dtpStartDate.Value = parsedDate;
