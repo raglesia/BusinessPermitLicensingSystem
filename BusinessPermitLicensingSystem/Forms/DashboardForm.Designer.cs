@@ -42,6 +42,7 @@
             lblDateTime = new Label();
             panel1 = new Panel();
             panel2 = new Panel();
+            button7 = new Button();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             SuspendLayout();
@@ -68,9 +69,9 @@
             button2.ForeColor = Color.Black;
             button2.Image = Properties.Resources.icons8_archive_64;
             button2.ImageAlign = ContentAlignment.MiddleLeft;
-            button2.Location = new Point(408, 102);
+            button2.Location = new Point(408, 188);
             button2.Name = "button2";
-            button2.Size = new Size(378, 80);
+            button2.Size = new Size(379, 80);
             button2.TabIndex = 3;
             button2.Text = "    Archived Records";
             button2.UseVisualStyleBackColor = false;
@@ -82,11 +83,11 @@
             button3.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             button3.Image = Properties.Resources.icons8_settings_64__1_;
             button3.ImageAlign = ContentAlignment.MiddleLeft;
-            button3.Location = new Point(13, 102);
+            button3.Location = new Point(408, 102);
             button3.Name = "button3";
             button3.Size = new Size(379, 80);
             button3.TabIndex = 2;
-            button3.Text = "Stall Rates";
+            button3.Text = "Update Rates";
             button3.UseVisualStyleBackColor = false;
             button3.Click += button3_Click;
             // 
@@ -97,7 +98,7 @@
             button4.ForeColor = Color.Black;
             button4.Image = Properties.Resources.icons8_conference_64;
             button4.ImageAlign = ContentAlignment.MiddleLeft;
-            button4.Location = new Point(408, 16);
+            button4.Location = new Point(13, 102);
             button4.Name = "button4";
             button4.Size = new Size(379, 80);
             button4.TabIndex = 1;
@@ -125,7 +126,7 @@
             button6.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             button6.Image = Properties.Resources.icons8_exit_64__1_;
             button6.ImageAlign = ContentAlignment.MiddleLeft;
-            button6.Location = new Point(409, 188);
+            button6.Location = new Point(208, 274);
             button6.Name = "button6";
             button6.Size = new Size(378, 80);
             button6.TabIndex = 5;
@@ -149,7 +150,7 @@
             lblPenaltyNotice.AutoSize = true;
             lblPenaltyNotice.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblPenaltyNotice.ForeColor = Color.Red;
-            lblPenaltyNotice.Location = new Point(3, 293);
+            lblPenaltyNotice.Location = new Point(3, 389);
             lblPenaltyNotice.Name = "lblPenaltyNotice";
             lblPenaltyNotice.Size = new Size(144, 28);
             lblPenaltyNotice.TabIndex = 7;
@@ -167,7 +168,7 @@
             lblDateTime.AutoSize = true;
             lblDateTime.Dock = DockStyle.Right;
             lblDateTime.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblDateTime.Location = new Point(700, 0);
+            lblDateTime.Location = new Point(698, 0);
             lblDateTime.Name = "lblDateTime";
             lblDateTime.Size = new Size(108, 25);
             lblDateTime.TabIndex = 9;
@@ -178,13 +179,14 @@
             panel1.Controls.Add(lblDateTime);
             panel1.Controls.Add(lblUsername);
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 407);
+            panel1.Location = new Point(0, 496);
             panel1.Name = "panel1";
-            panel1.Size = new Size(808, 36);
+            panel1.Size = new Size(806, 36);
             panel1.TabIndex = 10;
             // 
             // panel2
             // 
+            panel2.Controls.Add(button7);
             panel2.Controls.Add(button1);
             panel2.Controls.Add(button2);
             panel2.Controls.Add(button3);
@@ -193,15 +195,25 @@
             panel2.Controls.Add(button5);
             panel2.Location = new Point(3, 12);
             panel2.Name = "panel2";
-            panel2.Size = new Size(796, 278);
+            panel2.Size = new Size(797, 361);
             panel2.TabIndex = 11;
+            // 
+            // button7
+            // 
+            button7.Location = new Point(408, 16);
+            button7.Name = "button7";
+            button7.Size = new Size(379, 80);
+            button7.TabIndex = 6;
+            button7.Text = "Delivery Permit";
+            button7.UseVisualStyleBackColor = true;
+            button7.Click += button7_Click;
             // 
             // DashboardForm
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.GradientActiveCaption;
-            ClientSize = new Size(808, 443);
+            ClientSize = new Size(806, 532);
             Controls.Add(panel2);
             Controls.Add(panel1);
             Controls.Add(lblPenaltyNotice);
@@ -233,5 +245,6 @@
         private Label lblDateTime;
         private Panel panel1;
         private Panel panel2;
+        private Button button7;
     }
 }

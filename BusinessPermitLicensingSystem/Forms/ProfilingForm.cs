@@ -40,7 +40,7 @@ namespace BusinessPermitLicensingSystem.Forms
             txtFName.Focus();
             isLoading = true;
 
-            lblUsername.Text = $"{Session.CurrentPosition} | {Session.CurrentFullName}";
+            lblUsername.Text = $"{Session.CurrentFullName} | {Session.CurrentPosition}";
 
             SetupInputValidators();
             SetupControls();
@@ -479,6 +479,11 @@ namespace BusinessPermitLicensingSystem.Forms
 
             txtPenalty.Text = penalty.ToString("N2");
             lblTotalDue.Text = total.ToString("C2", new CultureInfo("en-PH"));
+        }
+
+        private void txtBIN_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

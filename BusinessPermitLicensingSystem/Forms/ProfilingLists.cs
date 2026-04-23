@@ -32,7 +32,7 @@ namespace BusinessPermitLicensingSystem
         // ===================== FORM LOAD ===================== //
         private void ProfilingLists_Load(object sender, EventArgs e)
         {
-            lblUsername.Text = $"{Session.CurrentPosition} | {Session.CurrentFullName}";
+            lblUsername.Text = $"{Session.CurrentFullName} | {Session.CurrentPosition}";
             btnPaymentHistory.Focus();
 
             this.Icon = new Icon(Path.Combine(
@@ -1046,6 +1046,11 @@ namespace BusinessPermitLicensingSystem
             dataGridView1.ClearSelection();
             dataGridView1.Rows[0].Selected = true;
             dataGridView1.FirstDisplayedScrollingRowIndex = 0;
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }

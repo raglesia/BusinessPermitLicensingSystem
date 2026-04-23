@@ -45,6 +45,8 @@ namespace BusinessPermitLicensingSystem
         {
             using var con = OpenConnection();
 
+            // ===================== STALL OWNERS ===================== //
+
             ExecuteNonQuery(con, @"
                 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Users' AND xtype='U')
                 CREATE TABLE Users (
@@ -127,6 +129,68 @@ namespace BusinessPermitLicensingSystem
                         ('Kakanin Area',                0,  300, 'Flat'),
                         ('Pasalubong Center',           0, 5500, 'Flat')
                 END");
+
+            // ===================== SPECIAL VEHICLE PERMIT ===================== //
+
+            ExecuteNonQuery(con, @"
+                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='VehicleTypes' AND xtype='U')
+                CREATE TABLE VehicleTypes (
+                    Id          INT           IDENTITY(1,1) PRIMARY KEY,
+                    TypeName    NVARCHAR(255) NOT NULL UNIQUE,
+                    AnnualFee   DECIMAL(18,2) NOT NULL DEFAULT 0,
+                    Description NVARCHAR(500)          DEFAULT ''
+                );");
+
+            ExecuteNonQuery(con, @"
+                IF NOT EXISTS (SELECT 1 FROM VehicleTypes)
+                BEGIN
+                    INSERT INTO VehicleTypes (TypeName, AnnualFee, Description) VALUES
+                        ('Delivery Truck', 500.00, 'Standard delivery truck permit')
+                END");
+
+            ExecuteNonQuery(con, @"
+                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='VehicleOwners' AND xtype='U')
+                CREATE TABLE VehicleOwners (
+                    VIN        NVARCHAR(100) PRIMARY KEY,
+                    FullName   NVARCHAR(255) NOT NULL,
+                    Address    NVARCHAR(500) NOT NULL DEFAULT '',
+                    ContactNo  NVARCHAR(100)          DEFAULT '',
+                    IsArchived INT                    DEFAULT 0,
+                    DateAdded  DATETIME               DEFAULT GETDATE(),
+                    UNIQUE(FullName)
+                );");
+
+            ExecuteNonQuery(con, @"
+                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Vehicles' AND xtype='U')
+                CREATE TABLE Vehicles (
+                    Id              INT           IDENTITY(1,1) PRIMARY KEY,
+                    VIN             NVARCHAR(100) NOT NULL,
+                    PlateNo         NVARCHAR(100) NOT NULL UNIQUE,
+                    VehicleTypeId   INT           NOT NULL,
+                    PermitStatus    NVARCHAR(50)  NOT NULL DEFAULT 'Unpaid',
+                    PermitYear      INT           NOT NULL DEFAULT 0,
+                    AnnualFee       DECIMAL(18,2) NOT NULL DEFAULT 0,
+                    IsArchived      INT                    DEFAULT 0,
+                    FOREIGN KEY (VIN)           REFERENCES VehicleOwners(VIN),
+                    FOREIGN KEY (VehicleTypeId) REFERENCES VehicleTypes(Id)
+                );");
+
+            ExecuteNonQuery(con, @"
+                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='VehiclePermitHistory' AND xtype='U')
+                CREATE TABLE VehiclePermitHistory (
+                    Id          INT           IDENTITY(1,1) PRIMARY KEY,
+                    VehicleId   INT           NOT NULL,
+                    ORNumber    NVARCHAR(100) NOT NULL UNIQUE,
+                    AmountPaid  DECIMAL(18,2) NOT NULL,
+                    PermitYear  INT           NOT NULL,
+                    DatePaid    DATETIME      NOT NULL DEFAULT GETDATE(),
+                    RecordedBy  INT           NOT NULL,
+                    FOREIGN KEY (VehicleId)  REFERENCES Vehicles(Id),
+                    FOREIGN KEY (RecordedBy) REFERENCES Users(Id)
+                );");
+
+
+
 
             string[] migrations =
             {

@@ -176,6 +176,7 @@
             txtBIN.Name = "txtBIN";
             txtBIN.Size = new Size(410, 34);
             txtBIN.TabIndex = 0;
+            txtBIN.TextChanged += txtBIN_TextChanged;
             // 
             // label7
             // 
@@ -193,7 +194,7 @@
             btnSave.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnSave.Image = Properties.Resources.icons8_save_64;
             btnSave.ImageAlign = ContentAlignment.MiddleLeft;
-            btnSave.Location = new Point(112, 607);
+            btnSave.Location = new Point(125, 624);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(202, 64);
             btnSave.TabIndex = 10;
@@ -207,7 +208,7 @@
             button1.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             button1.Image = Properties.Resources.icons8_back_64;
             button1.ImageAlign = ContentAlignment.MiddleLeft;
-            button1.Location = new Point(367, 607);
+            button1.Location = new Point(333, 624);
             button1.Name = "button1";
             button1.Size = new Size(202, 64);
             button1.TabIndex = 11;
@@ -305,7 +306,7 @@
             groupBox1.Controls.Add(label2);
             groupBox1.Controls.Add(txtBName);
             groupBox1.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            groupBox1.Location = new Point(12, 1);
+            groupBox1.Location = new Point(6, 12);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(654, 201);
             groupBox1.TabIndex = 27;
@@ -321,7 +322,7 @@
             groupBox2.Controls.Add(label5);
             groupBox2.Controls.Add(dtpStartDate);
             groupBox2.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            groupBox2.Location = new Point(12, 202);
+            groupBox2.Location = new Point(6, 219);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new Size(654, 150);
             groupBox2.TabIndex = 28;
@@ -341,7 +342,7 @@
             groupBox3.Controls.Add(cmbPaymentStatus);
             groupBox3.Controls.Add(label6);
             groupBox3.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            groupBox3.Location = new Point(12, 358);
+            groupBox3.Location = new Point(6, 375);
             groupBox3.Name = "groupBox3";
             groupBox3.Size = new Size(654, 243);
             groupBox3.TabIndex = 29;
@@ -391,7 +392,7 @@
             // 
             panel1.Controls.Add(lblUsername);
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 677);
+            panel1.Location = new Point(0, 697);
             panel1.Name = "panel1";
             panel1.Size = new Size(670, 35);
             panel1.TabIndex = 30;
@@ -401,7 +402,7 @@
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.GradientActiveCaption;
-            ClientSize = new Size(670, 712);
+            ClientSize = new Size(670, 732);
             Controls.Add(panel1);
             Controls.Add(groupBox3);
             Controls.Add(groupBox2);
@@ -413,7 +414,7 @@
             MaximizeBox = false;
             Name = "ProfilingForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Masinloc BPLS - Profiling";
+            Text = "Masinloc BPLS - Stall Owner Profiling";
             Load += ProfilingForm_Load;
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();

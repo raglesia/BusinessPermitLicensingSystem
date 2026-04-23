@@ -17,7 +17,7 @@ namespace BusinessPermitLicensingSystem.Forms
         private void DashboardForm_Load(object sender, EventArgs e)
         {
             button1.Focus();
-            lblUsername.Text = $"{Session.CurrentPosition} | {Session.CurrentFullName}";
+            lblUsername.Text = $"{Session.CurrentFullName} | {Session.CurrentPosition}";
 
             this.Icon = new Icon(Path.Combine(
                 Application.StartupPath, "Resources", "MasinlocLogoIcon.ico"));
@@ -42,39 +42,46 @@ namespace BusinessPermitLicensingSystem.Forms
 
         private void button3_Click(object sender, EventArgs e)
         {
-            
+
             new RentalRatesForm().ShowDialog();
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            var profilingForm = new ProfilingForm();
+            using var dialog = new ModuleSelectionDialog();
+            dialog.ShowDialog(this);
 
-            profilingForm.FormClosed += (s, args) =>
+            if (dialog.SelectedModule == ModuleSelectionDialog.Selection.StallOwner)
             {
-                foreach (Form f in Application.OpenForms)
-                {
-                    if (f is ProfilingLists lists)
-                    {
-                        lists.LoadProfiles();
-                        lists.HighlightLastAdded();
-                        break;
-                    }
-                }
-            };
+                var profilingForm = new ProfilingForm();
 
-            profilingForm.Show();
-            this.Hide();
+                profilingForm.FormClosed += (s, args) =>
+                {
+                    foreach (Form f in Application.OpenForms)
+                    {
+                        if (f is ProfilingLists lists)
+                        {
+                            lists.LoadProfiles();
+                            lists.HighlightLastAdded();
+                            break;
+                        }
+                    }
+                };
+
+                profilingForm.Show();
+            }
+            else if (dialog.SelectedModule == ModuleSelectionDialog.Selection.VehiclePermit)
+            {
+                var vehicleForm = new VehicleProfiling();
+                vehicleForm.Show();
+            }
+            // Selection.None = user cancelled, do nothing
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-           // if (Session.CurrentFullName != "Jeason S. Barnachia")//
-            //{
-                //MessageBox.Show("Contact Administrator to access Audit Logs.", "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                //return;
-            //}
-            //else
+            //TODO: Implement admin acess control for audit trail
+
             new AuditTrail().Show();
             this.Hide();
         }
@@ -104,7 +111,7 @@ namespace BusinessPermitLicensingSystem.Forms
                 if (updated > 0)
                 {
                     lblPenaltyNotice.ForeColor = Color.DarkRed;
-                    lblPenaltyNotice.Text = $"⚠️ {updated} unpaid record(s) have been charged a 25% penalty.";
+                    lblPenaltyNotice.Text = $"⚠️ {updated} unpaid stall owners have been charged a 25% penalty.";
                 }
                 else
                 {
@@ -134,6 +141,12 @@ namespace BusinessPermitLicensingSystem.Forms
         private void timer1_Tick(object sender, EventArgs e)
         {
             UpdateDateTime();
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            new VehiclePermitLists().Show();
+            this.Hide();
         }
 
         // ===================== WINDOW SETTINGS ===================== //

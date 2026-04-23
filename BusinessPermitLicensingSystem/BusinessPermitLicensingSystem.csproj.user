@@ -19,6 +19,9 @@
     <Compile Update="Forms\LogInForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Forms\ModuleSelectionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Forms\ORNumberDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -35,6 +38,12 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Forms\ReportViewerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\VehiclePermitLists.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\VehicleProfiling.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>

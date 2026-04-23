@@ -324,3 +324,6 @@ C:\Users\brian\source\repos\BusinessPermitLicensingSystem\BusinessPermitLicensin
 C:\Users\brian\source\repos\BusinessPermitLicensingSystem\BusinessPermitLicensingSystem\bin\Debug\net10.0-windows\Microsoft.Data.SqlClient.Internal.Logging.dll
 C:\Users\brian\source\repos\BusinessPermitLicensingSystem\BusinessPermitLicensingSystem\obj\Debug\net10.0-windows\BusinessPermitLicensingSystem.Forms.ConnectionSetupForm.resources
 C:\Users\brian\source\repos\BusinessPermitLicensingSystem\BusinessPermitLicensingSystem\bin\Debug\net10.0-windows\App.config
+C:\Users\brian\source\repos\BusinessPermitLicensingSystem\BusinessPermitLicensingSystem\obj\Debug\net10.0-windows\BusinessPermitLicensingSystem.Forms.ModuleSelectionDialog.resources
+C:\Users\brian\source\repos\BusinessPermitLicensingSystem\BusinessPermitLicensingSystem\obj\Debug\net10.0-windows\BusinessPermitLicensingSystem.Forms.VehicleProfiling.resources
+C:\Users\brian\source\repos\BusinessPermitLicensingSystem\BusinessPermitLicensingSystem\obj\Debug\net10.0-windows\BusinessPermitLicensingSystem.Forms.VehiclePermitLists.resources
