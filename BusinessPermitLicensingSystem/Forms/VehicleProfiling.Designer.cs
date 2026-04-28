@@ -72,9 +72,9 @@
             label3.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
             label3.Location = new Point(8, 108);
             label3.Name = "label3";
-            label3.Size = new Size(131, 28);
+            label3.Size = new Size(157, 28);
             label3.TabIndex = 2;
-            label3.Text = "Driver Name:";
+            label3.Text = "Name of Driver:";
             // 
             // label4
             // 
@@ -176,6 +176,7 @@
             btnSave.TabIndex = 13;
             btnSave.Text = "Save";
             btnSave.UseVisualStyleBackColor = true;
+            btnSave.Click += btnSave_Click;
             // 
             // btnCancel
             // 
@@ -185,6 +186,7 @@
             btnCancel.TabIndex = 14;
             btnCancel.Text = "Cancel";
             btnCancel.UseVisualStyleBackColor = true;
+            btnCancel.Click += btnCancel_Click;
             // 
             // VehicleProfiling
             // 
@@ -196,6 +198,7 @@
             Controls.Add(groupBox1);
             Name = "VehicleProfiling";
             Text = "Masinloc BPLS - Special Vehicle Permit Profiling";
+            Load += VehicleProfiling_Load;
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             ResumeLayout(false);

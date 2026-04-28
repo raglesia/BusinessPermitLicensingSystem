@@ -142,7 +142,7 @@
             btnImport.BackColor = SystemColors.GradientActiveCaption;
             btnImport.Image = Properties.Resources.icons8_import_csv_64;
             btnImport.ImageAlign = ContentAlignment.MiddleLeft;
-            btnImport.Location = new Point(1090, 1);
+            btnImport.Location = new Point(1090, 0);
             btnImport.Name = "btnImport";
             btnImport.Size = new Size(192, 68);
             btnImport.TabIndex = 5;
@@ -157,7 +157,7 @@
             btnMonthlyReport.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnMonthlyReport.Image = Properties.Resources.icons8_ledger_64;
             btnMonthlyReport.ImageAlign = ContentAlignment.MiddleLeft;
-            btnMonthlyReport.Location = new Point(1288, 1);
+            btnMonthlyReport.Location = new Point(1288, 0);
             btnMonthlyReport.Name = "btnMonthlyReport";
             btnMonthlyReport.Size = new Size(192, 68);
             btnMonthlyReport.TabIndex = 6;
@@ -201,7 +201,7 @@
             button2.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             button2.Image = Properties.Resources.icons8_receipt_64;
             button2.ImageAlign = ContentAlignment.MiddleLeft;
-            button2.Location = new Point(228, 1);
+            button2.Location = new Point(228, 0);
             button2.Name = "button2";
             button2.Size = new Size(219, 68);
             button2.TabIndex = 2;
@@ -216,7 +216,7 @@
             btnPaymentHistory.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnPaymentHistory.Image = Properties.Resources.icons8_payment_history_64;
             btnPaymentHistory.ImageAlign = ContentAlignment.MiddleLeft;
-            btnPaymentHistory.Location = new Point(3, 1);
+            btnPaymentHistory.Location = new Point(3, 0);
             btnPaymentHistory.Name = "btnPaymentHistory";
             btnPaymentHistory.Size = new Size(219, 68);
             btnPaymentHistory.TabIndex = 1;
@@ -232,7 +232,7 @@
             button1.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             button1.Image = Properties.Resources.icons8_menu_64;
             button1.ImageAlign = ContentAlignment.MiddleLeft;
-            button1.Location = new Point(1684, 1);
+            button1.Location = new Point(1684, 0);
             button1.Name = "button1";
             button1.Size = new Size(192, 68);
             button1.TabIndex = 8;
@@ -247,7 +247,7 @@
             btnExport.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnExport.Image = Properties.Resources.icons8_xls_64;
             btnExport.ImageAlign = ContentAlignment.MiddleLeft;
-            btnExport.Location = new Point(1486, 1);
+            btnExport.Location = new Point(1486, 0);
             btnExport.Name = "btnExport";
             btnExport.Size = new Size(192, 68);
             btnExport.TabIndex = 7;
