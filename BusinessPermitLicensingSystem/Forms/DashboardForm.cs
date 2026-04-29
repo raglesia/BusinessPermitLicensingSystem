@@ -106,6 +106,7 @@ namespace BusinessPermitLicensingSystem.Forms
             try
             {
                 int reset = Database.ResetMonthlyPaymentStatus();
+                int vehicleReset = Database.ResetAnnualVehiclePermitStatus(); // ← add this
                 var (updated, _) = Database.ApplyPenaltiesToAll();
 
                 if (updated > 0)
@@ -118,7 +119,9 @@ namespace BusinessPermitLicensingSystem.Forms
                     lblPenaltyNotice.ForeColor = Color.SeaGreen;
                     lblPenaltyNotice.Text = reset > 0
                         ? $"✅ New billing cycle started. {reset} record(s) reset to Unpaid."
-                        : "✅ No penalty charges at this time.";
+                        : vehicleReset > 0
+                            ? $"✅ New permit year started. {vehicleReset} vehicle permit(s) reset to Unpaid."
+                            : "✅ No penalty charges at this time.";
                 }
 
                 lblPenaltyNotice.Visible = true;
@@ -147,6 +150,11 @@ namespace BusinessPermitLicensingSystem.Forms
         {
             new VehiclePermitLists().Show();
             this.Hide();
+        }
+
+        private void lblPenaltyNotice_Click(object sender, EventArgs e)
+        {
+
         }
 
         // ===================== WINDOW SETTINGS ===================== //

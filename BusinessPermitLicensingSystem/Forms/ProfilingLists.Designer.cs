@@ -76,7 +76,7 @@
             panelFilters.Dock = DockStyle.Fill;
             panelFilters.Location = new Point(3, 78);
             panelFilters.Name = "panelFilters";
-            panelFilters.Size = new Size(1879, 39);
+            panelFilters.Size = new Size(1890, 39);
             panelFilters.TabIndex = 39;
             // 
             // txtSearch
@@ -86,7 +86,7 @@
             txtSearch.Location = new Point(3, 3);
             txtSearch.Name = "txtSearch";
             txtSearch.PlaceholderText = "Search Record: ";
-            txtSearch.Size = new Size(1873, 31);
+            txtSearch.Size = new Size(1884, 31);
             txtSearch.TabIndex = 0;
             // 
             // dataGridView1
@@ -115,7 +115,7 @@
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
             dataGridView1.RowHeadersWidth = 62;
-            dataGridView1.Size = new Size(1879, 458);
+            dataGridView1.Size = new Size(1890, 789);
             dataGridView1.TabIndex = 23;
             dataGridView1.CellContentClick += dataGridView1_CellContentClick;
             dataGridView1.CellDoubleClick += dataGridView1_CellDoubleClick;
@@ -133,7 +133,7 @@
             panelButtons.Dock = DockStyle.Fill;
             panelButtons.Location = new Point(3, 3);
             panelButtons.Name = "panelButtons";
-            panelButtons.Size = new Size(1879, 69);
+            panelButtons.Size = new Size(1890, 69);
             panelButtons.TabIndex = 38;
             // 
             // btnImport
@@ -142,7 +142,7 @@
             btnImport.BackColor = SystemColors.GradientActiveCaption;
             btnImport.Image = Properties.Resources.icons8_import_csv_64;
             btnImport.ImageAlign = ContentAlignment.MiddleLeft;
-            btnImport.Location = new Point(1090, 0);
+            btnImport.Location = new Point(1299, 0);
             btnImport.Name = "btnImport";
             btnImport.Size = new Size(192, 68);
             btnImport.TabIndex = 5;
@@ -157,7 +157,7 @@
             btnMonthlyReport.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnMonthlyReport.Image = Properties.Resources.icons8_ledger_64;
             btnMonthlyReport.ImageAlign = ContentAlignment.MiddleLeft;
-            btnMonthlyReport.Location = new Point(1288, 0);
+            btnMonthlyReport.Location = new Point(1101, 0);
             btnMonthlyReport.Name = "btnMonthlyReport";
             btnMonthlyReport.Size = new Size(192, 68);
             btnMonthlyReport.TabIndex = 6;
@@ -201,10 +201,10 @@
             button2.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             button2.Image = Properties.Resources.icons8_receipt_64;
             button2.ImageAlign = ContentAlignment.MiddleLeft;
-            button2.Location = new Point(228, 0);
+            button2.Location = new Point(3, 0);
             button2.Name = "button2";
             button2.Size = new Size(219, 68);
-            button2.TabIndex = 2;
+            button2.TabIndex = 1;
             button2.Text = "Generate Receipt";
             button2.TextAlign = ContentAlignment.MiddleRight;
             button2.UseVisualStyleBackColor = false;
@@ -216,10 +216,10 @@
             btnPaymentHistory.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnPaymentHistory.Image = Properties.Resources.icons8_payment_history_64;
             btnPaymentHistory.ImageAlign = ContentAlignment.MiddleLeft;
-            btnPaymentHistory.Location = new Point(3, 0);
+            btnPaymentHistory.Location = new Point(228, 0);
             btnPaymentHistory.Name = "btnPaymentHistory";
             btnPaymentHistory.Size = new Size(219, 68);
-            btnPaymentHistory.TabIndex = 1;
+            btnPaymentHistory.TabIndex = 2;
             btnPaymentHistory.Text = "Payment History";
             btnPaymentHistory.TextAlign = ContentAlignment.MiddleRight;
             btnPaymentHistory.UseVisualStyleBackColor = false;
@@ -232,7 +232,7 @@
             button1.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             button1.Image = Properties.Resources.icons8_menu_64;
             button1.ImageAlign = ContentAlignment.MiddleLeft;
-            button1.Location = new Point(1684, 0);
+            button1.Location = new Point(1695, 0);
             button1.Name = "button1";
             button1.Size = new Size(192, 68);
             button1.TabIndex = 8;
@@ -247,7 +247,7 @@
             btnExport.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnExport.Image = Properties.Resources.icons8_xls_64;
             btnExport.ImageAlign = ContentAlignment.MiddleLeft;
-            btnExport.Location = new Point(1486, 0);
+            btnExport.Location = new Point(1497, 0);
             btnExport.Name = "btnExport";
             btnExport.Size = new Size(192, 68);
             btnExport.TabIndex = 7;
@@ -260,7 +260,7 @@
             lblTotalRecords.AutoSize = true;
             lblTotalRecords.Dock = DockStyle.Right;
             lblTotalRecords.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblTotalRecords.Location = new Point(1697, 0);
+            lblTotalRecords.Location = new Point(1708, 0);
             lblTotalRecords.Name = "lblTotalRecords";
             lblTotalRecords.Size = new Size(182, 25);
             lblTotalRecords.TabIndex = 41;
@@ -297,7 +297,7 @@
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 35F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel1.Size = new Size(1885, 619);
+            tableLayoutPanel1.Size = new Size(1896, 950);
             tableLayoutPanel1.TabIndex = 40;
             // 
             // panel1
@@ -306,9 +306,9 @@
             panel1.Controls.Add(lblTotalRecords);
             panel1.Controls.Add(lblUsername);
             panel1.Dock = DockStyle.Fill;
-            panel1.Location = new Point(3, 587);
+            panel1.Location = new Point(3, 918);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1879, 29);
+            panel1.Size = new Size(1890, 29);
             panel1.TabIndex = 40;
             // 
             // panel2
@@ -497,13 +497,13 @@
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.GradientActiveCaption;
-            ClientSize = new Size(1885, 619);
+            ClientSize = new Size(1896, 950);
             Controls.Add(tableLayoutPanel1);
             Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
-            MinimumSize = new Size(1024, 600);
+            MinimumSize = new Size(1918, 1006);
             Name = "ProfilingLists";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Masinloc BPLS - Stall Owners List";

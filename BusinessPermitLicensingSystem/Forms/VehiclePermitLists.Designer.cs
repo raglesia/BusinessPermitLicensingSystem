@@ -46,6 +46,11 @@
             tableLayoutPanel1 = new TableLayoutPanel();
             panel1 = new Panel();
             panel2 = new Panel();
+            label6 = new Label();
+            label5 = new Label();
+            label3 = new Label();
+            label2 = new Label();
+            label1 = new Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             tableLayoutPanel1.SuspendLayout();
             panel1.SuspendLayout();
@@ -54,31 +59,42 @@
             // 
             // dataGridView1
             // 
+            dataGridView1.AllowUserToAddRows = false;
+            dataGridView1.AllowUserToDeleteRows = false;
+            dataGridView1.AllowUserToResizeColumns = false;
+            dataGridView1.AllowUserToResizeRows = false;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Dock = DockStyle.Fill;
             dataGridView1.Location = new Point(3, 123);
             dataGridView1.Name = "dataGridView1";
+            dataGridView1.ReadOnly = true;
+            dataGridView1.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
             dataGridView1.RowHeadersWidth = 62;
-            dataGridView1.Size = new Size(1879, 458);
+            dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dataGridView1.Size = new Size(1890, 789);
             dataGridView1.TabIndex = 0;
             dataGridView1.CellDoubleClick += dataGridView1_CellDoubleClick;
             dataGridView1.ColumnHeaderMouseClick += dataGridView1_ColumnHeaderMouseClick;
             // 
             // txtSearch
             // 
+            txtSearch.BackColor = SystemColors.GradientActiveCaption;
             txtSearch.Dock = DockStyle.Fill;
+            txtSearch.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             txtSearch.Location = new Point(3, 78);
             txtSearch.Name = "txtSearch";
-            txtSearch.Size = new Size(1879, 31);
+            txtSearch.PlaceholderText = "Search Records:";
+            txtSearch.Size = new Size(1890, 31);
             txtSearch.TabIndex = 1;
             // 
             // lblTotalRecords
             // 
             lblTotalRecords.AutoSize = true;
             lblTotalRecords.Dock = DockStyle.Right;
-            lblTotalRecords.Location = new Point(1703, 0);
+            lblTotalRecords.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTotalRecords.Location = new Point(1708, 0);
             lblTotalRecords.Name = "lblTotalRecords";
-            lblTotalRecords.Size = new Size(176, 25);
+            lblTotalRecords.Size = new Size(182, 25);
             lblTotalRecords.TabIndex = 2;
             lblTotalRecords.Text = "Total Records: 00000";
             // 
@@ -86,114 +102,145 @@
             // 
             lblUsername.AutoSize = true;
             lblUsername.Dock = DockStyle.Left;
+            lblUsername.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblUsername.Location = new Point(0, 0);
             lblUsername.Name = "lblUsername";
-            lblUsername.Size = new Size(91, 25);
+            lblUsername.Size = new Size(96, 25);
             lblUsername.TabIndex = 3;
             lblUsername.Text = "Username";
             // 
             // lblTotalVehicles
             // 
             lblTotalVehicles.AutoSize = true;
-            lblTotalVehicles.Location = new Point(566, 4);
+            lblTotalVehicles.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTotalVehicles.ForeColor = Color.DarkGreen;
+            lblTotalVehicles.Location = new Point(694, 0);
             lblTotalVehicles.Name = "lblTotalVehicles";
-            lblTotalVehicles.Size = new Size(175, 25);
+            lblTotalVehicles.Size = new Size(52, 25);
             lblTotalVehicles.TabIndex = 15;
-            lblTotalVehicles.Text = "Total Vehicles: 00000";
+            lblTotalVehicles.Text = "0000";
             // 
             // lblTotalPaid
             // 
             lblTotalPaid.AutoSize = true;
-            lblTotalPaid.Location = new Point(402, 4);
+            lblTotalPaid.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTotalPaid.ForeColor = Color.DarkBlue;
+            lblTotalPaid.Location = new Point(923, 0);
             lblTotalPaid.Name = "lblTotalPaid";
-            lblTotalPaid.Size = new Size(146, 25);
+            lblTotalPaid.Size = new Size(52, 25);
             lblTotalPaid.TabIndex = 16;
-            lblTotalPaid.Text = "Total Paid: 00000";
+            lblTotalPaid.Text = "0000";
             // 
             // lblTotalUnpaid
             // 
             lblTotalUnpaid.AutoSize = true;
-            lblTotalUnpaid.Location = new Point(747, 7);
+            lblTotalUnpaid.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTotalUnpaid.ForeColor = Color.Red;
+            lblTotalUnpaid.Location = new Point(1228, 0);
             lblTotalUnpaid.Name = "lblTotalUnpaid";
-            lblTotalUnpaid.Size = new Size(170, 25);
+            lblTotalUnpaid.Size = new Size(52, 25);
             lblTotalUnpaid.TabIndex = 17;
-            lblTotalUnpaid.Text = "Total Unpaid: 00000";
+            lblTotalUnpaid.Text = "0000";
             // 
             // btnPaymentHistory
             // 
-            btnPaymentHistory.Location = new Point(3, 0);
+            btnPaymentHistory.BackColor = SystemColors.GradientActiveCaption;
+            btnPaymentHistory.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnPaymentHistory.Image = Properties.Resources.icons8_payment_history_64;
+            btnPaymentHistory.Location = new Point(228, 0);
             btnPaymentHistory.Name = "btnPaymentHistory";
             btnPaymentHistory.Size = new Size(219, 68);
-            btnPaymentHistory.TabIndex = 18;
+            btnPaymentHistory.TabIndex = 2;
             btnPaymentHistory.Text = "Payment History";
-            btnPaymentHistory.UseVisualStyleBackColor = true;
+            btnPaymentHistory.UseVisualStyleBackColor = false;
             // 
             // btnGenerateReceipt
             // 
-            btnGenerateReceipt.Location = new Point(228, 0);
+            btnGenerateReceipt.BackColor = SystemColors.GradientActiveCaption;
+            btnGenerateReceipt.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnGenerateReceipt.Image = Properties.Resources.icons8_receipt_64;
+            btnGenerateReceipt.Location = new Point(3, 0);
             btnGenerateReceipt.Name = "btnGenerateReceipt";
             btnGenerateReceipt.Size = new Size(219, 68);
-            btnGenerateReceipt.TabIndex = 19;
+            btnGenerateReceipt.TabIndex = 1;
             btnGenerateReceipt.Text = "Generate Receipt";
-            btnGenerateReceipt.UseVisualStyleBackColor = true;
+            btnGenerateReceipt.UseVisualStyleBackColor = false;
             // 
             // btnArchive
             // 
+            btnArchive.BackColor = SystemColors.GradientActiveCaption;
+            btnArchive.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnArchive.Image = Properties.Resources.icons8_archive_64;
             btnArchive.Location = new Point(453, 0);
             btnArchive.Name = "btnArchive";
             btnArchive.Size = new Size(219, 68);
-            btnArchive.TabIndex = 20;
+            btnArchive.TabIndex = 3;
             btnArchive.Text = "Archive Record";
-            btnArchive.UseVisualStyleBackColor = true;
+            btnArchive.UseVisualStyleBackColor = false;
             btnArchive.Click += btnArchive_Click;
             // 
             // btnDelete
             // 
+            btnDelete.BackColor = SystemColors.GradientActiveCaption;
+            btnDelete.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnDelete.Image = Properties.Resources.icons8_remove_64;
             btnDelete.Location = new Point(678, 0);
             btnDelete.Name = "btnDelete";
             btnDelete.Size = new Size(219, 68);
-            btnDelete.TabIndex = 21;
+            btnDelete.TabIndex = 4;
             btnDelete.Text = "Delete Record";
-            btnDelete.UseVisualStyleBackColor = true;
+            btnDelete.UseVisualStyleBackColor = false;
             btnDelete.Click += btnDelete_Click;
             // 
             // btnImport
             // 
-            btnImport.Location = new Point(1210, 0);
+            btnImport.BackColor = SystemColors.GradientActiveCaption;
+            btnImport.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnImport.Image = Properties.Resources.icons8_import_csv_64;
+            btnImport.Location = new Point(1218, 0);
             btnImport.Name = "btnImport";
             btnImport.Size = new Size(219, 68);
-            btnImport.TabIndex = 22;
+            btnImport.TabIndex = 6;
             btnImport.Text = "Import Records";
-            btnImport.UseVisualStyleBackColor = true;
+            btnImport.UseVisualStyleBackColor = false;
             btnImport.Click += btnImport_Click;
             // 
             // btnReport
             // 
-            btnReport.Location = new Point(985, 0);
+            btnReport.BackColor = SystemColors.GradientActiveCaption;
+            btnReport.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnReport.Image = Properties.Resources.icons8_ledger_64;
+            btnReport.Location = new Point(993, 0);
             btnReport.Name = "btnReport";
             btnReport.Size = new Size(219, 68);
-            btnReport.TabIndex = 23;
+            btnReport.TabIndex = 5;
             btnReport.Text = "Collection Report";
-            btnReport.UseVisualStyleBackColor = true;
+            btnReport.UseVisualStyleBackColor = false;
             // 
             // btnExport
             // 
-            btnExport.Location = new Point(1435, 0);
+            btnExport.BackColor = SystemColors.GradientActiveCaption;
+            btnExport.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnExport.Image = Properties.Resources.icons8_xls_64;
+            btnExport.Location = new Point(1443, 0);
             btnExport.Name = "btnExport";
             btnExport.Size = new Size(219, 68);
-            btnExport.TabIndex = 24;
+            btnExport.TabIndex = 7;
             btnExport.Text = "Export Records";
-            btnExport.UseVisualStyleBackColor = true;
+            btnExport.UseVisualStyleBackColor = false;
             btnExport.Click += btnExport_Click;
             // 
             // btnMenu
             // 
-            btnMenu.Location = new Point(1660, 0);
+            btnMenu.BackColor = SystemColors.GradientActiveCaption;
+            btnMenu.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnMenu.Image = Properties.Resources.icons8_menu_64;
+            btnMenu.Location = new Point(1668, 0);
             btnMenu.Name = "btnMenu";
             btnMenu.Size = new Size(219, 68);
-            btnMenu.TabIndex = 25;
+            btnMenu.TabIndex = 8;
             btnMenu.Text = "Menu";
-            btnMenu.UseVisualStyleBackColor = true;
+            btnMenu.UseVisualStyleBackColor = false;
             btnMenu.Click += btnMenu_Click;
             // 
             // tableLayoutPanel1
@@ -212,7 +259,7 @@
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 45F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 35F));
-            tableLayoutPanel1.Size = new Size(1885, 619);
+            tableLayoutPanel1.Size = new Size(1896, 950);
             tableLayoutPanel1.TabIndex = 26;
             // 
             // panel1
@@ -228,30 +275,87 @@
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(3, 3);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1879, 69);
+            panel1.Size = new Size(1890, 69);
             panel1.TabIndex = 0;
             // 
             // panel2
             // 
+            panel2.Controls.Add(label6);
+            panel2.Controls.Add(label5);
+            panel2.Controls.Add(label3);
+            panel2.Controls.Add(label2);
+            panel2.Controls.Add(label1);
             panel2.Controls.Add(lblUsername);
             panel2.Controls.Add(lblTotalUnpaid);
             panel2.Controls.Add(lblTotalRecords);
             panel2.Controls.Add(lblTotalVehicles);
             panel2.Controls.Add(lblTotalPaid);
             panel2.Dock = DockStyle.Fill;
-            panel2.Location = new Point(3, 587);
+            panel2.Location = new Point(3, 918);
             panel2.Name = "panel2";
-            panel2.Size = new Size(1879, 29);
+            panel2.Size = new Size(1890, 29);
             panel2.TabIndex = 2;
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label6.Location = new Point(1077, 0);
+            label6.Name = "label6";
+            label6.Size = new Size(18, 25);
+            label6.TabIndex = 23;
+            label6.Text = "|";
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label5.Location = new Point(783, 0);
+            label5.Name = "label5";
+            label5.Size = new Size(18, 25);
+            label5.TabIndex = 22;
+            label5.Text = "|";
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label3.Location = new Point(1101, 0);
+            label3.Name = "label3";
+            label3.Size = new Size(121, 25);
+            label3.TabIndex = 20;
+            label3.Text = "Total Unpaid:";
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label2.Location = new Point(560, 0);
+            label2.Name = "label2";
+            label2.Size = new Size(128, 25);
+            label2.TabIndex = 19;
+            label2.Text = "Total Vehicles:";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label1.Location = new Point(821, 0);
+            label1.Name = "label1";
+            label1.Size = new Size(96, 25);
+            label1.TabIndex = 18;
+            label1.Text = "Total Paid:";
             // 
             // VehiclePermitLists
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1885, 619);
+            BackColor = SystemColors.GradientActiveCaption;
+            ClientSize = new Size(1896, 950);
             Controls.Add(tableLayoutPanel1);
             FormBorderStyle = FormBorderStyle.FixedSingle;
-            MinimumSize = new Size(1024, 600);
+            MaximizeBox = false;
+            MinimumSize = new Size(1918, 1006);
             Name = "VehiclePermitLists";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Masinloc BPLS - Special Vehicle Permit List";
@@ -286,5 +390,10 @@
         private TableLayoutPanel tableLayoutPanel1;
         private Panel panel1;
         private Panel panel2;
+        private Label label3;
+        private Label label2;
+        private Label label1;
+        private Label label6;
+        private Label label5;
     }
 }

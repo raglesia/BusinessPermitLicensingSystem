@@ -33,7 +33,7 @@ namespace BusinessPermitLicensingSystem
         private void ProfilingLists_Load(object sender, EventArgs e)
         {
             lblUsername.Text = $"{Session.CurrentFullName} | {Session.CurrentPosition}";
-            btnPaymentHistory.Focus();
+            button2.Focus();
 
             this.Icon = new Icon(Path.Combine(
                 Application.StartupPath, "Resources", "MasinlocLogoIcon.ico"));

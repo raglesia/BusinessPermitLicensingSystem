@@ -145,6 +145,20 @@ namespace BusinessPermitLicensingSystem
                     DateAdded   DATETIME               DEFAULT GETDATE()
                 );");
 
+            ExecuteNonQuery(con, @"
+                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='VehiclePermitHistory' AND xtype='U')
+                CREATE TABLE VehiclePermitHistory (
+                    Id         INT           IDENTITY(1,1) PRIMARY KEY,
+                    VIN        NVARCHAR(100) NOT NULL,
+                    ORNumber   NVARCHAR(100) NOT NULL UNIQUE,
+                    AmountPaid DECIMAL(18,2) NOT NULL,
+                    PermitYear INT           NOT NULL,
+                    DatePaid   DATETIME      NOT NULL DEFAULT GETDATE(),
+                    RecordedBy INT           NOT NULL,
+                    FOREIGN KEY (VIN)        REFERENCES VehiclePermits(VIN),
+                    FOREIGN KEY (RecordedBy) REFERENCES Users(Id)
+                );");
+
             // ── MIGRATIONS ─────────────────────────────────────────────────────
             string[] migrations =
             {
@@ -160,7 +174,20 @@ namespace BusinessPermitLicensingSystem
                 try { ExecuteNonQuery(con, sql); }
                 catch (SqlException) { }
             }
+
+            string[] vehicleMigrations =
+            {
+                "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('VehiclePermits') AND name = 'PermitStatus') ALTER TABLE VehiclePermits ADD PermitStatus NVARCHAR(50) NOT NULL DEFAULT 'Unpaid'",
+                 "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('VehiclePermits') AND name = 'PermitYear')   ALTER TABLE VehiclePermits ADD PermitYear   INT          NOT NULL DEFAULT 0",
+            };
+
+            foreach (string sql in vehicleMigrations)
+            {
+                try { ExecuteNonQuery(con, sql); }
+                catch (SqlException) { }
+            }
         }
+
 
         // ===================== USERS ===================== //
 
@@ -922,6 +949,48 @@ namespace BusinessPermitLicensingSystem
             catch (Exception ex) { return (false, ex.Message); }
         }
 
+        // ===================== SPECICAL VEHICLE IMPORT ===================== //
+        public static HashSet<string> GetAllPlateNumbers()
+        {
+            using var con = OpenConnection();
+            using var cmd = new SqlCommand("SELECT PlateNo FROM VehiclePermits", con);
+            using var reader = cmd.ExecuteReader();
+
+            var plates = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            while (reader.Read())
+                plates.Add(reader.GetString(0));
+            return plates;
+        }
+
+        public static (bool Success, string? ErrorMessage) ImportVehiclePermits(DataTable dt)
+        {
+            try
+            {
+                using var con = OpenConnection();
+                using var bulk = new SqlBulkCopy(con)
+                {
+                    DestinationTableName = "VehiclePermits",
+                    BulkCopyTimeout = 600
+                };
+
+                string[] columns =
+                {
+                    "VIN", "CompanyName", "DriverName",
+                    "PlateNo", "SECRegNo", "DTINumber"
+                };
+
+                foreach (string col in columns)
+                    bulk.ColumnMappings.Add(col, col);
+
+                bulk.WriteToServer(dt);
+                return (true, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
+            }
+        }
+
         // ===================== SPECIAL VEHICLE PERMIT ===================== //
 
         public static DataTable GetAllVehiclePermits()
@@ -935,6 +1004,8 @@ namespace BusinessPermitLicensingSystem
                     PlateNo                         AS [Plate No],
                     SECRegNo                        AS [SEC Reg No],
                     DTINumber                       AS [DTI Number],
+                    PermitStatus                    AS [Permit Status],
+                    PermitYear                      AS [Permit Year],
                     FORMAT(DateAdded, 'MM/dd/yyyy') AS [Date Added]
                 FROM  VehiclePermits
                 WHERE IsArchived = 0
@@ -953,6 +1024,8 @@ namespace BusinessPermitLicensingSystem
                     PlateNo                         AS [Plate No],
                     SECRegNo                        AS [SEC Reg No],
                     DTINumber                       AS [DTI Number],
+                    PermitStatus                    AS [Permit Status],
+                    PermitYear                      AS [Permit Year],
                     FORMAT(DateAdded, 'MM/dd/yyyy') AS [Date Added]
                 FROM  VehiclePermits
                 WHERE IsArchived = 1
@@ -1076,6 +1149,121 @@ namespace BusinessPermitLicensingSystem
                 return (true, null);
             }
             catch (Exception ex) { return (false, ex.Message); }
+        }
+
+        // ===================== VEHICLE PERMIT PAYMENT ===================== //
+        public static (bool Success, string? ErrorMessage) PayVehiclePermit(
+            string vin, string orNumber, decimal amountPaid,
+            int permitYear, long recordedBy)
+        {
+            if (string.IsNullOrWhiteSpace(orNumber))
+                return (false, "OR Number cannot be empty.");
+            try
+            {
+                using var con = OpenConnection();
+                using var tran = con.BeginTransaction();
+                try
+                {
+                    using var cmdUpdate = new SqlCommand(@"
+                        UPDATE VehiclePermits
+                        SET PermitStatus = 'Paid',
+                            PermitYear   = @year
+                        WHERE VIN = @vin", con, tran);
+                    cmdUpdate.Parameters.AddWithValue("@year", permitYear);
+                    cmdUpdate.Parameters.AddWithValue("@vin", vin);
+                    cmdUpdate.ExecuteNonQuery();
+
+                    using var cmdHistory = new SqlCommand(@"
+                        INSERT INTO VehiclePermitHistory
+                            (VIN, ORNumber, AmountPaid, PermitYear, DatePaid, RecordedBy)
+                        VALUES
+                            (@vin, @or, @amount, @year, @date, @recordedBy)", con, tran);
+                    cmdHistory.Parameters.AddWithValue("@vin", vin);
+                    cmdHistory.Parameters.AddWithValue("@or", orNumber.Trim());
+                    cmdHistory.Parameters.AddWithValue("@amount", amountPaid);
+                    cmdHistory.Parameters.AddWithValue("@year", permitYear);
+                    cmdHistory.Parameters.AddWithValue("@date", DateTime.Now);
+                    cmdHistory.Parameters.AddWithValue("@recordedBy", recordedBy);
+                    cmdHistory.ExecuteNonQuery();
+
+                    tran.Commit();
+                    return (true, null);
+                }
+                catch (SqlException ex) when (ex.Number == 2627)
+                {
+                    tran.Rollback();
+                    return (false, "OR Number already exists.");
+                }
+                catch (Exception ex)
+                {
+                    tran.Rollback();
+                    return (false, ex.Message);
+                }
+            }
+            catch (Exception ex) { return (false, ex.Message); }
+        }
+
+        public static DataTable GetVehiclePermitHistory(string vin)
+        {
+            using var con = OpenConnection();
+            using var cmd = new SqlCommand(@"
+                SELECT
+                    ph.ORNumber                              AS [OR Number],
+                    ph.AmountPaid                            AS [Amount Paid],
+                    ph.PermitYear                            AS [Permit Year],
+                    FORMAT(ph.DatePaid, 'MM/dd/yyyy HH:mm') AS [Date Paid],
+                    u.FullName                               AS [Recorded By]
+                FROM VehiclePermitHistory ph
+                LEFT JOIN Users u ON ph.RecordedBy = u.Id
+                WHERE ph.VIN = @vin
+                ORDER BY ph.DatePaid DESC", con);
+            cmd.Parameters.AddWithValue("@vin", vin);
+            return FillDataTable(cmd);
+        }
+
+        public static bool VehicleORNumberExists(string orNumber)
+        {
+            try
+            {
+                using var con = OpenConnection();
+                using var cmd = new SqlCommand(
+                    "SELECT 1 FROM VehiclePermitHistory WHERE ORNumber = @or", con);
+                cmd.Parameters.AddWithValue("@or", orNumber.Trim());
+                return cmd.ExecuteScalar() != null;
+            }
+            catch { return false; }
+        }
+
+        public static (int Total, int Paid, int Unpaid) GetVehiclePermitSummary()
+        {
+            using var con = OpenConnection();
+            using var cmd = new SqlCommand(@"
+                SELECT
+                    COUNT(*)                                                              AS Total,
+                    ISNULL(SUM(CASE WHEN PermitStatus = 'Paid'   THEN 1 ELSE 0 END), 0) AS Paid,
+                    ISNULL(SUM(CASE WHEN PermitStatus = 'Unpaid' THEN 1 ELSE 0 END), 0) AS Unpaid
+                FROM VehiclePermits
+                WHERE IsArchived = 0", con);
+            using var reader = cmd.ExecuteReader();
+            if (reader.Read())
+                return (
+                    Convert.ToInt32(reader["Total"]),
+                    Convert.ToInt32(reader["Paid"]),
+                    Convert.ToInt32(reader["Unpaid"]));
+            return (0, 0, 0);
+        }
+
+        public static int ResetAnnualVehiclePermitStatus()
+        {
+            if (DateTime.Today.Month != 1 || DateTime.Today.Day != 1) return 0;
+
+            using var con = OpenConnection();
+            using var cmd = new SqlCommand(@"
+                UPDATE VehiclePermits
+                SET    PermitStatus = 'Unpaid'
+                WHERE  PermitStatus = 'Paid'
+                AND    IsArchived   = 0", con);
+            return cmd.ExecuteNonQuery();
         }
 
         // ===================== PASSWORD HASHING ===================== //

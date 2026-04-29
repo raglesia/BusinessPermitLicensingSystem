@@ -1,5 +1,7 @@
-﻿using ClosedXML.Excel;
+﻿using BusinessPermitLicensingSystem.Models;
+using ClosedXML.Excel;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Globalization;
@@ -13,7 +15,8 @@ namespace BusinessPermitLicensingSystem.Forms
     public partial class VehiclePermitLists : Form
     {
         // ===================== FIELDS ===================== //
-        private DataTable _dt = new DataTable();
+        private DataTable _dt = new DataTable(); // working copy
+        private DataTable _dtOriginal = new DataTable(); // master copy — never modified
         private bool _sortAsc = true;
         private int _lastSortCol = -1;
 
@@ -26,16 +29,17 @@ namespace BusinessPermitLicensingSystem.Forms
             LoadRecords();
         }
 
+        // ===================== FORM LOAD ===================== //
         private void VehiclePermitLists_Load(object sender, EventArgs e)
         {
             lblUsername.Text = $"{Session.CurrentFullName} | {Session.CurrentPosition}";
+            btnGenerateReceipt.Focus();
 
             this.Icon = new Icon(Path.Combine(
                 Application.StartupPath, "Resources", "MasinlocLogoIcon.ico"));
         }
 
         // ===================== SETUP ===================== //
-
         private void SetupGrid()
         {
             typeof(DataGridView)
@@ -48,12 +52,31 @@ namespace BusinessPermitLicensingSystem.Forms
             dataGridView1.AllowUserToDeleteRows = false;
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView1.MultiSelect = false;
-            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridView1.RowHeadersVisible = false;
-            dataGridView1.ReadOnly = true;
 
-            dataGridView1.ColumnHeaderMouseClick += dataGridView1_ColumnHeaderMouseClick;
-            dataGridView1.CellDoubleClick += dataGridView1_CellDoubleClick;
+            dataGridView1.DataBindingComplete += DataGridView1_DataBindingComplete;
+        }
+
+        // ← KEY FIX: mirrors ProfilingLists DataBindingComplete pattern
+        // This fires every time DataSource is set, ensuring columns are
+        // always properly configured after any sort or reload
+        private void DataGridView1_DataBindingComplete(object? sender, DataGridViewBindingCompleteEventArgs e)
+        {
+            if (dataGridView1.Columns.Contains("Date Added"))
+                dataGridView1.Columns["Date Added"].Visible = false;
+
+            if (dataGridView1.Columns.Contains("Permit Year"))
+                dataGridView1.Columns["Permit Year"].Visible = false;
+
+            foreach (DataGridViewColumn col in dataGridView1.Columns)
+            {
+                col.ReadOnly = true;
+                col.SortMode = DataGridViewColumnSortMode.Programmatic;
+            }
+
+            ColorPermitStatusColumn();
+            AlternateRowColors();
         }
 
         private void SetupFilters()
@@ -62,25 +85,28 @@ namespace BusinessPermitLicensingSystem.Forms
             txtSearch.TextChanged += (s, e) => ApplyFilter();
         }
 
+        // ===================== LOAD ===================== //
         public void LoadRecords()
         {
+            dataGridView1.SuspendLayout();
             dataGridView1.DataSource = null;
-            _dt = Database.GetAllVehiclePermits();
+
+            _dtOriginal = Database.GetAllVehiclePermits();
+            _dt = _dtOriginal.Copy();
             dataGridView1.DataSource = _dt;
 
-            foreach (DataGridViewColumn col in dataGridView1.Columns)
-            {
-                col.ReadOnly = true;
-                col.SortMode = DataGridViewColumnSortMode.Programmatic;
-            }
-
-            AlternateRowColors();
             lblTotalRecords.Text = $"Total Records: {_dt.Rows.Count}";
             _sortAsc = true;
             _lastSortCol = -1;
+
+            dataGridView1.ResumeLayout();
+            LoadStatistics();
         }
 
-        private void dataGridView1_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        // ===================== SORTING ===================== //
+        // KEY FIX: always sort from _dtOriginal, same as dtProfiles in ProfilingLists
+        private void dataGridView1_ColumnHeaderMouseClick(
+            object? sender, DataGridViewCellMouseEventArgs e)
         {
             string header = dataGridView1.Columns[e.ColumnIndex].HeaderText;
 
@@ -102,26 +128,21 @@ namespace BusinessPermitLicensingSystem.Forms
                     return parts.Length >= 3 && int.TryParse(parts[2], out int n) ? n : 0;
                 }
 
+                // Always sort from _dtOriginal
+                var rows = _dtOriginal.AsEnumerable();
                 var sorted = (_sortAsc
-                    ? _dt.AsEnumerable().OrderBy(ParseSuffix)
-                    : _dt.AsEnumerable().OrderByDescending(ParseSuffix))
+                    ? rows.OrderBy(ParseSuffix)
+                    : rows.OrderByDescending(ParseSuffix))
                     .CopyToDataTable();
 
                 dataGridView1.DataSource = sorted;
             }
             else
             {
-                _dt.DefaultView.Sort = $"[{header}] {dir}";
-                dataGridView1.DataSource = _dt.DefaultView.ToTable();
+                // Always sort from _dtOriginal, same as dtProfiles.DefaultView in ProfilingLists
+                _dtOriginal.DefaultView.Sort = $"[{header}] {dir}";
+                dataGridView1.DataSource = _dtOriginal.DefaultView.ToTable();
             }
-
-            foreach (DataGridViewColumn col in dataGridView1.Columns)
-            {
-                col.ReadOnly = true;
-                col.SortMode = DataGridViewColumnSortMode.Programmatic;
-            }
-
-            AlternateRowColors();
 
             dataGridView1.Columns[e.ColumnIndex].HeaderCell.SortGlyphDirection =
                 _sortAsc ? SortOrder.Ascending : SortOrder.Descending;
@@ -129,6 +150,7 @@ namespace BusinessPermitLicensingSystem.Forms
             lblTotalRecords.Text = $"Total Records: {dataGridView1.Rows.Count}";
         }
 
+        // ===================== FILTERING ===================== //
         private void ApplyFilter()
         {
             try
@@ -158,8 +180,9 @@ namespace BusinessPermitLicensingSystem.Forms
             }
         }
 
-        // ===================== EDIT ===================== //
-        private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        // ===================== EDIT (double-click) ===================== //
+        private void dataGridView1_CellDoubleClick(
+            object? sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
 
@@ -186,6 +209,20 @@ namespace BusinessPermitLicensingSystem.Forms
             }
         }
 
+        // ===================== ADD ===================== //
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            var form = new VehicleProfiling();
+            form.ShowDialog();
+
+            if (form.RecordSaved)
+            {
+                LoadRecords();
+                HighLightLastAdded();
+            }
+        }
+
+        // ===================== DELETE ===================== //
         private void btnDelete_Click(object sender, EventArgs e)
         {
             if (dataGridView1.SelectedRows.Count == 0)
@@ -222,6 +259,7 @@ namespace BusinessPermitLicensingSystem.Forms
             }
         }
 
+        // ===================== ARCHIVE ===================== //
         private void btnArchive_Click(object sender, EventArgs e)
         {
             if (dataGridView1.SelectedRows.Count == 0)
@@ -258,6 +296,7 @@ namespace BusinessPermitLicensingSystem.Forms
             }
         }
 
+        // ===================== EXPORT ===================== //
         private async void btnExport_Click(object sender, EventArgs e)
         {
             if (_dt.Rows.Count == 0)
@@ -311,13 +350,199 @@ namespace BusinessPermitLicensingSystem.Forms
             }
         }
 
-        private void btnImport_Click(object sender, EventArgs e)
+        // ===================== IMPORT ===================== //
+        private async void btnImport_Click(object sender, EventArgs e)
         {
+            using var ofd = new OpenFileDialog();
+            ofd.Title = "Select Import File";
+            ofd.Filter = "Supported Files|*.csv;*.xlsx|CSV Files|*.csv|Excel Files|*.xlsx";
 
+            if (ofd.ShowDialog() != DialogResult.OK) return;
+
+            string filePath = ofd.FileName;
+            string ext = Path.GetExtension(filePath).ToLower();
+
+            btnImport.Enabled = false;
+            Cursor = Cursors.WaitCursor;
+            lblTotalRecords.Text = "Importing... please wait.";
+
+            try
+            {
+                var (imported, skipped) = await Task.Run(() =>
+                {
+                    var existingPlates = Database.GetAllPlateNumbers();
+
+                    List<VehicleImportRow> rows = ext == ".csv"
+                        ? ReadVehicleCsv(filePath)
+                        : ReadVehicleExcel(filePath);
+
+                    return ImportVehiclesToDatabase(rows, existingPlates);
+                });
+
+                LoadRecords();
+
+                string summary = $"Import Complete!\n\n" +
+                                 $"✅ Imported : {imported} records\n" +
+                                 $"⚠️ Skipped  : {skipped.Count} records";
+
+                if (skipped.Count > 0)
+                {
+                    summary += "\n\nSkipped Records:\n";
+                    foreach (var s in skipped)
+                        summary += $"  - {s}\n";
+                }
+
+                MessageBox.Show(summary, "Import Result",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Import failed: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                btnImport.Enabled = true;
+                Cursor = Cursors.Default;
+                lblTotalRecords.Text = $"Total Records: {_dt.Rows.Count}";
+            }
+        }
+
+        private List<VehicleImportRow> ReadVehicleCsv(string filePath)
+        {
+            var rows = new List<VehicleImportRow>();
+            var config = new CsvHelper.Configuration.CsvConfiguration(
+                CultureInfo.InvariantCulture)
+            {
+                MissingFieldFound = null
+            };
+
+            using var reader = new StreamReader(filePath);
+            using var csv = new CsvHelper.CsvReader(reader, config);
+
+            csv.Read();
+            csv.ReadHeader();
+
+            while (csv.Read())
+            {
+                rows.Add(new VehicleImportRow
+                {
+                    CompanyName = csv.GetField("CompanyName") ?? "",
+                    DriverName = csv.GetField("DriverName") ?? "",
+                    PlateNo = csv.GetField("PlateNo") ?? "",
+                    SECRegNo = csv.GetField("SECRegNo") ?? "",
+                    DTINumber = csv.GetField("DTINumber") ?? "",
+                });
+            }
+
+            return rows;
+        }
+
+        private List<VehicleImportRow> ReadVehicleExcel(string filePath)
+        {
+            var rows = new List<VehicleImportRow>();
+
+            using var workbook = new XLWorkbook(filePath);
+            var ws = workbook.Worksheet(1);
+            var dataRows = ws.RowsUsed().Skip(1);
+
+            foreach (var row in dataRows)
+            {
+                rows.Add(new VehicleImportRow
+                {
+                    CompanyName = row.Cell(1).GetString(),
+                    DriverName = row.Cell(2).GetString(),
+                    PlateNo = row.Cell(3).GetString(),
+                    SECRegNo = row.Cell(4).GetString(),
+                    DTINumber = row.Cell(5).GetString(),
+                });
+            }
+
+            return rows;
+        }
+
+        private (int Imported, List<string> Skipped) ImportVehiclesToDatabase(
+            List<VehicleImportRow> rows,
+            HashSet<string> existingPlates)
+        {
+            int imported = 0;
+            var skipped = new List<string>();
+            var validRows = new DataTable();
+
+            validRows.Columns.Add("VIN");
+            validRows.Columns.Add("CompanyName");
+            validRows.Columns.Add("DriverName");
+            validRows.Columns.Add("PlateNo");
+            validRows.Columns.Add("SECRegNo");
+            validRows.Columns.Add("DTINumber");
+
+            string year = DateTime.Now.Year.ToString();
+            int nextNumber = 1;
+
+            using (var con = new Microsoft.Data.SqlClient.SqlConnection(
+                Database.GetConnectionString()))
+            {
+                con.Open();
+                using var cmd = new Microsoft.Data.SqlClient.SqlCommand(@"
+                    SELECT ISNULL(MAX(CAST(RIGHT(VIN, 4) AS INT)), 0)
+                    FROM   VehiclePermits
+                    WHERE  VIN LIKE @pattern", con);
+                cmd.Parameters.AddWithValue("@pattern", $"VIN-{year}-%");
+                var result = cmd.ExecuteScalar();
+                if (result != DBNull.Value && result != null)
+                    nextNumber = Convert.ToInt32(result) + 1;
+            }
+
+            foreach (var row in rows)
+            {
+                if (string.IsNullOrWhiteSpace(row.CompanyName) &&
+                    string.IsNullOrWhiteSpace(row.PlateNo))
+                {
+                    skipped.Add("Empty row skipped");
+                    continue;
+                }
+
+                if (string.IsNullOrWhiteSpace(row.PlateNo))
+                {
+                    skipped.Add($"{row.CompanyName} — missing plate number");
+                    continue;
+                }
+
+                string plateUpper = row.PlateNo.Trim().ToUpper();
+
+                if (existingPlates.Contains(plateUpper))
+                {
+                    skipped.Add($"Plate {plateUpper} — duplicate, skipped");
+                    continue;
+                }
+
+                string vin = $"VIN-{year}-{nextNumber:D4}";
+                nextNumber++;
+
+                validRows.Rows.Add(
+                    vin,
+                    row.CompanyName.Trim(),
+                    row.DriverName.Trim(),
+                    plateUpper,
+                    row.SECRegNo.Trim(),
+                    row.DTINumber.Trim()
+                );
+
+                existingPlates.Add(plateUpper);
+                imported++;
+            }
+
+            if (validRows.Rows.Count > 0)
+            {
+                var result = Database.ImportVehiclePermits(validRows);
+                if (!result.Success)
+                    throw new Exception(result.ErrorMessage);
+            }
+
+            return (imported, skipped);
         }
 
         // ===================== HELPERS ===================== //
-
         private void AlternateRowColors()
         {
             foreach (DataGridViewRow row in dataGridView1.Rows)
@@ -351,14 +576,45 @@ namespace BusinessPermitLicensingSystem.Forms
             dataGridView1.FirstDisplayedScrollingRowIndex = 0;
         }
 
+        // ===================== NAVIGATION ===================== //
         private void btnMenu_Click(object sender, EventArgs e)
         {
             new DashboardForm().Show();
             this.Hide();
         }
 
-        // ===================== WINDOW SETTINGS ===================== //
+        private void ColorPermitStatusColumn()
+        {
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                if (row.IsNewRow) continue;
 
+                var cell = row.Cells["Permit Status"];
+                if (cell?.Value == null) continue;
+
+                switch (cell.Value.ToString())
+                {
+                    case "Paid":
+                        cell.Style.BackColor = Color.LightGreen;
+                        cell.Style.ForeColor = Color.DarkGreen;
+                        break;
+                    case "Unpaid":
+                        cell.Style.BackColor = Color.LightCoral;
+                        cell.Style.ForeColor = Color.DarkRed;
+                        break;
+                }
+            }
+        }
+
+        private void LoadStatistics()
+        {
+            var (total, paid, unpaid) = Database.GetVehiclePermitSummary();
+            lblTotalVehicles.Text = $"{total:N0}";
+            lblTotalPaid.Text = $"{paid:N0}";
+            lblTotalUnpaid.Text = $"{unpaid:N0}";
+        }
+
+        // ===================== WINDOW SETTINGS ===================== //
         protected override CreateParams CreateParams
         {
             get
@@ -369,6 +625,5 @@ namespace BusinessPermitLicensingSystem.Forms
                 return cp;
             }
         }
-
     }
 }

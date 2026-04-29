@@ -123,9 +123,29 @@ namespace BusinessPermitLicensingSystem.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap icons8_container_truck_64 {
+            get {
+                object obj = ResourceManager.GetObject("icons8-container-truck-64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap icons8_create_64 {
             get {
                 object obj = ResourceManager.GetObject("icons8-create-64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap icons8_delivery_32 {
+            get {
+                object obj = ResourceManager.GetObject("icons8-delivery-32", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -306,6 +326,16 @@ namespace BusinessPermitLicensingSystem.Properties {
         internal static System.Drawing.Bitmap MasinlocLogoHD {
             get {
                 object obj = ResourceManager.GetObject("MasinlocLogoHD", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Untitled_1__1_ {
+            get {
+                object obj = ResourceManager.GetObject("Untitled-1 (1)", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

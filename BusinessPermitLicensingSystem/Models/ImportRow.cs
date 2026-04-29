@@ -19,4 +19,14 @@ namespace BusinessPermitLicensingSystem.Models
         public string AdditionalCharge { get; set; } = "";
         public string IsArchived { get; set; } = "0";
     }
-}
+
+        // ── VEHICLE PERMIT IMPORT ──────────────────────────────────────
+        public class VehicleImportRow
+        {
+            public string CompanyName { get; set; } = "";
+            public string DriverName { get; set; } = "";
+            public string PlateNo { get; set; } = "";
+            public string SECRegNo { get; set; } = "";
+            public string DTINumber { get; set; } = "";
+        }
+    }
