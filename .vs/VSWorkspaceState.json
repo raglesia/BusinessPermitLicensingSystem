@@ -2,8 +2,9 @@
   "ExpandedNodes": [
     "",
     "\\BusinessPermitLicensingSystem",
-    "\\BusinessPermitLicensingSystem\\Forms"
+    "\\BusinessPermitLicensingSystem\\bin",
+    "\\BusinessPermitLicensingSystem\\Database"
   ],
-  "SelectedNode": "\\BusinessPermitLicensingSystem.slnx",
+  "SelectedNode": "\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj",
   "PreviewInSolutionExplorer": false
 }

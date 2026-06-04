@@ -39,7 +39,10 @@ namespace BusinessPermitLicensingSystem.Forms
         }
 
         private void VehicleProfiling_Load(object sender, EventArgs e)
+
         {
+            lblUsername.Text = $"{Session.CurrentFullName} | {Session.CurrentPosition}";
+
             if (!_isEditMode)
             {
                 txtVIN.Text = Database.GenerateUniqueVIN();
@@ -99,6 +102,18 @@ namespace BusinessPermitLicensingSystem.Forms
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        // ===================== EVENTS ===================== //
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                const int CS_NOCLOSE = 0x200;
+                CreateParams cp = base.CreateParams;
+                cp.ClassStyle |= CS_NOCLOSE;
+                return cp;
+            }
         }
     }
 }

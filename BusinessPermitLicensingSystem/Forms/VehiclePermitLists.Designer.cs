@@ -65,13 +65,14 @@
             dataGridView1.AllowUserToResizeRows = false;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Dock = DockStyle.Fill;
-            dataGridView1.Location = new Point(3, 123);
+            dataGridView1.Location = new Point(2, 98);
+            dataGridView1.Margin = new Padding(2);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.ReadOnly = true;
             dataGridView1.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
             dataGridView1.RowHeadersWidth = 62;
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dataGridView1.Size = new Size(1890, 789);
+            dataGridView1.Size = new Size(1516, 639);
             dataGridView1.TabIndex = 0;
             dataGridView1.CellDoubleClick += dataGridView1_CellDoubleClick;
             dataGridView1.ColumnHeaderMouseClick += dataGridView1_ColumnHeaderMouseClick;
@@ -81,10 +82,11 @@
             txtSearch.BackColor = SystemColors.GradientActiveCaption;
             txtSearch.Dock = DockStyle.Fill;
             txtSearch.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            txtSearch.Location = new Point(3, 78);
+            txtSearch.Location = new Point(2, 62);
+            txtSearch.Margin = new Padding(2);
             txtSearch.Name = "txtSearch";
             txtSearch.PlaceholderText = "Search Records:";
-            txtSearch.Size = new Size(1890, 31);
+            txtSearch.Size = new Size(1516, 27);
             txtSearch.TabIndex = 1;
             // 
             // lblTotalRecords
@@ -92,9 +94,10 @@
             lblTotalRecords.AutoSize = true;
             lblTotalRecords.Dock = DockStyle.Right;
             lblTotalRecords.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblTotalRecords.Location = new Point(1708, 0);
+            lblTotalRecords.Location = new Point(1368, 0);
+            lblTotalRecords.Margin = new Padding(2, 0, 2, 0);
             lblTotalRecords.Name = "lblTotalRecords";
-            lblTotalRecords.Size = new Size(182, 25);
+            lblTotalRecords.Size = new Size(148, 20);
             lblTotalRecords.TabIndex = 2;
             lblTotalRecords.Text = "Total Records: 00000";
             // 
@@ -104,8 +107,9 @@
             lblUsername.Dock = DockStyle.Left;
             lblUsername.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblUsername.Location = new Point(0, 0);
+            lblUsername.Margin = new Padding(2, 0, 2, 0);
             lblUsername.Name = "lblUsername";
-            lblUsername.Size = new Size(96, 25);
+            lblUsername.Size = new Size(78, 20);
             lblUsername.TabIndex = 3;
             lblUsername.Text = "Username";
             // 
@@ -114,9 +118,10 @@
             lblTotalVehicles.AutoSize = true;
             lblTotalVehicles.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblTotalVehicles.ForeColor = Color.DarkGreen;
-            lblTotalVehicles.Location = new Point(694, 0);
+            lblTotalVehicles.Location = new Point(555, 0);
+            lblTotalVehicles.Margin = new Padding(2, 0, 2, 0);
             lblTotalVehicles.Name = "lblTotalVehicles";
-            lblTotalVehicles.Size = new Size(52, 25);
+            lblTotalVehicles.Size = new Size(41, 20);
             lblTotalVehicles.TabIndex = 15;
             lblTotalVehicles.Text = "0000";
             // 
@@ -125,9 +130,10 @@
             lblTotalPaid.AutoSize = true;
             lblTotalPaid.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblTotalPaid.ForeColor = Color.DarkBlue;
-            lblTotalPaid.Location = new Point(923, 0);
+            lblTotalPaid.Location = new Point(738, 0);
+            lblTotalPaid.Margin = new Padding(2, 0, 2, 0);
             lblTotalPaid.Name = "lblTotalPaid";
-            lblTotalPaid.Size = new Size(52, 25);
+            lblTotalPaid.Size = new Size(41, 20);
             lblTotalPaid.TabIndex = 16;
             lblTotalPaid.Text = "0000";
             // 
@@ -136,9 +142,10 @@
             lblTotalUnpaid.AutoSize = true;
             lblTotalUnpaid.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblTotalUnpaid.ForeColor = Color.Red;
-            lblTotalUnpaid.Location = new Point(1228, 0);
+            lblTotalUnpaid.Location = new Point(982, 0);
+            lblTotalUnpaid.Margin = new Padding(2, 0, 2, 0);
             lblTotalUnpaid.Name = "lblTotalUnpaid";
-            lblTotalUnpaid.Size = new Size(52, 25);
+            lblTotalUnpaid.Size = new Size(41, 20);
             lblTotalUnpaid.TabIndex = 17;
             lblTotalUnpaid.Text = "0000";
             // 
@@ -147,9 +154,10 @@
             btnPaymentHistory.BackColor = SystemColors.GradientActiveCaption;
             btnPaymentHistory.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnPaymentHistory.Image = Properties.Resources.icons8_payment_history_64;
-            btnPaymentHistory.Location = new Point(228, 0);
+            btnPaymentHistory.Location = new Point(182, 0);
+            btnPaymentHistory.Margin = new Padding(2);
             btnPaymentHistory.Name = "btnPaymentHistory";
-            btnPaymentHistory.Size = new Size(219, 68);
+            btnPaymentHistory.Size = new Size(175, 54);
             btnPaymentHistory.TabIndex = 2;
             btnPaymentHistory.Text = "Payment History";
             btnPaymentHistory.UseVisualStyleBackColor = false;
@@ -159,9 +167,10 @@
             btnGenerateReceipt.BackColor = SystemColors.GradientActiveCaption;
             btnGenerateReceipt.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnGenerateReceipt.Image = Properties.Resources.icons8_receipt_64;
-            btnGenerateReceipt.Location = new Point(3, 0);
+            btnGenerateReceipt.Location = new Point(2, 0);
+            btnGenerateReceipt.Margin = new Padding(2);
             btnGenerateReceipt.Name = "btnGenerateReceipt";
-            btnGenerateReceipt.Size = new Size(219, 68);
+            btnGenerateReceipt.Size = new Size(175, 54);
             btnGenerateReceipt.TabIndex = 1;
             btnGenerateReceipt.Text = "Generate Receipt";
             btnGenerateReceipt.UseVisualStyleBackColor = false;
@@ -171,9 +180,10 @@
             btnArchive.BackColor = SystemColors.GradientActiveCaption;
             btnArchive.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnArchive.Image = Properties.Resources.icons8_archive_64;
-            btnArchive.Location = new Point(453, 0);
+            btnArchive.Location = new Point(362, 0);
+            btnArchive.Margin = new Padding(2);
             btnArchive.Name = "btnArchive";
-            btnArchive.Size = new Size(219, 68);
+            btnArchive.Size = new Size(175, 54);
             btnArchive.TabIndex = 3;
             btnArchive.Text = "Archive Record";
             btnArchive.UseVisualStyleBackColor = false;
@@ -184,9 +194,10 @@
             btnDelete.BackColor = SystemColors.GradientActiveCaption;
             btnDelete.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnDelete.Image = Properties.Resources.icons8_remove_64;
-            btnDelete.Location = new Point(678, 0);
+            btnDelete.Location = new Point(542, 0);
+            btnDelete.Margin = new Padding(2);
             btnDelete.Name = "btnDelete";
-            btnDelete.Size = new Size(219, 68);
+            btnDelete.Size = new Size(175, 54);
             btnDelete.TabIndex = 4;
             btnDelete.Text = "Delete Record";
             btnDelete.UseVisualStyleBackColor = false;
@@ -197,9 +208,10 @@
             btnImport.BackColor = SystemColors.GradientActiveCaption;
             btnImport.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnImport.Image = Properties.Resources.icons8_import_csv_64;
-            btnImport.Location = new Point(1218, 0);
+            btnImport.Location = new Point(974, 0);
+            btnImport.Margin = new Padding(2);
             btnImport.Name = "btnImport";
-            btnImport.Size = new Size(219, 68);
+            btnImport.Size = new Size(175, 54);
             btnImport.TabIndex = 6;
             btnImport.Text = "Import Records";
             btnImport.UseVisualStyleBackColor = false;
@@ -210,9 +222,10 @@
             btnReport.BackColor = SystemColors.GradientActiveCaption;
             btnReport.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnReport.Image = Properties.Resources.icons8_ledger_64;
-            btnReport.Location = new Point(993, 0);
+            btnReport.Location = new Point(794, 0);
+            btnReport.Margin = new Padding(2);
             btnReport.Name = "btnReport";
-            btnReport.Size = new Size(219, 68);
+            btnReport.Size = new Size(175, 54);
             btnReport.TabIndex = 5;
             btnReport.Text = "Collection Report";
             btnReport.UseVisualStyleBackColor = false;
@@ -222,9 +235,10 @@
             btnExport.BackColor = SystemColors.GradientActiveCaption;
             btnExport.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnExport.Image = Properties.Resources.icons8_xls_64;
-            btnExport.Location = new Point(1443, 0);
+            btnExport.Location = new Point(1154, 0);
+            btnExport.Margin = new Padding(2);
             btnExport.Name = "btnExport";
-            btnExport.Size = new Size(219, 68);
+            btnExport.Size = new Size(175, 54);
             btnExport.TabIndex = 7;
             btnExport.Text = "Export Records";
             btnExport.UseVisualStyleBackColor = false;
@@ -235,9 +249,10 @@
             btnMenu.BackColor = SystemColors.GradientActiveCaption;
             btnMenu.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnMenu.Image = Properties.Resources.icons8_menu_64;
-            btnMenu.Location = new Point(1668, 0);
+            btnMenu.Location = new Point(1334, 0);
+            btnMenu.Margin = new Padding(2);
             btnMenu.Name = "btnMenu";
-            btnMenu.Size = new Size(219, 68);
+            btnMenu.Size = new Size(175, 54);
             btnMenu.TabIndex = 8;
             btnMenu.Text = "Menu";
             btnMenu.UseVisualStyleBackColor = false;
@@ -253,13 +268,14 @@
             tableLayoutPanel1.Controls.Add(panel2, 0, 3);
             tableLayoutPanel1.Dock = DockStyle.Fill;
             tableLayoutPanel1.Location = new Point(0, 0);
+            tableLayoutPanel1.Margin = new Padding(2);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 4;
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 75F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 45F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 36F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 35F));
-            tableLayoutPanel1.Size = new Size(1896, 950);
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 28F));
+            tableLayoutPanel1.Size = new Size(1520, 767);
             tableLayoutPanel1.TabIndex = 26;
             // 
             // panel1
@@ -273,9 +289,10 @@
             panel1.Controls.Add(btnDelete);
             panel1.Controls.Add(btnImport);
             panel1.Dock = DockStyle.Fill;
-            panel1.Location = new Point(3, 3);
+            panel1.Location = new Point(2, 2);
+            panel1.Margin = new Padding(2);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1890, 69);
+            panel1.Size = new Size(1516, 56);
             panel1.TabIndex = 0;
             // 
             // panel2
@@ -291,18 +308,20 @@
             panel2.Controls.Add(lblTotalVehicles);
             panel2.Controls.Add(lblTotalPaid);
             panel2.Dock = DockStyle.Fill;
-            panel2.Location = new Point(3, 918);
+            panel2.Location = new Point(2, 741);
+            panel2.Margin = new Padding(2);
             panel2.Name = "panel2";
-            panel2.Size = new Size(1890, 29);
+            panel2.Size = new Size(1516, 24);
             panel2.TabIndex = 2;
             // 
             // label6
             // 
             label6.AutoSize = true;
             label6.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label6.Location = new Point(1077, 0);
+            label6.Location = new Point(862, 0);
+            label6.Margin = new Padding(2, 0, 2, 0);
             label6.Name = "label6";
-            label6.Size = new Size(18, 25);
+            label6.Size = new Size(14, 20);
             label6.TabIndex = 23;
             label6.Text = "|";
             // 
@@ -310,9 +329,10 @@
             // 
             label5.AutoSize = true;
             label5.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label5.Location = new Point(783, 0);
+            label5.Location = new Point(626, 0);
+            label5.Margin = new Padding(2, 0, 2, 0);
             label5.Name = "label5";
-            label5.Size = new Size(18, 25);
+            label5.Size = new Size(14, 20);
             label5.TabIndex = 22;
             label5.Text = "|";
             // 
@@ -320,9 +340,10 @@
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label3.Location = new Point(1101, 0);
+            label3.Location = new Point(881, 0);
+            label3.Margin = new Padding(2, 0, 2, 0);
             label3.Name = "label3";
-            label3.Size = new Size(121, 25);
+            label3.Size = new Size(100, 20);
             label3.TabIndex = 20;
             label3.Text = "Total Unpaid:";
             // 
@@ -330,9 +351,10 @@
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label2.Location = new Point(560, 0);
+            label2.Location = new Point(448, 0);
+            label2.Margin = new Padding(2, 0, 2, 0);
             label2.Name = "label2";
-            label2.Size = new Size(128, 25);
+            label2.Size = new Size(105, 20);
             label2.TabIndex = 19;
             label2.Text = "Total Vehicles:";
             // 
@@ -340,22 +362,24 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.Location = new Point(821, 0);
+            label1.Location = new Point(657, 0);
+            label1.Margin = new Padding(2, 0, 2, 0);
             label1.Name = "label1";
-            label1.Size = new Size(96, 25);
+            label1.Size = new Size(80, 20);
             label1.TabIndex = 18;
             label1.Text = "Total Paid:";
             // 
             // VehiclePermitLists
             // 
-            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.GradientActiveCaption;
-            ClientSize = new Size(1896, 950);
+            ClientSize = new Size(1520, 767);
             Controls.Add(tableLayoutPanel1);
             FormBorderStyle = FormBorderStyle.FixedSingle;
+            Margin = new Padding(2);
             MaximizeBox = false;
-            MinimumSize = new Size(1918, 1006);
+            MinimumSize = new Size(1538, 814);
             Name = "VehiclePermitLists";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Masinloc BPLS - Special Vehicle Permit List";
