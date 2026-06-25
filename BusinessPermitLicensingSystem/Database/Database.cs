@@ -26,9 +26,11 @@ namespace BusinessPermitLicensingSystem
             return con;
         }
 
-        private static void ExecuteNonQuery(SqlConnection con, string sql)
+        private static void ExecuteNonQuery(SqlConnection con, string sql, SqlTransaction? tran = null)
         {
-            using var cmd = new SqlCommand(sql, con);
+            using var cmd = tran != null
+                ? new SqlCommand(sql, con, tran)
+                : new SqlCommand(sql, con);
             cmd.ExecuteNonQuery();
         }
 
@@ -38,6 +40,29 @@ namespace BusinessPermitLicensingSystem
             var dt = new DataTable();
             adapter.Fill(dt);
             return dt;
+        }
+
+        private static SqlParameter ParamNVarChar(string name, string value, int size)
+            => new SqlParameter(name, SqlDbType.NVarChar, size) { Value = (object)value ?? DBNull.Value };
+
+        private static SqlParameter ParamDecimal(string name, decimal value)
+            => new SqlParameter(name, SqlDbType.Decimal) { Precision = 18, Scale = 2, Value = value };
+
+        private static SqlParameter ParamInt(string name, int value)
+            => new SqlParameter(name, SqlDbType.Int) { Value = value };
+
+        private static SqlParameter ParamDateTime(string name, DateTime value)
+            => new SqlParameter(name, SqlDbType.DateTime) { Value = value };
+
+        private static SqlParameter ParamNullableString(string name, string? value, int size)
+            => new SqlParameter(name, SqlDbType.NVarChar, size) { Value = (object?)value ?? DBNull.Value };
+
+        private static string NormaliseDateString(string? raw)
+        {
+            if (string.IsNullOrWhiteSpace(raw)) return "";
+            if (DateTime.TryParse(raw, out var dt))
+                return dt.ToString("yyyy-MM-dd");
+            return "";
         }
 
         // ===================== INITIALIZE ===================== //
@@ -131,6 +156,19 @@ namespace BusinessPermitLicensingSystem
                         ('Pasalubong Center',           0, 5500, 'Flat')
                 END");
 
+
+            // ── MONTHLY RESET ─────────────────────────────────────────
+            ExecuteNonQuery(con, @"
+                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='AppSettings' AND xtype='U')
+                CREATE TABLE AppSettings (
+                    [Key]   NVARCHAR(100) PRIMARY KEY,
+                    [Value] NVARCHAR(255) NOT NULL
+                );");
+
+                        ExecuteNonQuery(con, @"
+                IF NOT EXISTS (SELECT 1 FROM AppSettings WHERE [Key] = 'LastMonthlyReset')
+                INSERT INTO AppSettings ([Key], [Value]) VALUES ('LastMonthlyReset', '2000-01');");
+
             // ── SPECIAL VEHICLE PERMIT ─────────────────────────────────────────
             ExecuteNonQuery(con, @"
                 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='VehiclePermits' AND xtype='U')
@@ -160,34 +198,48 @@ namespace BusinessPermitLicensingSystem
                 );");
 
             // ── MIGRATIONS ─────────────────────────────────────────────────────
-            string[] migrations =
+            var migrations = new (string Label, string Sql)[]
             {
-                "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('Profiling') AND name = 'StartDate')        ALTER TABLE Profiling ADD StartDate        NVARCHAR(50)  DEFAULT ''",
-                "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('Profiling') AND name = 'Penalty')          ALTER TABLE Profiling ADD Penalty          DECIMAL(18,2) DEFAULT 0",
-                "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('Profiling') AND name = 'AdditionalCharge') ALTER TABLE Profiling ADD AdditionalCharge DECIMAL(18,2) DEFAULT 0",
-                "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('Users')     AND name = 'Position')         ALTER TABLE Users     ADD Position         NVARCHAR(255) NOT NULL DEFAULT ''",
-                "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('Profiling') AND name = 'IsArchived')       ALTER TABLE Profiling ADD IsArchived        INT           DEFAULT 0",
+                ("Profiling.StartDate",
+                 "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('Profiling') AND name = 'StartDate')        ALTER TABLE Profiling ADD StartDate        NVARCHAR(50)  DEFAULT ''"),
+                ("Profiling.Penalty",
+                 "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('Profiling') AND name = 'Penalty')          ALTER TABLE Profiling ADD Penalty          DECIMAL(18,2) DEFAULT 0"),
+                ("Profiling.AdditionalCharge",
+                 "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('Profiling') AND name = 'AdditionalCharge') ALTER TABLE Profiling ADD AdditionalCharge DECIMAL(18,2) DEFAULT 0"),
+                ("Users.Position",
+                 "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('Users')     AND name = 'Position')         ALTER TABLE Users     ADD Position         NVARCHAR(255) NOT NULL DEFAULT ''"),
+                ("Profiling.IsArchived",
+                 "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('Profiling') AND name = 'IsArchived')       ALTER TABLE Profiling ADD IsArchived        INT           DEFAULT 0"),
             };
 
-            foreach (string sql in migrations)
+            var vehicleMigrations = new (string Label, string Sql)[]
             {
-                try { ExecuteNonQuery(con, sql); }
-                catch (SqlException) { }
-            }
-
-            string[] vehicleMigrations =
-            {
-                "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('VehiclePermits') AND name = 'PermitStatus') ALTER TABLE VehiclePermits ADD PermitStatus NVARCHAR(50) NOT NULL DEFAULT 'Unpaid'",
-                 "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('VehiclePermits') AND name = 'PermitYear')   ALTER TABLE VehiclePermits ADD PermitYear   INT          NOT NULL DEFAULT 0",
+                ("VehiclePermits.PermitStatus",
+                 "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('VehiclePermits') AND name = 'PermitStatus') ALTER TABLE VehiclePermits ADD PermitStatus NVARCHAR(50) NOT NULL DEFAULT 'Unpaid'"),
+                ("VehiclePermits.PermitYear",
+                 "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('VehiclePermits') AND name = 'PermitYear')   ALTER TABLE VehiclePermits ADD PermitYear   INT          NOT NULL DEFAULT 0"),
             };
 
-            foreach (string sql in vehicleMigrations)
-            {
-                try { ExecuteNonQuery(con, sql); }
-                catch (SqlException) { }
-            }
+            RunMigrations(con, migrations);
+            RunMigrations(con, vehicleMigrations);
         }
 
+        private static void RunMigrations(SqlConnection con, (string Label, string Sql)[] migrations)
+        {
+            foreach (var (label, sql) in migrations)
+            {
+                try
+                {
+                    ExecuteNonQuery(con, sql);
+                }
+                catch (SqlException ex)
+                {
+                    if (ex.Number != 2705)
+                        throw new InvalidOperationException(
+                            $"Migration failed [{label}]: {ex.Message}", ex);
+                }
+            }
+        }
 
         // ===================== USERS ===================== //
 
@@ -195,7 +247,7 @@ namespace BusinessPermitLicensingSystem
         {
             using var con = OpenConnection();
             using var cmd = new SqlCommand("SELECT FullName FROM Users WHERE Id = @id", con);
-            cmd.Parameters.AddWithValue("@id", userId);
+            cmd.Parameters.Add(ParamInt("@id", (int)userId));
             return cmd.ExecuteScalar()?.ToString() ?? "Unknown";
         }
 
@@ -203,7 +255,7 @@ namespace BusinessPermitLicensingSystem
         {
             using var con = OpenConnection();
             using var cmd = new SqlCommand("SELECT Position FROM Users WHERE Id = @id", con);
-            cmd.Parameters.AddWithValue("@id", userId);
+            cmd.Parameters.Add(ParamInt("@id", (int)userId));
             return cmd.ExecuteScalar()?.ToString() ?? "";
         }
 
@@ -225,7 +277,7 @@ namespace BusinessPermitLicensingSystem
                 using var con = OpenConnection();
 
                 using var cmdCheck = new SqlCommand("SELECT 1 FROM Users WHERE Username = @u", con);
-                cmdCheck.Parameters.AddWithValue("@u", username);
+                cmdCheck.Parameters.Add(ParamNVarChar("@u", username, 255));
                 if (cmdCheck.ExecuteScalar() != null)
                     return (false, "Username already exists.");
 
@@ -233,10 +285,10 @@ namespace BusinessPermitLicensingSystem
                     INSERT INTO Users (FullName, Username, Position, Password)
                     VALUES (@f, @u, @pos, @p)", con);
 
-                cmd.Parameters.AddWithValue("@f", fullname.Trim());
-                cmd.Parameters.AddWithValue("@u", username);
-                cmd.Parameters.AddWithValue("@pos", position.Trim());
-                cmd.Parameters.AddWithValue("@p", HashPassword(plainPassword));
+                cmd.Parameters.Add(ParamNVarChar("@f", fullname.Trim(), 255));
+                cmd.Parameters.Add(ParamNVarChar("@u", username, 255));
+                cmd.Parameters.Add(ParamNVarChar("@pos", position.Trim(), 255));
+                cmd.Parameters.Add(ParamNVarChar("@p", HashPasswordPbkdf2(plainPassword), 512));
 
                 cmd.ExecuteNonQuery();
                 return (true, null);
@@ -263,7 +315,7 @@ namespace BusinessPermitLicensingSystem
                 using var con = OpenConnection();
                 using var cmd = new SqlCommand(
                     "SELECT Id, Password FROM Users WHERE Username = @u", con);
-                cmd.Parameters.AddWithValue("@u", username.Trim());
+                cmd.Parameters.Add(ParamNVarChar("@u", username.Trim(), 255));
 
                 using var reader = cmd.ExecuteReader();
                 if (!reader.Read())
@@ -271,8 +323,22 @@ namespace BusinessPermitLicensingSystem
 
                 long userId = reader.GetInt32(0);
                 string storedHash = reader.GetString(1);
+                reader.Close();
 
-                return VerifyPassword(plainPassword, storedHash)
+                bool valid = false;
+
+                if (IsPbkdf2Hash(storedHash))
+                {
+                    valid = VerifyPasswordPbkdf2(plainPassword, storedHash);
+                }
+                else
+                {
+                    valid = CryptographicEquals(HashPasswordSha256(plainPassword), storedHash);
+                    if (valid)
+                        RehashPassword(con, userId, plainPassword);
+                }
+
+                return valid
                     ? (true, userId.ToString())
                     : (false, "Invalid username or password.");
             }
@@ -280,6 +346,19 @@ namespace BusinessPermitLicensingSystem
             {
                 return (false, $"Login error: {ex.Message}");
             }
+        }
+
+        private static void RehashPassword(SqlConnection con, long userId, string plainPassword)
+        {
+            try
+            {
+                using var cmd = new SqlCommand(
+                    "UPDATE Users SET Password = @p WHERE Id = @id", con);
+                cmd.Parameters.Add(ParamNVarChar("@p", HashPasswordPbkdf2(plainPassword), 512));
+                cmd.Parameters.Add(ParamInt("@id", (int)userId));
+                cmd.ExecuteNonQuery();
+            }
+            catch { }
         }
 
         // ===================== STALL OWNERS PROFILING ===================== //
@@ -296,11 +375,10 @@ namespace BusinessPermitLicensingSystem
             Penalty                                             AS [Penalty],
             AdditionalCharge                                    AS [Additional Charge],
             CASE
-                WHEN ISDATE(StartDate) = 1
-                THEN FORMAT(CONVERT(DATE, StartDate), 'MM/dd/yyyy')
+                WHEN TRY_CONVERT(DATE, StartDate, 23) IS NOT NULL
+                THEN FORMAT(TRY_CONVERT(DATE, StartDate, 23), 'MM/dd/yyyy')
                 ELSE ''
             END                                                 AS [Date of Occupancy]";
-
         public static DataTable GetAllProfiles()
         {
             using var con = OpenConnection();
@@ -345,15 +423,15 @@ namespace BusinessPermitLicensingSystem
                     VALUES
                         (@sin, @f, @b, @s, @n, @sz, @r, @startDate, @additional)", con);
 
-                cmd.Parameters.AddWithValue("@sin", sin);
-                cmd.Parameters.AddWithValue("@f", fullName.Trim());
-                cmd.Parameters.AddWithValue("@b", businessName.Trim());
-                cmd.Parameters.AddWithValue("@s", businessSection.Trim());
-                cmd.Parameters.AddWithValue("@n", stallNumber.Trim());
-                cmd.Parameters.AddWithValue("@sz", stallSize.Trim());
-                cmd.Parameters.AddWithValue("@r", monthlyRental);
-                cmd.Parameters.AddWithValue("@startDate", startDate);
-                cmd.Parameters.AddWithValue("@additional", additionalCharge);
+                cmd.Parameters.Add(ParamNVarChar("@sin", sin, 100));
+                cmd.Parameters.Add(ParamNVarChar("@f", fullName.Trim(), 255));
+                cmd.Parameters.Add(ParamNVarChar("@b", businessName.Trim(), 255));
+                cmd.Parameters.Add(ParamNVarChar("@s", businessSection.Trim(), 255));
+                cmd.Parameters.Add(ParamNVarChar("@n", stallNumber.Trim(), 100));
+                cmd.Parameters.Add(ParamNVarChar("@sz", stallSize.Trim(), 100));
+                cmd.Parameters.Add(ParamDecimal("@r", monthlyRental));
+                cmd.Parameters.Add(ParamNVarChar("@startDate", NormaliseDateString(startDate), 50));
+                cmd.Parameters.Add(ParamDecimal("@additional", additionalCharge));
 
                 cmd.ExecuteNonQuery();
                 return (true, null);
@@ -388,45 +466,20 @@ namespace BusinessPermitLicensingSystem
                         AdditionalCharge = @AdditionalCharge
                     WHERE SIN = @SIN", con);
 
-                cmd.Parameters.AddWithValue("@FullName", fullName);
-                cmd.Parameters.AddWithValue("@BusinessName", businessName);
-                cmd.Parameters.AddWithValue("@BusinessSection", businessSection);
-                cmd.Parameters.AddWithValue("@StallNumber", stallNumber);
-                cmd.Parameters.AddWithValue("@StallSize", stallSize);
-                cmd.Parameters.AddWithValue("@MonthlyRental", monthlyRental);
-                cmd.Parameters.AddWithValue("@StartDate", startDate);
-                cmd.Parameters.AddWithValue("@AdditionalCharge", additionalCharge);
-                cmd.Parameters.AddWithValue("@SIN", sin);
+                cmd.Parameters.Add(ParamNVarChar("@FullName", fullName, 255));
+                cmd.Parameters.Add(ParamNVarChar("@BusinessName", businessName, 255));
+                cmd.Parameters.Add(ParamNVarChar("@BusinessSection", businessSection, 255));
+                cmd.Parameters.Add(ParamNVarChar("@StallNumber", stallNumber, 100));
+                cmd.Parameters.Add(ParamNVarChar("@StallSize", stallSize, 100));
+                cmd.Parameters.Add(ParamDecimal("@MonthlyRental", monthlyRental));
+                cmd.Parameters.Add(ParamNVarChar("@StartDate", NormaliseDateString(startDate), 50));
+                cmd.Parameters.Add(ParamDecimal("@AdditionalCharge", additionalCharge));
+                cmd.Parameters.Add(ParamNVarChar("@SIN", sin, 100));
 
                 cmd.ExecuteNonQuery();
                 return (true, null);
             }
             catch (Exception ex) { return (false, ex.Message); }
-        }
-
-        public static (bool Success, string? ErrorMessage) DeleteProfiling(string sin)
-        {
-            try
-            {
-                using var con = OpenConnection();
-                using var cmd = new SqlCommand(
-                    "DELETE FROM Profiling WHERE SIN = @SIN", con);
-                cmd.Parameters.AddWithValue("@SIN", sin);
-
-                int rows = cmd.ExecuteNonQuery();
-                return rows == 0
-                    ? (false, "Record not found.")
-                    : (true, null);
-            }
-            catch (SqlException ex) when (ex.Number == 547)
-            {
-                return (false,
-                    "This stall owner has existing payment records. Please archive instead.");
-            }
-            catch (Exception)
-            {
-                return (false, "Unexpected error occurred.");
-            }
         }
 
         public static string GenerateUniqueSIN()
@@ -439,7 +492,7 @@ namespace BusinessPermitLicensingSystem
                 SELECT MAX(CAST(RIGHT(SIN, 4) AS INT))
                 FROM   Profiling
                 WHERE  SIN LIKE @pattern", con);
-            cmd.Parameters.AddWithValue("@pattern", $"SIN-{year}-%");
+            cmd.Parameters.Add(ParamNVarChar("@pattern", $"SIN-{year}-%", 50));
 
             var result = cmd.ExecuteScalar();
             if (result != DBNull.Value && result != null)
@@ -469,7 +522,7 @@ namespace BusinessPermitLicensingSystem
                     SELECT RatePerSqm, FlatRate, RateType
                     FROM   RentalRates
                     WHERE  Section = @section", con);
-                cmd.Parameters.AddWithValue("@section", section);
+                cmd.Parameters.Add(ParamNVarChar("@section", section, 255));
 
                 using var reader = cmd.ExecuteReader();
                 if (reader.Read())
@@ -497,10 +550,10 @@ namespace BusinessPermitLicensingSystem
                         RateType   = @rateType
                     WHERE Section  = @section", con);
 
-                cmd.Parameters.AddWithValue("@ratePerSqm", ratePerSqm);
-                cmd.Parameters.AddWithValue("@flatRate", flatRate);
-                cmd.Parameters.AddWithValue("@rateType", rateType);
-                cmd.Parameters.AddWithValue("@section", section);
+                cmd.Parameters.Add(ParamDecimal("@ratePerSqm", ratePerSqm));
+                cmd.Parameters.Add(ParamDecimal("@flatRate", flatRate));
+                cmd.Parameters.Add(ParamNVarChar("@rateType", rateType, 50));
+                cmd.Parameters.Add(ParamNVarChar("@section", section, 255));
 
                 cmd.ExecuteNonQuery();
                 return (true, null);
@@ -518,10 +571,10 @@ namespace BusinessPermitLicensingSystem
                     INSERT INTO RentalRates (Section, RatePerSqm, FlatRate, RateType)
                     VALUES (@section, @ratePerSqm, @flatRate, @rateType)", con);
 
-                cmd.Parameters.AddWithValue("@section", section.Trim());
-                cmd.Parameters.AddWithValue("@ratePerSqm", ratePerSqm);
-                cmd.Parameters.AddWithValue("@flatRate", flatRate);
-                cmd.Parameters.AddWithValue("@rateType", rateType);
+                cmd.Parameters.Add(ParamNVarChar("@section", section.Trim(), 255));
+                cmd.Parameters.Add(ParamDecimal("@ratePerSqm", ratePerSqm));
+                cmd.Parameters.Add(ParamDecimal("@flatRate", flatRate));
+                cmd.Parameters.Add(ParamNVarChar("@rateType", rateType, 50));
 
                 cmd.ExecuteNonQuery();
                 return (true, null);
@@ -542,20 +595,39 @@ namespace BusinessPermitLicensingSystem
             try
             {
                 using var con = OpenConnection();
-                using var cmd = new SqlCommand(@"
-                    UPDATE Profiling
-                    SET PaymentStatus = @status,
-                        Penalty       = CASE WHEN @status = 'Paid' THEN 0 ELSE Penalty END
-                    WHERE SIN = @sin", con);
+                using var tran = con.BeginTransaction();
 
-                cmd.Parameters.AddWithValue("@status", status);
-                cmd.Parameters.AddWithValue("@sin", sin);
-                cmd.ExecuteNonQuery();
+                try
+                {
+                    using var cmdUpdate = new SqlCommand(@"
+                        UPDATE Profiling
+                        SET PaymentStatus = @status,
+                            Penalty       = CASE WHEN @status = 'Paid' THEN 0 ELSE Penalty END
+                        WHERE SIN = @sin", con, tran);
 
-                if (status == "Paid" && !string.IsNullOrWhiteSpace(orNumber))
-                    RecordPayment(sin, orNumber, amountPaid, penalty, recordedBy);
+                    cmdUpdate.Parameters.Add(ParamNVarChar("@status", status, 50));
+                    cmdUpdate.Parameters.Add(ParamNVarChar("@sin", sin, 100));
+                    cmdUpdate.ExecuteNonQuery();
 
-                return (true, null);
+                    if (status == "Paid" && !string.IsNullOrWhiteSpace(orNumber))
+                    {
+                        var (ok, err) = RecordPaymentInternal(
+                            con, tran, sin, orNumber, amountPaid, penalty, recordedBy);
+                        if (!ok)
+                        {
+                            tran.Rollback();
+                            return (false, err);
+                        }
+                    }
+
+                    tran.Commit();
+                    return (true, null);
+                }
+                catch (Exception ex)
+                {
+                    tran.Rollback();
+                    return (false, $"Database error: {ex.Message}");
+                }
             }
             catch (Exception ex)
             {
@@ -565,6 +637,38 @@ namespace BusinessPermitLicensingSystem
 
         // ===================== PAYMENT HISTORY ===================== //
 
+        private static (bool Success, string? ErrorMessage) RecordPaymentInternal(
+            SqlConnection con, SqlTransaction tran,
+            string sin, string orNumber, decimal amountPaid,
+            decimal penalty, long recordedBy)
+        {
+            try
+            {
+                using var cmd = new SqlCommand(@"
+                    INSERT INTO PaymentHistory
+                        (SIN, ORNumber, AmountPaid, Penalty, DatePaid, RecordedBy)
+                    VALUES
+                        (@sin, @or, @amount, @penalty, @date, @recordedBy)", con, tran);
+
+                cmd.Parameters.Add(ParamNVarChar("@sin", sin, 100));
+                cmd.Parameters.Add(ParamNVarChar("@or", orNumber.Trim(), 100));
+                cmd.Parameters.Add(ParamDecimal("@amount", amountPaid));
+                cmd.Parameters.Add(ParamDecimal("@penalty", penalty));
+                cmd.Parameters.Add(ParamDateTime("@date", DateTime.Now));
+                cmd.Parameters.Add(ParamInt("@recordedBy", (int)recordedBy));
+
+                cmd.ExecuteNonQuery();
+                return (true, null);
+            }
+            catch (SqlException ex) when (ex.Number == 2627)
+            {
+                return (false, "OR Number already exists.");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Database error: {ex.Message}");
+            }
+        }
         public static (bool Success, string? ErrorMessage) RecordPayment(
             string sin, string orNumber, decimal amountPaid,
             decimal penalty, long recordedBy)
@@ -572,21 +676,11 @@ namespace BusinessPermitLicensingSystem
             try
             {
                 using var con = OpenConnection();
-                using var cmd = new SqlCommand(@"
-                    INSERT INTO PaymentHistory
-                        (SIN, ORNumber, AmountPaid, Penalty, DatePaid, RecordedBy)
-                    VALUES
-                        (@sin, @or, @amount, @penalty, @date, @recordedBy)", con);
-
-                cmd.Parameters.AddWithValue("@sin", sin);
-                cmd.Parameters.AddWithValue("@or", orNumber);
-                cmd.Parameters.AddWithValue("@amount", amountPaid);
-                cmd.Parameters.AddWithValue("@penalty", penalty);
-                cmd.Parameters.AddWithValue("@date", DateTime.Now);
-                cmd.Parameters.AddWithValue("@recordedBy", recordedBy);
-
-                cmd.ExecuteNonQuery();
-                return (true, null);
+                using var tran = con.BeginTransaction();
+                var (ok, err) = RecordPaymentInternal(
+                    con, tran, sin, orNumber, amountPaid, penalty, recordedBy);
+                if (ok) tran.Commit(); else tran.Rollback();
+                return (ok, err);
             }
             catch (Exception ex)
             {
@@ -610,7 +704,7 @@ namespace BusinessPermitLicensingSystem
                 WHERE ph.SIN = @sin
                 ORDER BY ph.DatePaid DESC", con);
 
-            cmd.Parameters.AddWithValue("@sin", sin);
+            cmd.Parameters.Add(ParamNVarChar("@sin", sin, 100));
             return FillDataTable(cmd);
         }
 
@@ -678,8 +772,8 @@ namespace BusinessPermitLicensingSystem
                     SET IsArchived = @archived
                     WHERE SIN = @sin", con);
 
-                cmd.Parameters.AddWithValue("@archived", archived ? 1 : 0);
-                cmd.Parameters.AddWithValue("@sin", sin);
+                cmd.Parameters.Add(ParamInt("@archived", archived ? 1 : 0));
+                cmd.Parameters.Add(ParamNVarChar("@sin", sin, 100));
                 cmd.ExecuteNonQuery();
                 return (true, null);
             }
@@ -724,8 +818,8 @@ namespace BusinessPermitLicensingSystem
                 SET Penalty = @penalty
                 WHERE SIN = @sin", con);
 
-            cmd.Parameters.AddWithValue("@penalty", penalty);
-            cmd.Parameters.AddWithValue("@sin", sin);
+            cmd.Parameters.Add(ParamDecimal("@penalty", penalty));
+            cmd.Parameters.Add(ParamNVarChar("@sin", sin, 100));
             cmd.ExecuteNonQuery();
         }
 
@@ -767,16 +861,41 @@ namespace BusinessPermitLicensingSystem
 
         public static int ResetMonthlyPaymentStatus()
         {
-            if (DateTime.Today.Day != 1) return 0;
+            DateTime today = DateTime.Today;
+            string currentMonthKey = today.ToString("yyyy-MM");
 
             using var con = OpenConnection();
-            using var cmd = new SqlCommand(@"
-                UPDATE Profiling
-                SET    PaymentStatus = 'Unpaid'
-                WHERE  PaymentStatus = 'Paid'
-                AND    IsArchived     = 0", con);
 
-            return cmd.ExecuteNonQuery();
+            using var cmdGet = new SqlCommand(
+                "SELECT [Value] FROM AppSettings WHERE [Key] = 'LastMonthlyReset'", con);
+            string lastReset = cmdGet.ExecuteScalar()?.ToString() ?? "2000-01";
+
+            if (lastReset == currentMonthKey) return 0;
+            using var tran = con.BeginTransaction();
+            try
+            {
+                using var cmdReset = new SqlCommand(@"
+            UPDATE Profiling
+            SET    PaymentStatus = 'Unpaid'
+            WHERE  PaymentStatus = 'Paid'
+            AND    IsArchived     = 0", con, tran);
+                int rows = cmdReset.ExecuteNonQuery();
+
+                using var cmdUpdate = new SqlCommand(@"
+            UPDATE AppSettings
+            SET [Value] = @month
+            WHERE [Key] = 'LastMonthlyReset'", con, tran);
+                cmdUpdate.Parameters.Add(ParamNVarChar("@month", currentMonthKey, 20));
+                cmdUpdate.ExecuteNonQuery();
+
+                tran.Commit();
+                return rows;
+            }
+            catch
+            {
+                tran.Rollback();
+                return 0;
+            }
         }
 
         // ===================== AUDIT TRAIL ===================== //
@@ -819,15 +938,21 @@ namespace BusinessPermitLicensingSystem
                     INSERT INTO AuditTrail (Action, SIN, UserId, Timestamp, Details)
                     VALUES (@action, @sin, @user, @timestamp, @details)", con);
 
-                cmd.Parameters.AddWithValue("@action", action);
-                cmd.Parameters.AddWithValue("@sin", (object?)sin ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@user", userId);
-                cmd.Parameters.AddWithValue("@timestamp", DateTime.Now);
-                cmd.Parameters.AddWithValue("@details", (object?)details ?? DBNull.Value);
+                cmd.Parameters.Add(ParamNVarChar("@action", action, 255));
+                cmd.Parameters.Add(ParamNullableString("@sin", sin, 100));
+                cmd.Parameters.Add(ParamInt("@user", (int)userId));
+                cmd.Parameters.Add(ParamDateTime("@timestamp", DateTime.Now));
+
+                var detailsParam = new SqlParameter("@details", SqlDbType.NVarChar, -1)
+                { Value = (object?)details ?? DBNull.Value };
+                cmd.Parameters.Add(detailsParam);
 
                 cmd.ExecuteNonQuery();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[AuditTrail] Write failed: {ex.Message}");
+            }
         }
 
         // ===================== MONTHLY REPORT ===================== //
@@ -851,15 +976,19 @@ namespace BusinessPermitLicensingSystem
                     PaymentStatus    AS [Payment Status]
                 FROM Profiling
                 WHERE IsArchived = 0
-                AND (YEAR(StartDate) * 12 + MONTH(StartDate))
-                    BETWEEN (@fromYear * 12 + @fromMonth)
-                    AND     (@toYear   * 12 + @toMonth)
+                AND (
+                    TRY_CONVERT(DATE, StartDate, 23) IS NOT NULL
+                    AND
+                    (YEAR(TRY_CONVERT(DATE, StartDate, 23)) * 12 + MONTH(TRY_CONVERT(DATE, StartDate, 23)))
+                        BETWEEN (@fromYear * 12 + @fromMonth)
+                        AND     (@toYear   * 12 + @toMonth)
+                )
                 ORDER BY PaymentStatus ASC, FullName ASC", con);
 
-            cmd.Parameters.AddWithValue("@fromMonth", fromMonth);
-            cmd.Parameters.AddWithValue("@fromYear", fromYear);
-            cmd.Parameters.AddWithValue("@toMonth", toMonth);
-            cmd.Parameters.AddWithValue("@toYear", toYear);
+            cmd.Parameters.Add(ParamInt("@fromMonth", fromMonth));
+            cmd.Parameters.Add(ParamInt("@fromYear", fromYear));
+            cmd.Parameters.Add(ParamInt("@toMonth", toMonth));
+            cmd.Parameters.Add(ParamInt("@toYear", toYear));
 
             return FillDataTable(cmd);
         }
@@ -902,7 +1031,7 @@ namespace BusinessPermitLicensingSystem
                 using var con = OpenConnection();
                 using var cmd = new SqlCommand(
                     "SELECT 1 FROM PaymentHistory WHERE ORNumber = @or", con);
-                cmd.Parameters.AddWithValue("@or", orNumber.Trim());
+                cmd.Parameters.Add(ParamNVarChar("@or", orNumber.Trim(), 100));
                 return cmd.ExecuteScalar() != null;
             }
             catch { return false; }
@@ -921,9 +1050,94 @@ namespace BusinessPermitLicensingSystem
                 sins.Add(reader.GetString(0));
             return sins;
         }
-
-        public static (bool Success, string? ErrorMessage) ImportProfiling(DataTable dt)
+        public static (bool Success, string? ErrorMessage, int RowsImported, List<string> RowErrors)
+            ImportProfiling(DataTable dt)
         {
+            var requiredColumns = new Dictionary<string, Type>
+            {
+                { "SIN",             typeof(string)  },
+                { "FullName",        typeof(string)  },
+                { "BusinessName",    typeof(string)  },
+                { "BusinessSection", typeof(string)  },
+                { "StallNumber",     typeof(string)  },
+                { "StallSize",       typeof(string)  },
+                { "MonthlyRental",   typeof(decimal) },
+                { "PaymentStatus",   typeof(string)  },
+                { "StartDate",       typeof(string)  },
+                { "Penalty",         typeof(decimal) },
+                { "AdditionalCharge",typeof(decimal) },
+                { "IsArchived",      typeof(int)     },
+            };
+
+            foreach (var col in requiredColumns.Keys)
+                if (!dt.Columns.Contains(col))
+                    return (false, $"Missing required column: '{col}'.", 0, new List<string>());
+
+            var rowErrors = new List<string>();
+            var cleanTable = dt.Clone();
+            int rowNum = 0;
+
+            foreach (DataRow row in dt.Rows)
+            {
+                rowNum++;
+                var cellErrors = new List<string>();
+
+                string sin = row["SIN"]?.ToString()?.Trim() ?? "";
+                string fullName = row["FullName"]?.ToString()?.Trim() ?? "";
+                string businessName = row["BusinessName"]?.ToString()?.Trim() ?? "";
+                string section = row["BusinessSection"]?.ToString()?.Trim() ?? "";
+                string stallNo = row["StallNumber"]?.ToString()?.Trim() ?? "";
+                string stallSize = row["StallSize"]?.ToString()?.Trim() ?? "";
+                string status = row["PaymentStatus"]?.ToString()?.Trim() ?? "Unpaid";
+                string startDateRaw = row["StartDate"]?.ToString()?.Trim() ?? "";
+                int isArchived = 0;
+
+                if (string.IsNullOrWhiteSpace(sin)) cellErrors.Add("SIN is empty");
+                if (string.IsNullOrWhiteSpace(fullName)) cellErrors.Add("FullName is empty");
+                if (string.IsNullOrWhiteSpace(businessName)) cellErrors.Add("BusinessName is empty");
+                if (string.IsNullOrWhiteSpace(section)) cellErrors.Add("BusinessSection is empty");
+                if (string.IsNullOrWhiteSpace(stallNo)) cellErrors.Add("StallNumber is empty");
+                if (string.IsNullOrWhiteSpace(stallSize)) cellErrors.Add("StallSize is empty");
+
+                if (!decimal.TryParse(row["MonthlyRental"]?.ToString(), out decimal rental))
+                    cellErrors.Add($"MonthlyRental '{row["MonthlyRental"]}' is not a valid decimal");
+
+                decimal penalty = 0, additional = 0;
+                if (!decimal.TryParse(row["Penalty"]?.ToString(), out penalty))
+                    cellErrors.Add($"Penalty '{row["Penalty"]}' is not a valid decimal");
+                if (!decimal.TryParse(row["AdditionalCharge"]?.ToString(), out additional))
+                    cellErrors.Add($"AdditionalCharge '{row["AdditionalCharge"]}' is not a valid decimal");
+
+                if (!int.TryParse(row["IsArchived"]?.ToString(), out isArchived))
+                    isArchived = 0;
+
+                string normDate = NormaliseDateString(startDateRaw);
+
+                if (cellErrors.Count > 0)
+                {
+                    rowErrors.Add($"Row {rowNum} (SIN={sin}): {string.Join("; ", cellErrors)}");
+                    continue;
+                }
+
+                DataRow newRow = cleanTable.NewRow();
+                newRow["SIN"] = sin;
+                newRow["FullName"] = fullName;
+                newRow["BusinessName"] = businessName;
+                newRow["BusinessSection"] = section;
+                newRow["StallNumber"] = stallNo;
+                newRow["StallSize"] = stallSize;
+                newRow["MonthlyRental"] = rental;
+                newRow["PaymentStatus"] = status;
+                newRow["StartDate"] = normDate;
+                newRow["Penalty"] = penalty;
+                newRow["AdditionalCharge"] = additional;
+                newRow["IsArchived"] = isArchived;
+                cleanTable.Rows.Add(newRow);
+            }
+
+            if (cleanTable.Rows.Count == 0)
+                return (false, "No valid rows to import.", 0, rowErrors);
+
             try
             {
                 using var con = OpenConnection();
@@ -943,13 +1157,14 @@ namespace BusinessPermitLicensingSystem
                 foreach (string col in columns)
                     bulk.ColumnMappings.Add(col, col);
 
-                bulk.WriteToServer(dt);
-                return (true, null);
+                bulk.WriteToServer(cleanTable);
+                return (true, null, cleanTable.Rows.Count, rowErrors);
             }
-            catch (Exception ex) { return (false, ex.Message); }
+            catch (Exception ex) { return (false, ex.Message, 0, rowErrors); }
         }
 
-        // ===================== SPECICAL VEHICLE IMPORT ===================== //
+        // ===================== SPECIAL VEHICLE IMPORT ===================== //
+
         public static HashSet<string> GetAllPlateNumbers()
         {
             using var con = OpenConnection();
@@ -961,9 +1176,53 @@ namespace BusinessPermitLicensingSystem
                 plates.Add(reader.GetString(0));
             return plates;
         }
-
-        public static (bool Success, string? ErrorMessage) ImportVehiclePermits(DataTable dt)
+        public static (bool Success, string? ErrorMessage, int RowsImported, List<string> RowErrors)
+            ImportVehiclePermits(DataTable dt)
         {
+            string[] required = { "VIN", "CompanyName", "DriverName", "PlateNo", "SECRegNo", "DTINumber" };
+
+            foreach (var col in required)
+                if (!dt.Columns.Contains(col))
+                    return (false, $"Missing required column: '{col}'.", 0, new List<string>());
+
+            var rowErrors = new List<string>();
+            var cleanTable = dt.Clone();
+            int rowNum = 0;
+
+            foreach (DataRow row in dt.Rows)
+            {
+                rowNum++;
+                string vin = row["VIN"]?.ToString()?.Trim() ?? "";
+                string companyName = row["CompanyName"]?.ToString()?.Trim() ?? "";
+                string driverName = row["DriverName"]?.ToString()?.Trim() ?? "";
+                string plateNo = row["PlateNo"]?.ToString()?.Trim().ToUpper() ?? "";
+                string secRegNo = row["SECRegNo"]?.ToString()?.Trim() ?? "";
+                string dtiNumber = row["DTINumber"]?.ToString()?.Trim() ?? "";
+
+                var cellErrors = new List<string>();
+                if (string.IsNullOrWhiteSpace(vin)) cellErrors.Add("VIN is empty");
+                if (string.IsNullOrWhiteSpace(companyName)) cellErrors.Add("CompanyName is empty");
+                if (string.IsNullOrWhiteSpace(plateNo)) cellErrors.Add("PlateNo is empty");
+
+                if (cellErrors.Count > 0)
+                {
+                    rowErrors.Add($"Row {rowNum} (VIN={vin}): {string.Join("; ", cellErrors)}");
+                    continue;
+                }
+
+                DataRow newRow = cleanTable.NewRow();
+                newRow["VIN"] = vin;
+                newRow["CompanyName"] = companyName;
+                newRow["DriverName"] = driverName;
+                newRow["PlateNo"] = plateNo;
+                newRow["SECRegNo"] = secRegNo;
+                newRow["DTINumber"] = dtiNumber;
+                cleanTable.Rows.Add(newRow);
+            }
+
+            if (cleanTable.Rows.Count == 0)
+                return (false, "No valid rows to import.", 0, rowErrors);
+
             try
             {
                 using var con = OpenConnection();
@@ -973,21 +1232,16 @@ namespace BusinessPermitLicensingSystem
                     BulkCopyTimeout = 600
                 };
 
-                string[] columns =
-                {
-                    "VIN", "CompanyName", "DriverName",
-                    "PlateNo", "SECRegNo", "DTINumber"
-                };
-
+                string[] columns = { "VIN", "CompanyName", "DriverName", "PlateNo", "SECRegNo", "DTINumber" };
                 foreach (string col in columns)
                     bulk.ColumnMappings.Add(col, col);
 
-                bulk.WriteToServer(dt);
-                return (true, null);
+                bulk.WriteToServer(cleanTable);
+                return (true, null, cleanTable.Rows.Count, rowErrors);
             }
             catch (Exception ex)
             {
-                return (false, ex.Message);
+                return (false, ex.Message, 0, rowErrors);
             }
         }
 
@@ -1043,7 +1297,7 @@ namespace BusinessPermitLicensingSystem
                 SELECT MAX(CAST(RIGHT(VIN, 4) AS INT))
                 FROM   VehiclePermits
                 WHERE  VIN LIKE @pattern", con);
-            cmd.Parameters.AddWithValue("@pattern", $"VIN-{year}-%");
+            cmd.Parameters.Add(ParamNVarChar("@pattern", $"VIN-{year}-%", 50));
 
             var result = cmd.ExecuteScalar();
             if (result != DBNull.Value && result != null)
@@ -1068,12 +1322,12 @@ namespace BusinessPermitLicensingSystem
                         (VIN, CompanyName, DriverName, PlateNo, SECRegNo, DTINumber)
                     VALUES
                         (@vin, @company, @driver, @plate, @sec, @dti)", con);
-                cmd.Parameters.AddWithValue("@vin", vin);
-                cmd.Parameters.AddWithValue("@company", companyName.Trim());
-                cmd.Parameters.AddWithValue("@driver", driverName.Trim());
-                cmd.Parameters.AddWithValue("@plate", plateNo.Trim().ToUpper());
-                cmd.Parameters.AddWithValue("@sec", secRegNo.Trim());
-                cmd.Parameters.AddWithValue("@dti", dtiNumber.Trim());
+                cmd.Parameters.Add(ParamNVarChar("@vin", vin, 100));
+                cmd.Parameters.Add(ParamNVarChar("@company", companyName.Trim(), 255));
+                cmd.Parameters.Add(ParamNVarChar("@driver", driverName.Trim(), 255));
+                cmd.Parameters.Add(ParamNVarChar("@plate", plateNo.Trim().ToUpper(), 100));
+                cmd.Parameters.Add(ParamNVarChar("@sec", secRegNo.Trim(), 100));
+                cmd.Parameters.Add(ParamNVarChar("@dti", dtiNumber.Trim(), 100));
                 cmd.ExecuteNonQuery();
                 return (true, null);
             }
@@ -1097,33 +1351,17 @@ namespace BusinessPermitLicensingSystem
                         SECRegNo    = @sec,
                         DTINumber   = @dti
                     WHERE VIN = @vin", con);
-                cmd.Parameters.AddWithValue("@company", companyName.Trim());
-                cmd.Parameters.AddWithValue("@driver", driverName.Trim());
-                cmd.Parameters.AddWithValue("@plate", plateNo.Trim().ToUpper());
-                cmd.Parameters.AddWithValue("@sec", secRegNo.Trim());
-                cmd.Parameters.AddWithValue("@dti", dtiNumber.Trim());
-                cmd.Parameters.AddWithValue("@vin", vin);
+                cmd.Parameters.Add(ParamNVarChar("@company", companyName.Trim(), 255));
+                cmd.Parameters.Add(ParamNVarChar("@driver", driverName.Trim(), 255));
+                cmd.Parameters.Add(ParamNVarChar("@plate", plateNo.Trim().ToUpper(), 100));
+                cmd.Parameters.Add(ParamNVarChar("@sec", secRegNo.Trim(), 100));
+                cmd.Parameters.Add(ParamNVarChar("@dti", dtiNumber.Trim(), 100));
+                cmd.Parameters.Add(ParamNVarChar("@vin", vin, 100));
                 cmd.ExecuteNonQuery();
                 return (true, null);
             }
             catch (SqlException ex) when (ex.Number == 2627)
             { return (false, "Another vehicle with that plate number already exists."); }
-            catch (Exception ex) { return (false, ex.Message); }
-        }
-
-        public static (bool Success, string? ErrorMessage) DeleteVehiclePermit(string vin)
-        {
-            try
-            {
-                using var con = OpenConnection();
-                using var cmd = new SqlCommand(
-                    "DELETE FROM VehiclePermits WHERE VIN = @vin", con);
-                cmd.Parameters.AddWithValue("@vin", vin);
-                int rows = cmd.ExecuteNonQuery();
-                return rows == 0
-                    ? (false, "Record not found.")
-                    : (true, null);
-            }
             catch (Exception ex) { return (false, ex.Message); }
         }
 
@@ -1143,8 +1381,8 @@ namespace BusinessPermitLicensingSystem
                     UPDATE VehiclePermits
                     SET IsArchived = @archived
                     WHERE VIN = @vin", con);
-                cmd.Parameters.AddWithValue("@archived", archived ? 1 : 0);
-                cmd.Parameters.AddWithValue("@vin", vin);
+                cmd.Parameters.Add(ParamInt("@archived", archived ? 1 : 0));
+                cmd.Parameters.Add(ParamNVarChar("@vin", vin, 100));
                 cmd.ExecuteNonQuery();
                 return (true, null);
             }
@@ -1152,6 +1390,7 @@ namespace BusinessPermitLicensingSystem
         }
 
         // ===================== VEHICLE PERMIT PAYMENT ===================== //
+
         public static (bool Success, string? ErrorMessage) PayVehiclePermit(
             string vin, string orNumber, decimal amountPaid,
             int permitYear, long recordedBy)
@@ -1169,8 +1408,8 @@ namespace BusinessPermitLicensingSystem
                         SET PermitStatus = 'Paid',
                             PermitYear   = @year
                         WHERE VIN = @vin", con, tran);
-                    cmdUpdate.Parameters.AddWithValue("@year", permitYear);
-                    cmdUpdate.Parameters.AddWithValue("@vin", vin);
+                    cmdUpdate.Parameters.Add(ParamInt("@year", permitYear));
+                    cmdUpdate.Parameters.Add(ParamNVarChar("@vin", vin, 100));
                     cmdUpdate.ExecuteNonQuery();
 
                     using var cmdHistory = new SqlCommand(@"
@@ -1178,12 +1417,12 @@ namespace BusinessPermitLicensingSystem
                             (VIN, ORNumber, AmountPaid, PermitYear, DatePaid, RecordedBy)
                         VALUES
                             (@vin, @or, @amount, @year, @date, @recordedBy)", con, tran);
-                    cmdHistory.Parameters.AddWithValue("@vin", vin);
-                    cmdHistory.Parameters.AddWithValue("@or", orNumber.Trim());
-                    cmdHistory.Parameters.AddWithValue("@amount", amountPaid);
-                    cmdHistory.Parameters.AddWithValue("@year", permitYear);
-                    cmdHistory.Parameters.AddWithValue("@date", DateTime.Now);
-                    cmdHistory.Parameters.AddWithValue("@recordedBy", recordedBy);
+                    cmdHistory.Parameters.Add(ParamNVarChar("@vin", vin, 100));
+                    cmdHistory.Parameters.Add(ParamNVarChar("@or", orNumber.Trim(), 100));
+                    cmdHistory.Parameters.Add(ParamDecimal("@amount", amountPaid));
+                    cmdHistory.Parameters.Add(ParamInt("@year", permitYear));
+                    cmdHistory.Parameters.Add(ParamDateTime("@date", DateTime.Now));
+                    cmdHistory.Parameters.Add(ParamInt("@recordedBy", (int)recordedBy));
                     cmdHistory.ExecuteNonQuery();
 
                     tran.Commit();
@@ -1217,7 +1456,7 @@ namespace BusinessPermitLicensingSystem
                 LEFT JOIN Users u ON ph.RecordedBy = u.Id
                 WHERE ph.VIN = @vin
                 ORDER BY ph.DatePaid DESC", con);
-            cmd.Parameters.AddWithValue("@vin", vin);
+            cmd.Parameters.Add(ParamNVarChar("@vin", vin, 100));
             return FillDataTable(cmd);
         }
 
@@ -1228,7 +1467,7 @@ namespace BusinessPermitLicensingSystem
                 using var con = OpenConnection();
                 using var cmd = new SqlCommand(
                     "SELECT 1 FROM VehiclePermitHistory WHERE ORNumber = @or", con);
-                cmd.Parameters.AddWithValue("@or", orNumber.Trim());
+                cmd.Parameters.Add(ParamNVarChar("@or", orNumber.Trim(), 100));
                 return cmd.ExecuteScalar() != null;
             }
             catch { return false; }
@@ -1268,18 +1507,57 @@ namespace BusinessPermitLicensingSystem
 
         // ===================== PASSWORD HASHING ===================== //
 
-        private static string HashPassword(string password)
+        private const int Pbkdf2Iterations = 260_000; 
+        private const int Pbkdf2SaltBytes = 16;
+        private const int Pbkdf2HashBytes = 32;
+
+        private static string HashPasswordPbkdf2(string password)
+        {
+            byte[] salt = RandomNumberGenerator.GetBytes(Pbkdf2SaltBytes);
+            byte[] hash = Rfc2898DeriveBytes.Pbkdf2(
+                password, salt, Pbkdf2Iterations,
+                HashAlgorithmName.SHA256, Pbkdf2HashBytes);
+
+            return $"pbkdf2:{Pbkdf2Iterations}:{Convert.ToBase64String(salt)}:{Convert.ToBase64String(hash)}";
+        }
+
+        private static bool VerifyPasswordPbkdf2(string password, string stored)
+        {
+            string[] parts = stored.Split(':');
+            if (parts.Length != 4 || parts[0] != "pbkdf2") return false;
+
+            if (!int.TryParse(parts[1], out int iterations)) return false;
+            byte[] salt = Convert.FromBase64String(parts[2]);
+            byte[] expectedHash = Convert.FromBase64String(parts[3]);
+
+            byte[] actualHash = Rfc2898DeriveBytes.Pbkdf2(
+                password, salt, iterations,
+                HashAlgorithmName.SHA256, expectedHash.Length);
+
+            return CryptographicEquals(actualHash, expectedHash);
+        }
+
+        private static bool IsPbkdf2Hash(string stored)
+            => stored.StartsWith("pbkdf2:", StringComparison.Ordinal);
+
+ 
+        private static string HashPasswordSha256(string password)
         {
             using var sha256 = SHA256.Create();
             byte[] bytes = Encoding.UTF8.GetBytes(password);
             byte[] hash = sha256.ComputeHash(bytes);
             return Convert.ToBase64String(hash);
         }
-
-        private static bool VerifyPassword(string enteredPassword, string storedHash)
-            => CryptographicEquals(HashPassword(enteredPassword), storedHash);
-
         private static bool CryptographicEquals(string a, string b)
+        {
+            if (a.Length != b.Length) return false;
+            int diff = 0;
+            for (int i = 0; i < a.Length; i++)
+                diff |= a[i] ^ b[i];
+            return diff == 0;
+        }
+
+        private static bool CryptographicEquals(byte[] a, byte[] b)
         {
             if (a.Length != b.Length) return false;
             int diff = 0;

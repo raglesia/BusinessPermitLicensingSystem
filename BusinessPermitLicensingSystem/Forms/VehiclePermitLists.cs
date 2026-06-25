@@ -222,43 +222,6 @@ namespace BusinessPermitLicensingSystem.Forms
             }
         }
 
-        // ===================== DELETE ===================== //
-        private void btnDelete_Click(object sender, EventArgs e)
-        {
-            if (dataGridView1.SelectedRows.Count == 0)
-            {
-                MessageBox.Show("Please select a record first.", "No Selection",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            var row = dataGridView1.SelectedRows[0];
-            string vin = row.Cells["VIN"].Value?.ToString() ?? "";
-            string name = row.Cells["Company Name"].Value?.ToString() ?? "";
-
-            var confirm = MessageBox.Show(
-                $"Delete record for \"{name}\"?\n\nThis cannot be undone.",
-                "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-            if (confirm != DialogResult.Yes) return;
-
-            var result = Database.DeleteVehiclePermit(vin);
-
-            if (result.Success)
-            {
-                Database.LogAudit("Delete Vehicle Permit", vin,
-                    Session.CurrentUserId ?? 0, $"Deleted: {name}");
-                MessageBox.Show("Record deleted.", "Deleted",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                LoadRecords();
-            }
-            else
-            {
-                MessageBox.Show(result.ErrorMessage, "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
         // ===================== ARCHIVE ===================== //
         private void btnArchive_Click(object sender, EventArgs e)
         {
@@ -612,6 +575,11 @@ namespace BusinessPermitLicensingSystem.Forms
             lblTotalVehicles.Text = $"{total:N0}";
             lblTotalPaid.Text = $"{paid:N0}";
             lblTotalUnpaid.Text = $"{unpaid:N0}";
+        }
+
+        private void lblTotalPaid_Click(object sender, EventArgs e)
+        {
+
         }
 
         // ===================== WINDOW SETTINGS ===================== //

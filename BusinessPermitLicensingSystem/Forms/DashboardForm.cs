@@ -25,6 +25,9 @@ namespace BusinessPermitLicensingSystem.Forms
             UpdateDateTime();
             timer1.Start();
             CheckPenalties();
+
+            Database.ResetMonthlyPaymentStatus();
+            Database.ApplyPenaltiesToAll();
         }
 
         // ===================== NAVIGATION ===================== //
@@ -75,7 +78,6 @@ namespace BusinessPermitLicensingSystem.Forms
                 var vehicleForm = new VehicleProfiling();
                 vehicleForm.Show();
             }
-            // Selection.None = user cancelled, do nothing
         }
 
         private void button5_Click(object sender, EventArgs e)

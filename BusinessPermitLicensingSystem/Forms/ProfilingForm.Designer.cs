@@ -70,7 +70,7 @@
             // 
             txtFName.BackColor = Color.White;
             txtFName.Location = new Point(190, 60);
-            txtFName.Margin = new Padding(2, 2, 2, 2);
+            txtFName.Margin = new Padding(2);
             txtFName.Name = "txtFName";
             txtFName.Size = new Size(329, 30);
             txtFName.TabIndex = 1;
@@ -79,7 +79,7 @@
             // 
             txtBName.BackColor = Color.White;
             txtBName.Location = new Point(190, 90);
-            txtBName.Margin = new Padding(2, 2, 2, 2);
+            txtBName.Margin = new Padding(2);
             txtBName.Name = "txtBName";
             txtBName.Size = new Size(329, 30);
             txtBName.TabIndex = 2;
@@ -88,7 +88,7 @@
             // 
             txtSNumber.BackColor = Color.White;
             txtSNumber.Location = new Point(189, 19);
-            txtSNumber.Margin = new Padding(2, 2, 2, 2);
+            txtSNumber.Margin = new Padding(2);
             txtSNumber.Name = "txtSNumber";
             txtSNumber.Size = new Size(329, 30);
             txtSNumber.TabIndex = 4;
@@ -97,7 +97,7 @@
             // 
             txtSSize.BackColor = Color.White;
             txtSSize.Location = new Point(189, 51);
-            txtSSize.Margin = new Padding(2, 2, 2, 2);
+            txtSSize.Margin = new Padding(2);
             txtSSize.Name = "txtSSize";
             txtSSize.Size = new Size(329, 30);
             txtSSize.TabIndex = 5;
@@ -107,7 +107,7 @@
             txtMRental.BackColor = Color.White;
             txtMRental.Enabled = false;
             txtMRental.Location = new Point(190, 59);
-            txtMRental.Margin = new Padding(2, 2, 2, 2);
+            txtMRental.Margin = new Padding(2);
             txtMRental.Name = "txtMRental";
             txtMRental.Size = new Size(329, 30);
             txtMRental.TabIndex = 8;
@@ -184,7 +184,7 @@
             txtBIN.BackColor = Color.White;
             txtBIN.Enabled = false;
             txtBIN.Location = new Point(190, 30);
-            txtBIN.Margin = new Padding(2, 2, 2, 2);
+            txtBIN.Margin = new Padding(2);
             txtBIN.Name = "txtBIN";
             txtBIN.Size = new Size(329, 30);
             txtBIN.TabIndex = 0;
@@ -207,10 +207,10 @@
             btnSave.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnSave.Image = Properties.Resources.icons8_save_64;
             btnSave.ImageAlign = ContentAlignment.MiddleLeft;
-            btnSave.Location = new Point(100, 499);
-            btnSave.Margin = new Padding(2, 2, 2, 2);
+            btnSave.Location = new Point(87, 499);
+            btnSave.Margin = new Padding(2);
             btnSave.Name = "btnSave";
-            btnSave.Size = new Size(162, 51);
+            btnSave.Size = new Size(175, 61);
             btnSave.TabIndex = 10;
             btnSave.Text = "          Save";
             btnSave.UseVisualStyleBackColor = false;
@@ -223,9 +223,9 @@
             button1.Image = Properties.Resources.icons8_back_64;
             button1.ImageAlign = ContentAlignment.MiddleLeft;
             button1.Location = new Point(266, 499);
-            button1.Margin = new Padding(2, 2, 2, 2);
+            button1.Margin = new Padding(2);
             button1.Name = "button1";
-            button1.Size = new Size(162, 51);
+            button1.Size = new Size(174, 61);
             button1.TabIndex = 11;
             button1.Text = "     Back";
             button1.UseVisualStyleBackColor = false;
@@ -259,7 +259,7 @@
             cmbPaymentStatus.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbPaymentStatus.FormattingEnabled = true;
             cmbPaymentStatus.Location = new Point(190, 118);
-            cmbPaymentStatus.Margin = new Padding(2, 2, 2, 2);
+            cmbPaymentStatus.Margin = new Padding(2);
             cmbPaymentStatus.Name = "cmbPaymentStatus";
             cmbPaymentStatus.Size = new Size(329, 31);
             cmbPaymentStatus.TabIndex = 9;
@@ -268,7 +268,7 @@
             // 
             dtpStartDate.CalendarMonthBackground = Color.White;
             dtpStartDate.Location = new Point(189, 83);
-            dtpStartDate.Margin = new Padding(2, 2, 2, 2);
+            dtpStartDate.Margin = new Padding(2);
             dtpStartDate.Name = "dtpStartDate";
             dtpStartDate.Size = new Size(329, 30);
             dtpStartDate.TabIndex = 6;
@@ -290,7 +290,7 @@
             cmbBSection.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbBSection.FormattingEnabled = true;
             cmbBSection.Location = new Point(190, 122);
-            cmbBSection.Margin = new Padding(2, 2, 2, 2);
+            cmbBSection.Margin = new Padding(2);
             cmbBSection.Name = "cmbBSection";
             cmbBSection.Size = new Size(329, 31);
             cmbBSection.TabIndex = 3;
@@ -301,7 +301,7 @@
             chkAdditional.CheckAlign = ContentAlignment.MiddleRight;
             chkAdditional.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
             chkAdditional.Location = new Point(5, 31);
-            chkAdditional.Margin = new Padding(2, 2, 2, 2);
+            chkAdditional.Margin = new Padding(2);
             chkAdditional.Name = "chkAdditional";
             chkAdditional.Size = new Size(186, 27);
             chkAdditional.TabIndex = 24;
@@ -313,7 +313,7 @@
             // 
             txtAdditionalCharge.BackColor = Color.White;
             txtAdditionalCharge.Location = new Point(190, 30);
-            txtAdditionalCharge.Margin = new Padding(2, 2, 2, 2);
+            txtAdditionalCharge.Margin = new Padding(2);
             txtAdditionalCharge.Name = "txtAdditionalCharge";
             txtAdditionalCharge.Size = new Size(329, 30);
             txtAdditionalCharge.TabIndex = 7;
@@ -330,9 +330,9 @@
             groupBox1.Controls.Add(txtBName);
             groupBox1.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             groupBox1.Location = new Point(5, 10);
-            groupBox1.Margin = new Padding(2, 2, 2, 2);
+            groupBox1.Margin = new Padding(2);
             groupBox1.Name = "groupBox1";
-            groupBox1.Padding = new Padding(2, 2, 2, 2);
+            groupBox1.Padding = new Padding(2);
             groupBox1.Size = new Size(523, 161);
             groupBox1.TabIndex = 27;
             groupBox1.TabStop = false;
@@ -348,9 +348,9 @@
             groupBox2.Controls.Add(dtpStartDate);
             groupBox2.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             groupBox2.Location = new Point(5, 175);
-            groupBox2.Margin = new Padding(2, 2, 2, 2);
+            groupBox2.Margin = new Padding(2);
             groupBox2.Name = "groupBox2";
-            groupBox2.Padding = new Padding(2, 2, 2, 2);
+            groupBox2.Padding = new Padding(2);
             groupBox2.Size = new Size(523, 120);
             groupBox2.TabIndex = 28;
             groupBox2.TabStop = false;
@@ -370,9 +370,9 @@
             groupBox3.Controls.Add(label6);
             groupBox3.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             groupBox3.Location = new Point(5, 300);
-            groupBox3.Margin = new Padding(2, 2, 2, 2);
+            groupBox3.Margin = new Padding(2);
             groupBox3.Name = "groupBox3";
-            groupBox3.Padding = new Padding(2, 2, 2, 2);
+            groupBox3.Padding = new Padding(2);
             groupBox3.Size = new Size(523, 194);
             groupBox3.TabIndex = 29;
             groupBox3.TabStop = false;
@@ -383,7 +383,7 @@
             txtPenalty.BackColor = Color.White;
             txtPenalty.Enabled = false;
             txtPenalty.Location = new Point(190, 89);
-            txtPenalty.Margin = new Padding(2, 2, 2, 2);
+            txtPenalty.Margin = new Padding(2);
             txtPenalty.Name = "txtPenalty";
             txtPenalty.Size = new Size(329, 30);
             txtPenalty.TabIndex = 28;
@@ -425,8 +425,8 @@
             // 
             panel1.Controls.Add(lblUsername);
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 558);
-            panel1.Margin = new Padding(2, 2, 2, 2);
+            panel1.Location = new Point(0, 564);
+            panel1.Margin = new Padding(2);
             panel1.Name = "panel1";
             panel1.Size = new Size(536, 28);
             panel1.TabIndex = 30;
@@ -436,7 +436,7 @@
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.GradientActiveCaption;
-            ClientSize = new Size(536, 586);
+            ClientSize = new Size(536, 592);
             Controls.Add(panel1);
             Controls.Add(groupBox3);
             Controls.Add(groupBox2);
@@ -445,7 +445,7 @@
             Controls.Add(btnSave);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Icon = (Icon)resources.GetObject("$this.Icon");
-            Margin = new Padding(2, 2, 2, 2);
+            Margin = new Padding(2);
             MaximizeBox = false;
             Name = "ProfilingForm";
             StartPosition = FormStartPosition.CenterScreen;

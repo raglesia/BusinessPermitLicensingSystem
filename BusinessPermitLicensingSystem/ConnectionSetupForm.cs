@@ -78,12 +78,9 @@ namespace BusinessPermitLicensingSystem.Forms
         // ===================== FIELDS ===================== //
         private void SetupFields()
         {
-            // ✅ Fixed Y positions with enough spacing
-            // Server IP — y=95
             AddLabel("Server IP Address:", 20, 95);
             txtServerIP = AddTextBox(20, 117);
 
-            // ✅ Hint under server IP
             this.Controls.Add(new Label
             {
                 Text = "Use 'localhost' if the database is on this computer.",
@@ -92,20 +89,15 @@ namespace BusinessPermitLicensingSystem.Forms
                 Location = new Point(20, 147),
                 AutoSize = true
             });
-
-            // Database — y=170
             AddLabel("Database Name:", 20, 170);
             txtDatabase = AddTextBox(20, 192);
 
-            // Username — y=235
             AddLabel("Username:", 20, 235);
             txtUsername = AddTextBox(20, 257);
 
-            // Password — y=300
             AddLabel("Password:", 20, 300);
             txtPassword = AddTextBox(20, 322, isPassword: true);
 
-            // Status label — y=370
             lblStatus = new Label
             {
                 Location = new Point(20, 372),

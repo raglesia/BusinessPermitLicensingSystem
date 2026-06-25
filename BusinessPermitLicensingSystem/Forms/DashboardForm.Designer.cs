@@ -43,11 +43,8 @@
             panel1 = new Panel();
             panel2 = new Panel();
             button7 = new Button();
-            label1 = new Label();
-            pictureBox1 = new PictureBox();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
             // button1
@@ -160,7 +157,7 @@
             lblPenaltyNotice.AutoSize = true;
             lblPenaltyNotice.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblPenaltyNotice.ForeColor = Color.Red;
-            lblPenaltyNotice.Location = new Point(2, 359);
+            lblPenaltyNotice.Location = new Point(0, 317);
             lblPenaltyNotice.Margin = new Padding(2, 0, 2, 0);
             lblPenaltyNotice.Name = "lblPenaltyNotice";
             lblPenaltyNotice.Size = new Size(121, 23);
@@ -192,7 +189,7 @@
             panel1.Controls.Add(lblDateTime);
             panel1.Controls.Add(lblUsername);
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 397);
+            panel1.Location = new Point(0, 351);
             panel1.Margin = new Padding(2);
             panel1.Name = "panel1";
             panel1.Size = new Size(645, 29);
@@ -207,7 +204,7 @@
             panel2.Controls.Add(button6);
             panel2.Controls.Add(button4);
             panel2.Controls.Add(button5);
-            panel2.Location = new Point(2, 66);
+            panel2.Location = new Point(0, 11);
             panel2.Margin = new Padding(2);
             panel2.Name = "panel2";
             panel2.Size = new Size(638, 291);
@@ -229,38 +226,12 @@
             button7.UseVisualStyleBackColor = false;
             button7.Click += button7_Click;
             // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Britannic Bold", 17F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label1.ForeColor = Color.MidnightBlue;
-            label1.Location = new Point(2, 24);
-            label1.Margin = new Padding(2, 0, 2, 0);
-            label1.Name = "label1";
-            label1.Size = new Size(489, 32);
-            label1.TabIndex = 12;
-            label1.Text = "Business Permit and Licensing Office";
-            // 
-            // pictureBox1
-            // 
-            pictureBox1.BackColor = Color.Transparent;
-            pictureBox1.Image = Properties.Resources.Untitled_1__1_;
-            pictureBox1.Location = new Point(464, 13);
-            pictureBox1.Margin = new Padding(2);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(176, 54);
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox1.TabIndex = 13;
-            pictureBox1.TabStop = false;
-            // 
             // DashboardForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.GradientActiveCaption;
-            ClientSize = new Size(645, 426);
-            Controls.Add(pictureBox1);
-            Controls.Add(label1);
+            ClientSize = new Size(645, 380);
             Controls.Add(panel2);
             Controls.Add(panel1);
             Controls.Add(lblPenaltyNotice);
@@ -275,7 +246,6 @@
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -295,7 +265,5 @@
         private Panel panel1;
         private Panel panel2;
         private Button button7;
-        private Label label1;
-        private PictureBox pictureBox1;
     }
 }

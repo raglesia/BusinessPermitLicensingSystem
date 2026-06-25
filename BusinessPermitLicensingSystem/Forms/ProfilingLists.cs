@@ -52,7 +52,7 @@ namespace BusinessPermitLicensingSystem
             dataGridView1.AllowUserToDeleteRows = false;
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView1.MultiSelect = true;
-            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridView1.RowHeadersVisible = false;
 
             // ✅ Add checkbox column before data binding
@@ -60,7 +60,7 @@ namespace BusinessPermitLicensingSystem
             {
                 Name = "Select",
                 HeaderText = "✓",
-                Width = 30,
+                Width = 40,
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.None,
                 ReadOnly = false
             };
@@ -80,6 +80,21 @@ namespace BusinessPermitLicensingSystem
                 dataGridView1.Columns["Penalty"].DisplayIndex = 9;
                 dataGridView1.Columns["Additional Charge"].DisplayIndex = 10;
                 dataGridView1.Columns["Payment Status"].DisplayIndex = 11;
+
+                dataGridView1.Columns["Business Section"].Visible = false;
+                dataGridView1.Columns["Stall Number"].Visible = false;
+                dataGridView1.Columns["Stall Size"].Visible = false;
+                dataGridView1.Columns["Date of Occupancy"].Visible = false;
+                dataGridView1.Columns["Additional Charge"].Visible = false;
+
+                dataGridView1.Columns["Select"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                dataGridView1.Columns["Select"].Width = 40;
+                dataGridView1.Columns["SIN"].FillWeight = 80;
+                dataGridView1.Columns["Full Name"].FillWeight = 150;
+                dataGridView1.Columns["Business Name"].FillWeight = 200;
+                dataGridView1.Columns["Monthly Rental"].FillWeight = 80;
+                dataGridView1.Columns["Penalty"].FillWeight = 80;
+                dataGridView1.Columns["Payment Status"].FillWeight = 80;
 
                 foreach (DataGridViewColumn col in dataGridView1.Columns)
                 {
@@ -271,51 +286,6 @@ namespace BusinessPermitLicensingSystem
                     dataGridView1.FirstDisplayedScrollingRowIndex = firstRowIndex;
 
                 HighlightRecord(sin);
-            }
-        }
-
-        // ===================== DELETE RECORD ===================== //
-        private void btnDelete_Click(object sender, EventArgs e)
-        {
-            if (dataGridView1.SelectedRows.Count == 0)
-            {
-                MessageBox.Show("Please select a record first.", "No Selection",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            var row = dataGridView1.SelectedRows[0];
-            string sin = row.Cells["SIN"].Value?.ToString() ?? "";
-
-            if (string.IsNullOrEmpty(sin))
-            {
-                MessageBox.Show("Selected record has no SIN.", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            var confirm = MessageBox.Show(
-                "Are you sure you want to delete this record?",
-                "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-            if (confirm != DialogResult.Yes) return;
-
-            var result = Database.DeleteProfiling(sin);
-
-            if (result.Success)
-            {
-                Database.LogAudit("Delete", sin, Session.CurrentUserId ?? 0,
-                    $"Deleted profile {sin}.");
-
-                MessageBox.Show("Record deleted successfully.", "Deleted",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                LoadProfiles();
-            }
-            else
-            {
-                MessageBox.Show(result.ErrorMessage, "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -845,23 +815,33 @@ namespace BusinessPermitLicensingSystem
 
             using var workbook = new XLWorkbook(filePath);
             var ws = workbook.Worksheet(1);
-            var dataRows = ws.RowsUsed().Skip(1);
 
-            foreach (var row in dataRows)
+            // Read header row to build a name→index map
+            var headerRow = ws.Row(1);
+            var headers = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            foreach (var cell in headerRow.CellsUsed())
+                headers[cell.GetString().Trim()] = cell.Address.ColumnNumber;
+
+            string Get(IXLRow row, string colName)
+                => headers.TryGetValue(colName, out int col)
+                    ? row.Cell(col).GetString()
+                    : "";
+
+            foreach (var row in ws.RowsUsed().Skip(1))
             {
                 rows.Add(new ImportRow
                 {
-                    SIN = row.Cell(1).GetString(),
-                    FullName = row.Cell(2).GetString(),
-                    BusinessName = row.Cell(3).GetString(),
-                    BusinessSection = row.Cell(4).GetString(),
-                    StallNumber = row.Cell(5).GetString(),
-                    StallSize = row.Cell(6).GetString(),
-                    MonthlyRental = row.Cell(7).GetString(),
-                    PaymentStatus = row.Cell(8).GetString(),
-                    StartDate = row.Cell(9).GetString(),
-                    Penalty = row.Cell(10).GetString(),
-                    AdditionalCharge = row.Cell(11).GetString(),
+                    SIN = Get(row, "SIN"),
+                    FullName = Get(row, "FullName"),
+                    BusinessName = Get(row, "BusinessName"),
+                    BusinessSection = Get(row, "BusinessSection"),
+                    StallNumber = Get(row, "StallNumber"),
+                    StallSize = Get(row, "StallSize"),
+                    MonthlyRental = Get(row, "MonthlyRental"),
+                    PaymentStatus = Get(row, "PaymentStatus"),
+                    StartDate = Get(row, "StartDate"),
+                    Penalty = Get(row, "Penalty"),
+                    AdditionalCharge = Get(row, "AdditionalCharge"),
                 });
             }
 

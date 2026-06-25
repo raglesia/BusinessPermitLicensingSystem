@@ -42,6 +42,7 @@
             txtSec = new TextBox();
             txtDTI = new TextBox();
             groupBox1 = new GroupBox();
+            label7 = new Label();
             btnSave = new Button();
             btnCancel = new Button();
             panel1 = new Panel();
@@ -166,6 +167,7 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(label7);
             groupBox1.Controls.Add(label1);
             groupBox1.Controls.Add(txtDTI);
             groupBox1.Controls.Add(txtSec);
@@ -182,15 +184,25 @@
             groupBox1.Margin = new Padding(2);
             groupBox1.Name = "groupBox1";
             groupBox1.Padding = new Padding(2);
-            groupBox1.Size = new Size(605, 206);
+            groupBox1.Size = new Size(605, 355);
             groupBox1.TabIndex = 12;
             groupBox1.TabStop = false;
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Font = new Font("Segoe UI Semibold", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label7.Location = new Point(6, 319);
+            label7.Name = "label7";
+            label7.Size = new Size(153, 23);
+            label7.TabIndex = 12;
+            label7.Text = "Total Amount Due:";
             // 
             // btnSave
             // 
             btnSave.BackColor = SystemColors.GradientActiveCaption;
             btnSave.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnSave.Location = new Point(135, 235);
+            btnSave.Location = new Point(147, 389);
             btnSave.Margin = new Padding(2);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(162, 51);
@@ -203,7 +215,7 @@
             // 
             btnCancel.BackColor = SystemColors.GradientActiveCaption;
             btnCancel.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnCancel.Location = new Point(301, 235);
+            btnCancel.Location = new Point(323, 389);
             btnCancel.Margin = new Padding(2);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(162, 51);
@@ -216,9 +228,9 @@
             // 
             panel1.Controls.Add(lblUsername);
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 291);
+            panel1.Location = new Point(0, 465);
             panel1.Name = "panel1";
-            panel1.Size = new Size(623, 32);
+            panel1.Size = new Size(654, 32);
             panel1.TabIndex = 15;
             // 
             // lblUsername
@@ -237,7 +249,7 @@
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.GradientActiveCaption;
-            ClientSize = new Size(623, 323);
+            ClientSize = new Size(654, 497);
             Controls.Add(panel1);
             Controls.Add(btnCancel);
             Controls.Add(btnSave);
@@ -277,5 +289,6 @@
         private Button btnCancel;
         private Panel panel1;
         private Label lblUsername;
+        private Label label7;
     }
 }
