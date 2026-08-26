@@ -59,9 +59,12 @@ namespace BusinessPermitLicensingSystem
 
         private static string NormaliseDateString(string? raw)
         {
-            if (string.IsNullOrWhiteSpace(raw)) return "";
+            if (string.IsNullOrWhiteSpace(raw))
+                return "";
+
             if (DateTime.TryParse(raw, out var dt))
                 return dt.ToString("yyyy-MM-dd");
+
             return "";
         }
 
@@ -155,6 +158,30 @@ namespace BusinessPermitLicensingSystem
                         ('Kakanin Area',                0,  300, 'Flat'),
                         ('Pasalubong Center',           0, 5500, 'Flat')
                 END");
+
+            ExecuteNonQuery(con, @"
+                IF NOT EXISTS (
+                    SELECT * FROM sysobjects
+                    WHERE name='MonthlyBilling' AND xtype='U'
+                )
+                CREATE TABLE MonthlyBilling (
+                    Id               INT IDENTITY(1,1) PRIMARY KEY,
+                    SIN              NVARCHAR(100) NOT NULL,
+                    BillingYear      INT NOT NULL,
+                    BillingMonth     INT NOT NULL,
+                    MonthlyRental    DECIMAL(18,2) NOT NULL,
+                    AdditionalCharge DECIMAL(18,2) NOT NULL DEFAULT 0,
+                    Penalty          DECIMAL(18,2) NOT NULL DEFAULT 0,
+                    PaymentStatus    NVARCHAR(50) NOT NULL DEFAULT 'Unpaid',
+                    ORNumber         NVARCHAR(100) NULL,
+                    DatePaid         DATETIME NULL,
+                    RecordedBy       INT NULL,
+
+                    FOREIGN KEY (SIN) REFERENCES Profiling(SIN),
+
+                    CONSTRAINT UQ_MonthlyBilling
+                        UNIQUE (SIN, BillingYear, BillingMonth)
+                );");
 
 
             // ── MONTHLY RESET ─────────────────────────────────────────
@@ -589,9 +616,25 @@ namespace BusinessPermitLicensingSystem
         // ===================== PAYMENT STATUS ===================== //
 
         public static (bool Success, string? ErrorMessage) UpdatePaymentStatus(
-            string sin, string status, string orNumber = "",
-            decimal amountPaid = 0, decimal penalty = 0, long recordedBy = 0)
+            string sin,
+            string status,
+            string orNumber = "",
+            decimal amountPaid = 0,
+            decimal penalty = 0,
+            long recordedBy = 0)
         {
+            if (string.IsNullOrWhiteSpace(sin))
+                return (false, "SIN is required.");
+
+            if (status == "Paid")
+            {
+                if (string.IsNullOrWhiteSpace(orNumber))
+                    return (false, "OR Number is required.");
+
+                if (amountPaid <= 0)
+                    return (false, "Amount paid must be greater than zero.");
+            }
+
             try
             {
                 using var con = OpenConnection();
@@ -599,40 +642,139 @@ namespace BusinessPermitLicensingSystem
 
                 try
                 {
-                    using var cmdUpdate = new SqlCommand(@"
-                        UPDATE Profiling
-                        SET PaymentStatus = @status,
-                            Penalty       = CASE WHEN @status = 'Paid' THEN 0 ELSE Penalty END
-                        WHERE SIN = @sin", con, tran);
-
-                    cmdUpdate.Parameters.Add(ParamNVarChar("@status", status, 50));
-                    cmdUpdate.Parameters.Add(ParamNVarChar("@sin", sin, 100));
-                    cmdUpdate.ExecuteNonQuery();
-
-                    if (status == "Paid" && !string.IsNullOrWhiteSpace(orNumber))
+                    // -----------------------------------
+                    // Update Profiling snapshot
+                    // -----------------------------------
+                    using (var cmdUpdate = new SqlCommand(@"
+                UPDATE Profiling SET PaymentStatus = @status, Penalty = CASE WHEN @status = 'Paid' THEN 0 ELSE Penalty END
+                WHERE SIN = @sin",
+                        con,
+                        tran))
                     {
+                        cmdUpdate.Parameters.Add(
+                            ParamNVarChar("@status", status, 50));
+
+                        cmdUpdate.Parameters.Add(
+                            ParamNVarChar("@sin", sin, 100));
+
+                        cmdUpdate.ExecuteNonQuery();
+                    }
+
+                    if (status == "Paid")
+                    {
+                        // -----------------------------------
+                        // Record payment history
+                        // -----------------------------------
                         var (ok, err) = RecordPaymentInternal(
-                            con, tran, sin, orNumber, amountPaid, penalty, recordedBy);
+                            con,
+                            tran,
+                            sin,
+                            orNumber,
+                            amountPaid,
+                            penalty,
+                            recordedBy);
+
                         if (!ok)
                         {
                             tran.Rollback();
                             return (false, err);
                         }
+
+                        DateTime today = DateTime.Today;
+
+                        // -----------------------------------
+                        // Mark all outstanding billing
+                        // periods through current month Paid
+                        // -----------------------------------
+                        using (var cmdBilling = new SqlCommand(@"
+                    UPDATE MonthlyBilling SET PaymentStatus = 'Paid', ORNumber = @or, DatePaid = @datePaid, RecordedBy = @recordedBy
+                    WHERE SIN = @sin
+                    AND PaymentStatus = 'Unpaid'
+                    AND
+                    (
+                        BillingYear < @year
+                        OR
+                        (
+                            BillingYear = @year
+                            AND BillingMonth <= @month
+                        )
+                    )",
+                            con,
+                            tran))
+                        {
+                            cmdBilling.Parameters.Add(
+                                ParamNVarChar("@sin", sin, 100));
+
+                            cmdBilling.Parameters.Add(
+                                ParamNVarChar("@or", orNumber.Trim(), 100));
+
+                            cmdBilling.Parameters.Add(
+                                ParamDateTime("@datePaid", DateTime.Now));
+
+                            cmdBilling.Parameters.Add(
+                                ParamInt("@recordedBy", (int)recordedBy));
+
+                            cmdBilling.Parameters.Add(
+                                ParamInt("@year", today.Year));
+
+                            cmdBilling.Parameters.Add(
+                                ParamInt("@month", today.Month));
+
+                            cmdBilling.ExecuteNonQuery();
+                        }
                     }
 
                     tran.Commit();
+
                     return (true, null);
                 }
                 catch (Exception ex)
                 {
                     tran.Rollback();
-                    return (false, $"Database error: {ex.Message}");
+
+                    return (
+                        false,
+                        $"Database error: {ex.Message}");
                 }
             }
             catch (Exception ex)
             {
-                return (false, $"Database error: {ex.Message}");
+                return (
+                    false,
+                    $"Database error: {ex.Message}");
             }
+        }
+
+        // ===================== MONTHLY BILLING ===================== //
+        public static void EnsureMonthlyBill(string sin, decimal monthlyRental, decimal additionalCharge = 0)
+        {
+            DateTime today = DateTime.Today;
+
+            using var con = OpenConnection();
+
+            using var cmd = new SqlCommand(@"
+                IF NOT EXISTS (SELECT 1 FROM MonthlyBilling WHERE SIN = @sin AND BillingYear = @year AND BillingMonth = @month)
+                BEGIN
+                    INSERT INTO MonthlyBilling (SIN, BillingYear, BillingMonth, MonthlyRental, AdditionalCharge, Penalty, PaymentStatus)
+                    VALUES (@sin, @year, @month, @rental, @additional, 0, 'Unpaid')
+                END", con);
+
+                    cmd.Parameters.Add(
+                        ParamNVarChar("@sin", sin, 100));
+
+                    cmd.Parameters.Add(
+                        ParamInt("@year", today.Year));
+
+                    cmd.Parameters.Add(
+                        ParamInt("@month", today.Month));
+
+                    cmd.Parameters.Add(
+                        ParamDecimal("@rental", monthlyRental));
+
+                    cmd.Parameters.Add(
+                        ParamDecimal("@additional", additionalCharge));
+
+                    cmd.ExecuteNonQuery();
         }
 
         // ===================== PAYMENT HISTORY ===================== //
@@ -781,35 +923,6 @@ namespace BusinessPermitLicensingSystem
         }
 
         // ===================== PENALTY ===================== //
-
-        public static decimal CalculatePenalty(
-            decimal monthlyRental, string paymentStatus, string startDate)
-        {
-            if (paymentStatus == "Paid") return 0;
-            if (string.IsNullOrWhiteSpace(startDate)) return 0;
-            if (!DateTime.TryParse(startDate, out DateTime start)) return 0;
-
-            DateTime today = DateTime.Today;
-            int firstDueMonth = start.Month == 12 ? 1 : start.Month + 1;
-            int firstDueYear = start.Month == 12 ? start.Year + 1 : start.Year;
-            DateTime firstDueDate = new DateTime(firstDueYear, firstDueMonth, 20);
-
-            if (today <= firstDueDate) return 0;
-
-            int missedMonths = 0;
-            DateTime dueDate = firstDueDate;
-
-            while (dueDate < today)
-            {
-                missedMonths++;
-                int nextMonth = dueDate.Month == 12 ? 1 : dueDate.Month + 1;
-                int nextYear = dueDate.Month == 12 ? dueDate.Year + 1 : dueDate.Year;
-                dueDate = new DateTime(nextYear, nextMonth, 20);
-            }
-
-            return missedMonths <= 0 ? 0 : Math.Round(monthlyRental * 0.25m * missedMonths, 2);
-        }
-
         public static void UpdatePenalty(string sin, decimal penalty)
         {
             using var con = OpenConnection();
@@ -829,37 +942,177 @@ namespace BusinessPermitLicensingSystem
             int skipped = 0;
 
             using var con = OpenConnection();
+
             using var cmd = new SqlCommand(@"
-                SELECT SIN, MonthlyRental, PaymentStatus, StartDate
-                FROM   Profiling
-                WHERE  PaymentStatus != 'Paid'
-                AND    IsArchived     = 0", con);
+        SELECT
+            SIN,
+            MonthlyRental,
+            AdditionalCharge,
+            StartDate
+        FROM Profiling
+        WHERE IsArchived = 0",
+                con);
 
             using var reader = cmd.ExecuteReader();
+
             var records =
-                new List<(string Sin, decimal Rental, string Status, string StartDate)>();
+                new List<(
+                    string Sin,
+                    decimal Rental,
+                    decimal Additional,
+                    string StartDate)>();
 
             while (reader.Read())
+            {
                 records.Add((
                     reader["SIN"].ToString()!,
                     Convert.ToDecimal(reader["MonthlyRental"]),
-                    reader["PaymentStatus"].ToString()!,
+                    Convert.ToDecimal(reader["AdditionalCharge"]),
                     reader["StartDate"].ToString()!
                 ));
+            }
 
             reader.Close();
 
-            foreach (var (sin, rental, status, startDate) in records)
+            foreach (var record in records)
             {
-                decimal penalty = CalculatePenalty(rental, status, startDate);
-                if (penalty > 0) { UpdatePenalty(sin, penalty); updated++; }
-                else skipped++;
+                // Create every missing billing month
+                // from occupancy up to current month.
+                EnsureBillingPeriodsForProfile(
+                    record.Sin,
+                    record.StartDate,
+                    record.Rental,
+                    record.Additional);
+
+                // Only unpaid + overdue monthly rows
+                // are counted here.
+                decimal penalty =
+                    CalculateOutstandingPenalty(record.Sin);
+
+                UpdatePenalty(
+                    record.Sin,
+                    penalty);
+
+                if (penalty > 0)
+                    updated++;
+                else
+                    skipped++;
             }
 
             return (updated, skipped);
         }
 
-        public static int ResetMonthlyPaymentStatus()
+        // ====================== NEW PENALTY CALCULATION (DON'T FORGET TO REPLACE THE OLD ONE) ===================== //
+        public static decimal CalculateOutstandingPenalty(string sin)
+        {
+            using var con = OpenConnection();
+
+            using var cmd = new SqlCommand(@"
+                SELECT
+                    BillingYear,
+                    BillingMonth,
+                    MonthlyRental
+                FROM MonthlyBilling
+                WHERE SIN = @sin
+                AND PaymentStatus = 'Unpaid'
+                ORDER BY BillingYear, BillingMonth", con);
+
+            cmd.Parameters.Add(
+                ParamNVarChar("@sin", sin, 100));
+
+            using var reader = cmd.ExecuteReader();
+
+            decimal totalPenalty = 0;
+            DateTime today = DateTime.Today;
+
+            while (reader.Read())
+            {
+                int year =
+                    Convert.ToInt32(reader["BillingYear"]);
+
+                int month =
+                    Convert.ToInt32(reader["BillingMonth"]);
+
+                decimal rental =
+                    Convert.ToDecimal(reader["MonthlyRental"]);
+
+                DateTime dueDate =
+                    new DateTime(year, month, 20);
+
+                if (today > dueDate)
+                {
+                    totalPenalty +=
+                        Math.Round(rental * 0.25m, 2);
+                }
+            }
+
+            return totalPenalty;
+        }
+
+        public static void EnsureBillingPeriodsForProfile(
+            string sin,
+            string startDate,
+            decimal monthlyRental,
+            decimal additionalCharge = 0)
+        {
+            if (string.IsNullOrWhiteSpace(startDate))
+                return;
+
+            if (!DateTime.TryParse(startDate, out DateTime occupancyDate))
+                return;
+
+            DateTime today = DateTime.Today;
+
+            // Your original rule:
+            // first rent becomes due the month AFTER occupancy.
+            DateTime billingMonth =
+                new DateTime(
+                    occupancyDate.Year,
+                    occupancyDate.Month,
+                    1)
+                .AddMonths(1);
+
+            DateTime currentMonth =
+                new DateTime(
+                    today.Year,
+                    today.Month,
+                    1);
+
+            using var con = OpenConnection();
+
+            while (billingMonth <= currentMonth)
+            {
+                using var cmd = new SqlCommand(@"
+            IF NOT EXISTS (SELECT 1 FROM MonthlyBilling WHERE SIN = @sin AND BillingYear = @year AND BillingMonth = @month)
+                BEGIN
+            INSERT INTO MonthlyBilling(SIN, BillingYear, BillingMonth, MonthlyRental, AdditionalCharge, Penalty, PaymentStatus)
+                VALUES(@sin, @year, @month, @rental, @additional, 0, 'Unpaid')
+            END",
+                    con);
+
+                cmd.Parameters.Add(
+                    ParamNVarChar("@sin", sin, 100));
+
+                cmd.Parameters.Add(
+                    ParamInt("@year", billingMonth.Year));
+
+                cmd.Parameters.Add(
+                    ParamInt("@month", billingMonth.Month));
+
+                cmd.Parameters.Add(
+                    ParamDecimal("@rental", monthlyRental));
+
+                cmd.Parameters.Add(
+                    ParamDecimal("@additional", additionalCharge));
+
+                cmd.ExecuteNonQuery();
+
+                billingMonth = billingMonth.AddMonths(1);
+            }
+        }
+
+
+        public static int EnsureMonthlyBillingForAll()
         {
             DateTime today = DateTime.Today;
             string currentMonthKey = today.ToString("yyyy-MM");
@@ -867,34 +1120,60 @@ namespace BusinessPermitLicensingSystem
             using var con = OpenConnection();
 
             using var cmdGet = new SqlCommand(
-                "SELECT [Value] FROM AppSettings WHERE [Key] = 'LastMonthlyReset'", con);
-            string lastReset = cmdGet.ExecuteScalar()?.ToString() ?? "2000-01";
+                "SELECT [Value] FROM AppSettings " +
+                "WHERE [Key] = 'LastMonthlyReset'",
+                con);
 
-            if (lastReset == currentMonthKey) return 0;
+            string lastReset =
+                cmdGet.ExecuteScalar()?.ToString()
+                ?? "2000-01";
+
+            if (lastReset == currentMonthKey)
+                return 0;
+
             using var tran = con.BeginTransaction();
+
             try
             {
-                using var cmdReset = new SqlCommand(@"
-            UPDATE Profiling
-            SET    PaymentStatus = 'Unpaid'
-            WHERE  PaymentStatus = 'Paid'
-            AND    IsArchived     = 0", con, tran);
-                int rows = cmdReset.ExecuteNonQuery();
+                using var cmdInsert = new SqlCommand(@"
+            INSERT INTO MonthlyBilling (SIN, BillingYear, BillingMonth, MonthlyRental, AdditionalCharge, Penalty, PaymentStatus)
+            SELECT p.SIN, @year, @month, p.MonthlyRental, p.AdditionalCharge, 0, 'Unpaid' FROM Profiling p WHERE p.IsArchived = 0 AND NOT EXISTS
+            (SELECT 1 FROM MonthlyBilling mb WHERE mb.SIN = p.SIN AND mb.BillingYear = @year AND mb.BillingMonth = @month
+            )",
+                    con,
+                    tran);
 
-                using var cmdUpdate = new SqlCommand(@"
-            UPDATE AppSettings
-            SET [Value] = @month
-            WHERE [Key] = 'LastMonthlyReset'", con, tran);
-                cmdUpdate.Parameters.Add(ParamNVarChar("@month", currentMonthKey, 20));
+                cmdInsert.Parameters.Add(
+                    ParamInt("@year", today.Year));
+
+                cmdInsert.Parameters.Add(
+                    ParamInt("@month", today.Month));
+
+                int rows =
+                    cmdInsert.ExecuteNonQuery();
+
+                using var cmdUpdate =
+                    new SqlCommand(@"
+                UPDATE AppSettings SET [Value] = @monthKey WHERE [Key] = 'LastMonthlyReset'",
+                    con,
+                    tran);
+
+                cmdUpdate.Parameters.Add(
+                    ParamNVarChar(
+                        "@monthKey",
+                        currentMonthKey,
+                        20));
+
                 cmdUpdate.ExecuteNonQuery();
 
                 tran.Commit();
+
                 return rows;
             }
             catch
             {
                 tran.Rollback();
-                return 0;
+                throw;
             }
         }
 

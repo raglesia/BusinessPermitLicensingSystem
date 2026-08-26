@@ -40,6 +40,9 @@
     <Compile Update="Forms\ReportViewerForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Forms\TaxView.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Forms\VehiclePermitLists.cs">
       <SubType>Form</SubType>
     </Compile>

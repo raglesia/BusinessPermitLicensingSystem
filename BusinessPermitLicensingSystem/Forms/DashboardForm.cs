@@ -26,7 +26,7 @@ namespace BusinessPermitLicensingSystem.Forms
             timer1.Start();
             CheckPenalties();
 
-            Database.ResetMonthlyPaymentStatus();
+            Database.EnsureMonthlyBillingForAll();
             Database.ApplyPenaltiesToAll();
         }
 
@@ -107,7 +107,7 @@ namespace BusinessPermitLicensingSystem.Forms
         {
             try
             {
-                int reset = Database.ResetMonthlyPaymentStatus();
+                int reset = Database.EnsureMonthlyBillingForAll();
                 int vehicleReset = Database.ResetAnnualVehiclePermitStatus(); // ← add this
                 var (updated, _) = Database.ApplyPenaltiesToAll();
 

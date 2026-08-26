@@ -68,6 +68,8 @@ namespace BusinessPermitLicensingSystem
 
             dataGridView1.DataBindingComplete += (s, e) =>
             {
+                dataGridView1.Columns["Additional Charge"].HeaderText = "Additional Charges";
+
                 dataGridView1.Columns["Select"].DisplayIndex = 0;
                 dataGridView1.Columns["SIN"].DisplayIndex = 1;
                 dataGridView1.Columns["Full Name"].DisplayIndex = 2;
@@ -85,7 +87,6 @@ namespace BusinessPermitLicensingSystem
                 dataGridView1.Columns["Stall Number"].Visible = false;
                 dataGridView1.Columns["Stall Size"].Visible = false;
                 dataGridView1.Columns["Date of Occupancy"].Visible = false;
-                dataGridView1.Columns["Additional Charge"].Visible = false;
 
                 dataGridView1.Columns["Select"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
                 dataGridView1.Columns["Select"].Width = 40;
@@ -268,13 +269,14 @@ namespace BusinessPermitLicensingSystem
             string stallSize = row.Cells["Stall Size"].Value?.ToString() ?? "";
             string monthlyRental = row.Cells["Monthly Rental"].Value?.ToString() ?? "";
             string paymentStatus = row.Cells["Payment Status"].Value?.ToString() ?? "Unpaid";
+            string penalty = row.Cells["Penalty"].Value?.ToString() ?? "0.00";
             string startDate = row.Cells["Date of Occupancy"].Value?.ToString() ?? "";
             decimal additionalCharge = Convert.ToDecimal(row.Cells["Additional Charge"].Value ?? 0);
 
             var form = new ProfilingForm();
             form.LoadForEdit(sin, fullName, businessName, businessSection,
                 stallNumber, stallSize, monthlyRental, paymentStatus,
-                startDate, additionalCharge);
+                startDate, penalty, additionalCharge);
             form.ShowDialog();
 
             if (form.RecordSaved)

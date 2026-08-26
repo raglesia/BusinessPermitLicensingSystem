@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "mC882mzWE6w=",
+  "dgSpecHash": "wZABdwKJVWg=",
   "success": true,
   "projectFilePath": "C:\\Users\\jmere\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj",
   "expectedPackageFiles": [
@@ -45,7 +45,7 @@
     {
       "code": "NU1510",
       "level": "Warning",
-      "message": "PackageReference System.Configuration.ConfigurationManager will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.",
+      "message": "PackageReference System.Configuration.ConfigurationManager will not be pruned. This package is automatically available and does not need to be referenced explicitly. Remove the PackageReference item.",
       "projectPath": "C:\\Users\\jmere\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj",
       "warningLevel": 1,
       "filePath": "C:\\Users\\jmere\\source\\repos\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem\\BusinessPermitLicensingSystem.csproj",
